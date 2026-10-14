@@ -26,6 +26,7 @@ import {
 import { ModifierDeepDive } from '../../types/rcm';
 import { useAcademy } from '../../context/AcademyContext';
 import { triggerCelebrationConfetti } from '../common/Confetti';
+import { CartoonTip } from '../common/CartoonTip';
 
 export const Module4CodingModifiers: React.FC = () => {
   const { progress, markModuleCompleted, toggleBookmarkModifier } = useAcademy();
@@ -121,6 +122,22 @@ export const Module4CodingModifiers: React.FC = () => {
             Place of Service (POS) Codes Grid
           </button>
         </div>
+      </div>
+
+      {/* Mascot Coding Insights */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CartoonTip
+          mood="thinking"
+          type="green-tip"
+          title="Modifier 25 Golden Rule"
+          message="Append Modifier 25 to an E&M code ONLY when the physician documents a significant, separately identifiable evaluation and management service on the same day as a minor procedure (0 or 10-day global)."
+        />
+        <CartoonTip
+          mood="denied"
+          type="red-warning"
+          title="Never Append Modifier 59 to E&M Codes!"
+          message="Modifier 59 is strictly for surgical procedures, radiology, or lab tests to bypass NCCI edits. Appending 59 to an office visit code (99213/99214) causes immediate claim rejection!"
+        />
       </div>
 
       {/* TAB 1: MODIFIER MASTERCLASS DEEP-DIVE */}

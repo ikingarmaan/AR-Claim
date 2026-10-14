@@ -14,6 +14,7 @@ import { CMS_1500_BOXES, FORM_COMPARISONS, UB_04_CODES } from '../../data/claimF
 import { ClaimBoxDetail, Ub04CodeItem } from '../../types/rcm';
 import { useAcademy } from '../../context/AcademyContext';
 import { triggerCelebrationConfetti } from '../common/Confetti';
+import { CartoonTip } from '../common/CartoonTip';
 
 export const Module2ClaimForms: React.FC = () => {
   const { progress, markModuleCompleted } = useAcademy();
@@ -112,6 +113,22 @@ export const Module2ClaimForms: React.FC = () => {
             <span>UB-04 Codes (Revenue, Value, Occurrence)</span>
           </button>
         </div>
+      </div>
+
+      {/* Mascot Form Insights */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CartoonTip
+          mood="reading"
+          type="green-tip"
+          title="Box 12 (ROI) vs Box 13 (AOB) Signatures"
+          message="Box 12 authorizes release of medical info to payers. Box 13 is Assignment of Benefits (AOB) authorizing the insurance check to be paid DIRECTLY to the clinic instead of the patient!"
+        />
+        <CartoonTip
+          mood="denied"
+          type="red-warning"
+          title="Box 22 Corrected Claim Duplicate Trap"
+          message="When sending a corrected claim, you MUST put Resubmission Code '7' and the Original Claim Reference # in Box 22! Omitting Box 22 causes the clearinghouse or payer to reject it as a duplicate (CO-18)!"
+        />
       </div>
 
       {/* TAB 1: INTERACTIVE CMS-1500 HOTSPOT MAP */}

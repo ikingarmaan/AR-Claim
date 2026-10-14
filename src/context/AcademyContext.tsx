@@ -64,7 +64,7 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
     if (saved !== null) return saved === 'dark';
-    return true; // Default to healthtech dark theme
+    return false; // Default to clean modern white theme
   });
 
   const [progress, setProgress] = useState<UserProgress>(() => {

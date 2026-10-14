@@ -20,6 +20,7 @@ import {
 import { useAcademy } from '../../context/AcademyContext';
 import { triggerCelebrationConfetti } from '../common/Confetti';
 import { BirthdayRuleModal } from '../tools/BirthdayRuleModal';
+import { CartoonTip } from '../common/CartoonTip';
 
 export const Module3InsurancePayer: React.FC = () => {
   const { progress, markModuleCompleted } = useAcademy();
@@ -136,6 +137,22 @@ export const Module3InsurancePayer: React.FC = () => {
             COB & Policy Rules (Birthday Rule, COBRA)
           </button>
         </div>
+      </div>
+
+      {/* Mascot Payer Insights */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CartoonTip
+          mood="celebrating"
+          type="green-tip"
+          title="The Birthday Rule for Dependent Children"
+          message="When a dependent child is covered under both parents' insurance plans, the parent whose birth MONTH falls earlier in the calendar year is Primary! If months match, earlier day wins. Birth year is completely irrelevant!"
+        />
+        <CartoonTip
+          mood="denied"
+          type="red-warning"
+          title="Medicare Advantage (Part C) Replacement Trap"
+          message="When a patient enrolls in Medicare Advantage (Part C), the private insurer replaces Original Medicare. Submitting claims to Traditional Medicare Part B will result in an immediate CO-109 rejection!"
+        />
       </div>
 
       {/* TAB 1: MEDICARE MASTERCLASS & 3-WAY TABLE */}

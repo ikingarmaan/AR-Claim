@@ -14,6 +14,7 @@ import { TERMINOLOGY_DATA } from '../../data/terminology';
 import { FlipCard } from '../common/FlipCard';
 import { useAcademy } from '../../context/AcademyContext';
 import { triggerCelebrationConfetti } from '../common/Confetti';
+import { CartoonTip } from '../common/CartoonTip';
 
 export const Module1Foundations: React.FC = () => {
   const { progress, markModuleCompleted } = useAcademy();
@@ -97,6 +98,22 @@ export const Module1Foundations: React.FC = () => {
             <span>{isCompleted ? 'Module Completed!' : 'Mark Module Done'}</span>
           </button>
         </div>
+      </div>
+
+      {/* Mascot Mentor Insights */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CartoonTip
+          mood="happy"
+          type="green-tip"
+          title="In-Network Fee Schedule Rule (CO-45)"
+          message="Participating providers agree to accept the Allowed Amount ($200 in the simulator below). You must write off the remaining $250 as CO-45 and NEVER bill this difference to in-network patients!"
+        />
+        <CartoonTip
+          mood="denied"
+          type="red-warning"
+          title="No Surprises Act Balance Billing Trap"
+          message="Balance billing a patient for contractual adjustments (CO-45) or emergency out-of-network care violates federal law with civil monetary penalties up to $10,000 per violation!"
+        />
       </div>
 
       {/* Flagship Interactive Feature: Real-Time RCM Math & Adjudication Calculator */}

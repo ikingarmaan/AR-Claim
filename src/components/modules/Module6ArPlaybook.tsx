@@ -23,6 +23,7 @@ import {
 import { ArScenario, CarcRarcDetail } from '../../types/rcm';
 import { useAcademy } from '../../context/AcademyContext';
 import { triggerCelebrationConfetti } from '../common/Confetti';
+import { CartoonTip } from '../common/CartoonTip';
 
 export const Module6ArPlaybook: React.FC = () => {
   const { progress, markModuleCompleted, toggleBookmarkDenial } = useAcademy();
@@ -134,6 +135,22 @@ export const Module6ArPlaybook: React.FC = () => {
             <span>The 4-Tier Appeal Process</span>
           </button>
         </div>
+      </div>
+
+      {/* Mascot AR Insights */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CartoonTip
+          mood="calling"
+          type="green-tip"
+          title="The 6-Point AR Phone Call Standard"
+          message="Never hang up without all 6 points: 1) Call Ref #, 2) Rep Name, 3) Claims Address / Payer ID, 4) Payer Claim #, 5) Timely Filing Limit & DOS range, 6) Exact Action Taken & Turnaround Time!"
+        />
+        <CartoonTip
+          mood="denied"
+          type="red-warning"
+          title="The CNOF (Claim Not On File) Trap"
+          message="When a rep says 'we have no record of this claim', NEVER blindly rebill! First verify your Clearinghouse EDI 999 and 277CA acceptance reports. If accepted, quote the batch & transmission ID or you'll get hit with a CO-29 untimely filing denial!"
+        />
       </div>
 
       {/* TAB 1: 14 AR CALL SCENARIOS */}

@@ -8,6 +8,7 @@ import { ArNoteModal } from './components/tools/ArNoteModal';
 import { BookmarksDrawer } from './components/tools/BookmarksDrawer';
 
 // Dashboard Components
+import { ClaimyJourneyComic } from './components/dashboard/ClaimyJourneyComic';
 import { RevenueCyclePipeline } from './components/dashboard/RevenueCyclePipeline';
 import { QuickStats } from './components/dashboard/QuickStats';
 import { ActionHub } from './components/dashboard/ActionHub';
@@ -50,6 +51,9 @@ const MainLayout: React.FC = () => {
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           {activeModule === 'dashboard' && (
             <div className="space-y-8 animate-in fade-in duration-300">
+              {/* Flagship AI Cartoon Mascot Comic Strip */}
+              <ClaimyJourneyComic />
+
               {/* Flagship Animated Pipeline */}
               <RevenueCyclePipeline />
 
