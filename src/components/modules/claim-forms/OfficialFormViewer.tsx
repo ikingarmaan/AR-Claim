@@ -43,6 +43,7 @@ interface OfficialFormViewerProps<T> {
   inspectorElementId: string;
   isWideLayout?: boolean;
   onToggleWideLayout?: () => void;
+  onOpenInspector?: () => void;
 }
 
 export function OfficialFormViewer<T>({
@@ -66,7 +67,8 @@ export function OfficialFormViewer<T>({
   onSelectSection,
   inspectorElementId,
   isWideLayout = true,
-  onToggleWideLayout
+  onToggleWideLayout,
+  onOpenInspector
 }: OfficialFormViewerProps<T>) {
   // Fit Mode: 'fit-width' fits 100% of the allocated site container (up to 1024px)
   // 'custom' applies explicit zoom scaling
@@ -420,7 +422,10 @@ export function OfficialFormViewer<T>({
               <button
                 key={getItemKey(item)}
                 type="button"
-                onClick={() => onSelectItem(item)}
+                onClick={() => {
+                  onSelectItem(item);
+                  if (onOpenInspector) onOpenInspector();
+                }}
                 className={`px-2.5 py-1 rounded-lg font-mono text-xs font-black transition-all flex items-center gap-1 ${
                   isSelected
                     ? isRose
@@ -463,11 +468,15 @@ export function OfficialFormViewer<T>({
             <button
               type="button"
               onClick={() => {
-                const el = document.getElementById(inspectorElementId);
-                if (el) {
-                  el.classList.add('ring-4', 'ring-emerald-400');
-                  setTimeout(() => el.classList.remove('ring-4', 'ring-emerald-400'), 1200);
-                  if (window.innerWidth < 1024) el.scrollIntoView({ behavior: 'smooth' });
+                if (onOpenInspector) {
+                  onOpenInspector();
+                } else {
+                  const el = document.getElementById(inspectorElementId);
+                  if (el) {
+                    el.classList.add('ring-4', 'ring-emerald-400');
+                    setTimeout(() => el.classList.remove('ring-4', 'ring-emerald-400'), 1200);
+                    if (window.innerWidth < 1024) el.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }
               }}
               className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors shrink-0"
@@ -539,17 +548,21 @@ export function OfficialFormViewer<T>({
             <button
               type="button"
               onClick={() => {
-                const el = document.getElementById(inspectorElementId);
-                if (el) {
-                  el.classList.add('ring-4', 'ring-emerald-400');
-                  setTimeout(() => el.classList.remove('ring-4', 'ring-emerald-400'), 1200);
-                  if (window.innerWidth < 1024) el.scrollIntoView({ behavior: 'smooth' });
+                if (onOpenInspector) {
+                  onOpenInspector();
+                } else {
+                  const el = document.getElementById(inspectorElementId);
+                  if (el) {
+                    el.classList.add('ring-4', 'ring-emerald-400');
+                    setTimeout(() => el.classList.remove('ring-4', 'ring-emerald-400'), 1200);
+                    if (window.innerWidth < 1024) el.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }
               }}
               className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition-colors shadow-sm flex items-center gap-1.5"
               title="Inspect description beside the form"
             >
-              <span>Description Beside</span>
+              <span>Description Beside Form</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

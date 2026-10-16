@@ -18,7 +18,12 @@ import {
   Award,
   Layers,
   FileText,
-  DollarSign
+  DollarSign,
+  X,
+  BookOpen,
+  PanelRightOpen,
+  PanelRightClose,
+  Columns2
 } from 'lucide-react';
 import { 
   CMS_1500_BOXES, 
@@ -147,6 +152,9 @@ export const Module2ClaimForms: React.FC = () => {
   const [ub04Search, setUb04Search] = useState('');
   const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved'>('all');
   const [isWideLayout, setIsWideLayout] = useState<boolean>(true);
+  const [inspectorLayout, setInspectorLayout] = useState<'drawer' | 'split' | 'bottom'>('drawer');
+  const [isCmsDrawerOpen, setIsCmsDrawerOpen] = useState<boolean>(true);
+  const [isUb04DrawerOpen, setIsUb04DrawerOpen] = useState<boolean>(true);
 
   // Auditor Sandbox State
   const [discoveredTraps, setDiscoveredTraps] = useState<string[]>([]);
@@ -177,6 +185,7 @@ export const Module2ClaimForms: React.FC = () => {
   });
 
   const handleSelectCmsBoxNumber = (num: string) => {
+    setIsCmsDrawerOpen(true);
     if (num === '10a-c' || num === '10') {
       const b = CMS_1500_BOXES.find(x => x.boxNumber === '10a');
       if (b) { setSelectedCmsBox(b); return; }
@@ -215,6 +224,7 @@ export const Module2ClaimForms: React.FC = () => {
   };
 
   const handleSelectUb04Locator = (loc: string) => {
+    setIsUb04DrawerOpen(true);
     if (loc === 'FL 18-28' || loc === 'FL 18') {
       const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 18');
       if (b) { setSelectedUb04Box(b); return; }
@@ -303,6 +313,223 @@ export const Module2ClaimForms: React.FC = () => {
   const currentUb04Idx = UB_04_BOXES.findIndex(b => b.locatorNumber === selectedUb04Box.locatorNumber);
   const prevUb04Box = currentUb04Idx > 0 ? UB_04_BOXES[currentUb04Idx - 1] : UB_04_BOXES[UB_04_BOXES.length - 1];
   const nextUb04Box = currentUb04Idx < UB_04_BOXES.length - 1 ? UB_04_BOXES[currentUb04Idx + 1] : UB_04_BOXES[0];
+
+  // Renderers for Inspector Cards (usable in Drawer, Split, or Stacked modes)
+  const renderCmsInspectorCard = (onClose?: () => void) => (
+    <div className="bg-white dark:bg-health-darkCard p-5 sm:p-6 rounded-3xl border-2 border-emerald-500/50 shadow-xl space-y-4">
+      {/* Header Navigation with Active Beside Indicator */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-black px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 font-mono">
+            Box {selectedCmsBox.boxNumber}
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            {selectedCmsBox.category}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setSelectedCmsBox(prevCmsBox)}
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
+            title="Previous Box"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedCmsBox(nextCmsBox)}
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
+            title="Next Box"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 ml-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-700 dark:text-rose-300 text-xs font-bold transition-colors"
+              title="Close Side Inspector"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Box Title & Active Status */}
+      <div>
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Description Live Beside Form</span>
+        </div>
+        <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">
+          {selectedCmsBox.name}
+        </h3>
+        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+          {selectedCmsBox.description}
+        </p>
+      </div>
+
+      {/* Sample Filled Value Monospace Banner */}
+      <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
+        <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+          <span>Authentic Claim Sample Value:</span>
+          <span className="text-emerald-400 font-bold">● Valid Syntax</span>
+        </div>
+        <div className="font-bold">{selectedCmsBox.sampleValue}</div>
+      </div>
+
+      {/* EDI 837P Mapping */}
+      {selectedCmsBox.ediMapping && (
+        <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-xs text-blue-900 dark:text-blue-200 font-mono">
+          <div className="font-bold text-[10px] uppercase text-blue-600 mb-0.5">
+            HIPAA EDI 837P Loop & Segment:
+          </div>
+          {selectedCmsBox.ediMapping}
+        </div>
+      )}
+
+      {/* Rules & NUCC Guidelines */}
+      <div>
+        <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+          Key Guidelines & NUCC Rules
+        </h4>
+        <ul className="space-y-1.5">
+          {selectedCmsBox.rules.map((r, i) => (
+            <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Rejection Causes & Denial Codes */}
+      <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
+        <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
+          <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
+          <span>Top AR Denial Triggers & Traps</span>
+        </div>
+        <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
+          {selectedCmsBox.rejectionCauses.map((c, i) => (
+            <li key={i} className="flex items-start gap-1.5 font-medium">
+              <span className="text-red-500 font-bold">•</span>
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+
+  const renderUb04InspectorCard = (onClose?: () => void) => (
+    <div className="bg-white dark:bg-health-darkCard p-5 sm:p-6 rounded-3xl border-2 border-amber-600/50 shadow-xl space-y-4">
+      {/* Header Navigation with Active Beside Indicator */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-black px-3 py-1 rounded-xl bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-mono">
+            {selectedUb04Box.locatorNumber}
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            {selectedUb04Box.category}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setSelectedUb04Box(prevUb04Box)}
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
+            title="Previous Locator"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedUb04Box(nextUb04Box)}
+            className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
+            title="Next Locator"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 ml-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-700 dark:text-rose-300 text-xs font-bold transition-colors"
+              title="Close Side Inspector"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Form Locator Title & Active Status */}
+      <div>
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-1">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          <span>Description Live Beside Form</span>
+        </div>
+        <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">
+          {selectedUb04Box.name}
+        </h3>
+        <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+          {selectedUb04Box.description}
+        </p>
+      </div>
+
+      {/* Sample Filled Value Monospace Banner */}
+      <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
+        <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+          <span>Authentic Hospital Sample Value:</span>
+          <span className="text-amber-400 font-bold">● Valid Syntax</span>
+        </div>
+        <div className="font-bold">{selectedUb04Box.sampleValue}</div>
+      </div>
+
+      {/* EDI 837I Mapping */}
+      <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 font-mono">
+        <div className="font-bold text-[10px] uppercase text-purple-600 mb-0.5">
+          HIPAA EDI 837I Loop & Segment:
+        </div>
+        {selectedUb04Box.ediMapping}
+      </div>
+
+      {/* Rules & Hospital Guidelines */}
+      <div>
+        <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+          Hospital Guidelines & Inpatient / Outpatient Rules
+        </h4>
+        <ul className="space-y-1.5">
+          {selectedUb04Box.rules.map((r, i) => (
+            <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Rejection Causes & Denial Codes */}
+      <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
+        <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
+          <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
+          <span>Hospital Rejection & DRG Audit Risks</span>
+        </div>
+        <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
+          {selectedUb04Box.rejectionCauses.map((c, i) => (
+            <li key={i} className="flex items-start gap-1.5 font-medium">
+              <span className="text-red-500 font-bold">•</span>
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -428,49 +655,103 @@ export const Module2ClaimForms: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl self-start sm:self-auto flex-wrap">
-              <button
-                type="button"
-                onClick={() => setCmsViewMode('original')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  cmsViewMode === 'original'
-                    ? 'bg-rose-700 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>1. Original Form (Image & Navigator)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setCmsViewMode('directory')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  cmsViewMode === 'directory'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <ListFilter className="w-3.5 h-3.5" />
-                <span>2. All 33 Boxes Directory</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setCmsViewMode('visual')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  cmsViewMode === 'visual'
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Eye className="w-3.5 h-3.5" />
-                <span>3. Filled Sample Case</span>
-              </button>
+            <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+              {/* Layout Switcher */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+                <button
+                  type="button"
+                  onClick={() => { setInspectorLayout('drawer'); setIsCmsDrawerOpen(true); }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'drawer'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Keep form full-size & show explanation beside it in a slide-over drawer"
+                >
+                  <PanelRightOpen className="w-3.5 h-3.5" />
+                  <span>Drawer (Big Form)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInspectorLayout('split')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'split'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="2-Column Side-by-Side Split"
+                >
+                  <Columns2 className="w-3.5 h-3.5" />
+                  <span>Split 2-Col</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInspectorLayout('bottom')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'bottom'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Stacked Below Form"
+                >
+                  <Table className="w-3.5 h-3.5" />
+                  <span>Stacked</span>
+                </button>
+              </div>
+
+              {/* View Modes */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+                <button
+                  type="button"
+                  onClick={() => setCmsViewMode('original')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    cmsViewMode === 'original'
+                      ? 'bg-rose-700 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>1. Original Form</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCmsViewMode('directory')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    cmsViewMode === 'directory'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <ListFilter className="w-3.5 h-3.5" />
+                  <span>2. All 33 Boxes</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCmsViewMode('visual')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    cmsViewMode === 'visual'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>3. Filled Sample</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Area (Col 7): Official Form Viewer */}
-            <div className="lg:col-span-7 space-y-4">
+          <div className={
+            inspectorLayout === 'split'
+              ? "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+              : "space-y-6"
+          }>
+            {/* Form Area: in split mode takes 7/12, in drawer/bottom mode takes full width (no shrinking!) */}
+            <div className={
+              inspectorLayout === 'split'
+                ? "lg:col-span-7 xl:col-span-8 space-y-4"
+                : "w-full space-y-4"
+            }>
               {cmsViewMode === 'original' && (
                 <OfficialFormViewer<ClaimBoxDetail>
                   formType="cms1500"
@@ -483,7 +764,10 @@ export const Module2ClaimForms: React.FC = () => {
                   downloadFilename="CMS-1500-Official-Form.png"
                   items={CMS_1500_BOXES}
                   selectedItem={selectedCmsBox}
-                  onSelectItem={setSelectedCmsBox}
+                  onSelectItem={(box) => {
+                    setSelectedCmsBox(box);
+                    setIsCmsDrawerOpen(true);
+                  }}
                   getItemKey={b => b.boxNumber}
                   getItemNumber={b => `Box ${b.boxNumber}`}
                   getItemName={b => b.name}
@@ -492,6 +776,7 @@ export const Module2ClaimForms: React.FC = () => {
                   activeSection={cmsSectionFilter}
                   onSelectSection={setCmsSectionFilter}
                   inspectorElementId="cms-inspector-panel"
+                  onOpenInspector={() => setIsCmsDrawerOpen(true)}
                 />
               )}
 
@@ -1136,106 +1421,62 @@ export const Module2ClaimForms: React.FC = () => {
               )}
             </div>
 
-            {/* Right Area (Col 5): Deep-Dive Box Description Beside the Form */}
-            <div id="cms-inspector-panel" className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
-              <div className="bg-white dark:bg-health-darkCard p-5 sm:p-6 rounded-3xl border-2 border-emerald-500/50 shadow-xl space-y-4 lg:max-h-[calc(100vh-110px)] lg:overflow-y-auto">
-                {/* Header Navigation with Active Beside Indicator */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-black px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 font-mono">
-                      Box {selectedCmsBox.boxNumber}
-                    </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                      {selectedCmsBox.category}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCmsBox(prevCmsBox)}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
-                      title="Previous Box"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCmsBox(nextCmsBox)}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
-                      title="Next Box"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Box Title & Active Status */}
-                <div>
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Description Live Beside Form</span>
-                  </div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">
-                    {selectedCmsBox.name}
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                    {selectedCmsBox.description}
-                  </p>
-                </div>
-
-                {/* Sample Filled Value Monospace Banner */}
-                <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
-                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
-                    <span>Authentic Claim Sample Value:</span>
-                    <span className="text-emerald-400 font-bold">● Valid Syntax</span>
-                  </div>
-                  <div className="font-bold">{selectedCmsBox.sampleValue}</div>
-                </div>
-
-                {/* EDI 837P Mapping */}
-                {selectedCmsBox.ediMapping && (
-                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-xs text-blue-900 dark:text-blue-200 font-mono">
-                    <div className="font-bold text-[10px] uppercase text-blue-600 mb-0.5">
-                      HIPAA EDI 837P Loop & Segment:
-                    </div>
-                    {selectedCmsBox.ediMapping}
-                  </div>
-                )}
-
-                {/* Rules & NUCC Guidelines */}
-                <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Key Guidelines & NUCC Rules
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {selectedCmsBox.rules.map((r, i) => (
-                      <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{r}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Rejection Causes & Denial Codes */}
-                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
-                    <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
-                    <span>Top AR Denial Triggers & Traps</span>
-                  </div>
-                  <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
-                    {selectedCmsBox.rejectionCauses.map((c, i) => (
-                      <li key={i} className="flex items-start gap-1.5 font-medium">
-                        <span className="text-red-500 font-bold">•</span>
-                        <span>{c}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+            {/* Split Mode: Fixed In-Grid Beside Column */}
+            {inspectorLayout === 'split' && (
+              <div id="cms-inspector-panel" className="lg:col-span-5 xl:col-span-4 space-y-4 lg:sticky lg:top-20">
+                {renderCmsInspectorCard()}
               </div>
-            </div>
+            )}
+
+            {/* Bottom Mode: Stacked Full Width Below Form */}
+            {inspectorLayout === 'bottom' && (
+              <div id="cms-inspector-panel" className="w-full space-y-4">
+                {renderCmsInspectorCard()}
+              </div>
+            )}
           </div>
+
+          {/* Drawer Mode: Slide-Over Inspector Beside Form (Keeps form 100% large and readable!) */}
+          {inspectorLayout === 'drawer' && (
+            <>
+              {isCmsDrawerOpen ? (
+                <div 
+                  id="cms-inspector-panel"
+                  className="fixed inset-y-0 right-0 z-50 w-full max-w-lg lg:max-w-xl bg-white dark:bg-health-darkCard shadow-2xl border-l-4 border-emerald-500 flex flex-col animate-in slide-in-from-right duration-200"
+                >
+                  <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/70 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="font-extrabold text-sm text-slate-900 dark:text-white">
+                        CMS-1500 Box Inspector • Beside Form
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsCmsDrawerOpen(false)}
+                      className="p-1.5 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                      title="Close Side Inspector"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="p-5 overflow-y-auto flex-1">
+                    {renderCmsInspectorCard(() => setIsCmsDrawerOpen(false))}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsCmsDrawerOpen(true)}
+                  className="fixed right-4 bottom-8 z-40 px-4 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold shadow-2xl flex items-center gap-2 border-2 border-emerald-400 transition-all hover:scale-105"
+                  title="Open Box Description beside form"
+                >
+                  <PanelRightOpen className="w-5 h-5" />
+                  <span>Explain Box {selectedCmsBox.boxNumber} (Open Beside)</span>
+                </button>
+              )}
+            </>
+          )}
         </div>
       )}
 
@@ -1260,49 +1501,103 @@ export const Module2ClaimForms: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl self-start sm:self-auto flex-wrap">
-              <button
-                type="button"
-                onClick={() => setUb04ViewMode('original')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  ub04ViewMode === 'original'
-                    ? 'bg-amber-800 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>1. Original UB-04 (Image & All 81 FLs)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setUb04ViewMode('directory')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  ub04ViewMode === 'directory'
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <ListFilter className="w-3.5 h-3.5" />
-                <span>2. Form Locators Directory (All 81)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setUb04ViewMode('visual')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                  ub04ViewMode === 'visual'
-                    ? 'bg-purple-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Eye className="w-3.5 h-3.5" />
-                <span>3. Filled Hospital Inpatient Case</span>
-              </button>
+            <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+              {/* Layout Switcher */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+                <button
+                  type="button"
+                  onClick={() => { setInspectorLayout('drawer'); setIsUb04DrawerOpen(true); }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'drawer'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Keep form full-size & show explanation beside it in a slide-over drawer"
+                >
+                  <PanelRightOpen className="w-3.5 h-3.5" />
+                  <span>Drawer (Big Form)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInspectorLayout('split')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'split'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="2-Column Side-by-Side Split"
+                >
+                  <Columns2 className="w-3.5 h-3.5" />
+                  <span>Split 2-Col</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInspectorLayout('bottom')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'bottom'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Stacked Below Form"
+                >
+                  <Table className="w-3.5 h-3.5" />
+                  <span>Stacked</span>
+                </button>
+              </div>
+
+              {/* View Modes */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+                <button
+                  type="button"
+                  onClick={() => setUb04ViewMode('original')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    ub04ViewMode === 'original'
+                      ? 'bg-amber-800 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>1. Original Form</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUb04ViewMode('directory')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    ub04ViewMode === 'directory'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <ListFilter className="w-3.5 h-3.5" />
+                  <span>2. All 81 FLs</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setUb04ViewMode('visual')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    ub04ViewMode === 'visual'
+                      ? 'bg-purple-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>3. Filled Sample</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Area (Col 7): Official UB-04 Form Viewer */}
-            <div className="lg:col-span-7 space-y-4">
+          <div className={
+            inspectorLayout === 'split'
+              ? "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+              : "space-y-6"
+          }>
+            {/* Form Area */}
+            <div className={
+              inspectorLayout === 'split'
+                ? "lg:col-span-7 xl:col-span-8 space-y-4"
+                : "w-full space-y-4"
+            }>
               {ub04ViewMode === 'original' && (
                 <OfficialFormViewer<Ub04BoxDetail>
                   formType="ub04"
@@ -1315,7 +1610,10 @@ export const Module2ClaimForms: React.FC = () => {
                   downloadFilename="UB-04-Official-Form.png"
                   items={UB_04_BOXES}
                   selectedItem={selectedUb04Box}
-                  onSelectItem={setSelectedUb04Box}
+                  onSelectItem={(box) => {
+                    setSelectedUb04Box(box);
+                    setIsUb04DrawerOpen(true);
+                  }}
                   getItemKey={b => b.locatorNumber}
                   getItemNumber={b => b.locatorNumber}
                   getItemName={b => b.name}
@@ -1324,6 +1622,7 @@ export const Module2ClaimForms: React.FC = () => {
                   activeSection={ub04SectionFilter}
                   onSelectSection={setUb04SectionFilter}
                   inspectorElementId="ub04-inspector-panel"
+                  onOpenInspector={() => setIsUb04DrawerOpen(true)}
                 />
               )}
 
@@ -1784,104 +2083,62 @@ export const Module2ClaimForms: React.FC = () => {
               )}
             </div>
 
-            {/* Right Area (Col 5): Deep-Dive Form Locator Description Beside the Form */}
-            <div id="ub04-inspector-panel" className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
-              <div className="bg-white dark:bg-health-darkCard p-5 sm:p-6 rounded-3xl border-2 border-emerald-500/50 shadow-xl space-y-4 lg:max-h-[calc(100vh-110px)] lg:overflow-y-auto">
-                {/* Header Navigation with Active Beside Indicator */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-black px-3 py-1 rounded-xl bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-mono">
-                      {selectedUb04Box.locatorNumber}
-                    </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                      {selectedUb04Box.category}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedUb04Box(prevUb04Box)}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
-                      title="Previous Locator"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedUb04Box(nextUb04Box)}
-                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
-                      title="Next Locator"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Form Locator Title & Active Status */}
-                <div>
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-1">
-                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                    <span>Description Live Beside Form</span>
-                  </div>
-                  <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">
-                    {selectedUb04Box.name}
-                  </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                    {selectedUb04Box.description}
-                  </p>
-                </div>
-
-                {/* Sample Filled Value Monospace Banner */}
-                <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
-                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
-                    <span>Authentic Hospital Sample Value:</span>
-                    <span className="text-amber-400 font-bold">● Valid Syntax</span>
-                  </div>
-                  <div className="font-bold">{selectedUb04Box.sampleValue}</div>
-                </div>
-
-                {/* EDI 837I Mapping */}
-                <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 font-mono">
-                  <div className="font-bold text-[10px] uppercase text-purple-600 mb-0.5">
-                    HIPAA EDI 837I Loop & Segment:
-                  </div>
-                  {selectedUb04Box.ediMapping}
-                </div>
-
-                {/* Rules & Hospital Guidelines */}
-                <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Hospital Guidelines & Inpatient / Outpatient Rules
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {selectedUb04Box.rules.map((r, i) => (
-                      <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{r}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Rejection Causes & Denial Codes */}
-                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
-                    <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
-                    <span>Hospital Rejection & DRG Audit Risks</span>
-                  </div>
-                  <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
-                    {selectedUb04Box.rejectionCauses.map((c, i) => (
-                      <li key={i} className="flex items-start gap-1.5 font-medium">
-                        <span className="text-red-500 font-bold">•</span>
-                        <span>{c}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+            {/* Split Mode: Fixed In-Grid Beside Column */}
+            {inspectorLayout === 'split' && (
+              <div id="ub04-inspector-panel" className="lg:col-span-5 xl:col-span-4 space-y-4 lg:sticky lg:top-20">
+                {renderUb04InspectorCard()}
               </div>
-            </div>
+            )}
+
+            {/* Bottom Mode: Stacked Full Width Below Form */}
+            {inspectorLayout === 'bottom' && (
+              <div id="ub04-inspector-panel" className="w-full space-y-4">
+                {renderUb04InspectorCard()}
+              </div>
+            )}
           </div>
+
+          {/* Drawer Mode: Slide-Over Inspector Beside Form (Keeps form 100% large and readable!) */}
+          {inspectorLayout === 'drawer' && (
+            <>
+              {isUb04DrawerOpen ? (
+                <div 
+                  id="ub04-inspector-panel"
+                  className="fixed inset-y-0 right-0 z-50 w-full max-w-lg lg:max-w-xl bg-white dark:bg-health-darkCard shadow-2xl border-l-4 border-amber-600 flex flex-col animate-in slide-in-from-right duration-200"
+                >
+                  <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/70 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                      <span className="font-extrabold text-sm text-slate-900 dark:text-white">
+                        UB-04 Form Locator Inspector • Beside Form
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsUb04DrawerOpen(false)}
+                      className="p-1.5 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+                      title="Close Side Inspector"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="p-5 overflow-y-auto flex-1">
+                    {renderUb04InspectorCard(() => setIsUb04DrawerOpen(false))}
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsUb04DrawerOpen(true)}
+                  className="fixed right-4 bottom-8 z-40 px-4 py-3 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold shadow-2xl flex items-center gap-2 border-2 border-amber-400 transition-all hover:scale-105"
+                  title="Open Locator Description beside form"
+                >
+                  <PanelRightOpen className="w-5 h-5" />
+                  <span>Explain {selectedUb04Box.locatorNumber} (Open Beside)</span>
+                </button>
+              )}
+            </>
+          )}
         </div>
       )}
 
