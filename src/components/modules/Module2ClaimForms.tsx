@@ -23,7 +23,11 @@ import {
   BookOpen,
   PanelRightOpen,
   PanelRightClose,
-  Columns2
+  Columns2,
+  ZoomIn,
+  ZoomOut,
+  SlidersHorizontal,
+  Maximize2
 } from 'lucide-react';
 import { 
   CMS_1500_BOXES, 
@@ -138,23 +142,24 @@ export const Module2ClaimForms: React.FC = () => {
   const { progress, markModuleCompleted } = useAcademy();
   const [activeTab, setActiveTab] = useState<'cms1500' | 'ub04' | 'comparison' | 'auditor'>('cms1500');
 
-  // CMS-1500 State
-  const [cmsViewMode, setCmsViewMode] = useState<'original' | 'visual' | 'directory'>('original');
+  // CMS-1500 State: default to 'visual' (large, readable, interactive form)
+  const [cmsViewMode, setCmsViewMode] = useState<'visual' | 'original' | 'directory'>('visual');
   const [cmsSectionFilter, setCmsSectionFilter] = useState<string>('all');
   const [selectedCmsBox, setSelectedCmsBox] = useState<ClaimBoxDetail>(CMS_1500_BOXES.find(b => b.boxNumber === '24D') || CMS_1500_BOXES[0]);
   const [cmsSearch, setCmsSearch] = useState('');
   const [cmsCategoryFilter, setCmsCategoryFilter] = useState<'all' | 'patient' | 'clinical' | 'billing' | 'provider'>('all');
 
-  // UB-04 State
-  const [ub04ViewMode, setUb04ViewMode] = useState<'original' | 'visual' | 'directory'>('original');
+  // UB-04 State: default to 'visual' (large, readable, interactive form)
+  const [ub04ViewMode, setUb04ViewMode] = useState<'visual' | 'original' | 'directory'>('visual');
   const [ub04SectionFilter, setUb04SectionFilter] = useState<string>('all');
   const [selectedUb04Box, setSelectedUb04Box] = useState<Ub04BoxDetail>(UB_04_BOXES.find(b => b.locatorNumber === 'FL 04') || UB_04_BOXES[0]);
   const [ub04Search, setUb04Search] = useState('');
   const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved'>('all');
   const [isWideLayout, setIsWideLayout] = useState<boolean>(true);
-  const [inspectorLayout, setInspectorLayout] = useState<'drawer' | 'split' | 'bottom'>('drawer');
+  const [inspectorLayout, setInspectorLayout] = useState<'split' | 'drawer' | 'bottom'>('split');
   const [isCmsDrawerOpen, setIsCmsDrawerOpen] = useState<boolean>(true);
   const [isUb04DrawerOpen, setIsUb04DrawerOpen] = useState<boolean>(true);
+  const [formScale, setFormScale] = useState<'normal' | 'large' | 'huge'>('large');
 
   // Auditor Sandbox State
   const [discoveredTraps, setDiscoveredTraps] = useState<string[]>([]);
@@ -200,6 +205,9 @@ export const Module2ClaimForms: React.FC = () => {
 
   const isCmsSelected = (num: string) => {
     const cur = selectedCmsBox.boxNumber;
+    if (num === '24') {
+      return cur.startsWith('24');
+    }
     if (num === '10a-c') {
       return cur === '10a' || cur === '10b' || cur === '10c' || cur === '10d';
     }
@@ -313,6 +321,43 @@ export const Module2ClaimForms: React.FC = () => {
   const currentUb04Idx = UB_04_BOXES.findIndex(b => b.locatorNumber === selectedUb04Box.locatorNumber);
   const prevUb04Box = currentUb04Idx > 0 ? UB_04_BOXES[currentUb04Idx - 1] : UB_04_BOXES[UB_04_BOXES.length - 1];
   const nextUb04Box = currentUb04Idx < UB_04_BOXES.length - 1 ? UB_04_BOXES[currentUb04Idx + 1] : UB_04_BOXES[0];
+
+  const getScaleStyles = () => {
+    if (formScale === 'huge') {
+      return {
+        cardPadding: 'p-4 sm:p-5',
+        labelSize: 'text-xs sm:text-sm font-black',
+        valueSize: 'text-base sm:text-lg font-black font-mono',
+        subSize: 'text-xs font-semibold',
+        tableHeader: 'text-xs sm:text-sm font-black',
+        tableText: 'text-sm sm:text-base font-bold font-mono',
+        badgeSize: 'text-xs px-2.5 py-1',
+      };
+    }
+    if (formScale === 'normal') {
+      return {
+        cardPadding: 'p-2.5 sm:p-3',
+        labelSize: 'text-[11px] font-extrabold',
+        valueSize: 'text-xs sm:text-sm font-bold font-mono',
+        subSize: 'text-[10px]',
+        tableHeader: 'text-[11px] font-black',
+        tableText: 'text-xs font-mono',
+        badgeSize: 'text-[10px] px-2 py-0.5',
+      };
+    }
+    // 'large' default (prominent, clear, comfortable)
+    return {
+      cardPadding: 'p-3.5 sm:p-4',
+      labelSize: 'text-xs sm:text-sm font-black',
+      valueSize: 'text-sm sm:text-base font-black font-mono',
+      subSize: 'text-xs font-medium',
+      tableHeader: 'text-xs font-black',
+      tableText: 'text-xs sm:text-sm font-bold font-mono',
+      badgeSize: 'text-xs px-2 py-0.5',
+    };
+  };
+
+  const scale = getScaleStyles();
 
   // Renderers for Inspector Cards (usable in Drawer, Split, or Stacked modes)
   const renderCmsInspectorCard = (onClose?: () => void) => (
@@ -656,21 +701,52 @@ export const Module2ClaimForms: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-              {/* Layout Switcher */}
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+              {/* Form Scaling / Zoom Controls */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <span className="text-[11px] font-black uppercase text-slate-500 dark:text-slate-400 px-2 flex items-center gap-1">
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Size:</span>
+                </span>
                 <button
                   type="button"
-                  onClick={() => { setInspectorLayout('drawer'); setIsCmsDrawerOpen(true); }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                    inspectorLayout === 'drawer'
-                      ? 'bg-emerald-600 text-white shadow-xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  onClick={() => setFormScale('normal')}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all ${
+                    formScale === 'normal'
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
                   }`}
-                  title="Keep form full-size & show explanation beside it in a slide-over drawer"
+                  title="Standard Form Size (100%)"
                 >
-                  <PanelRightOpen className="w-3.5 h-3.5" />
-                  <span>Drawer (Big Form)</span>
+                  Normal
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setFormScale('large')}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all ${
+                    formScale === 'large'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
+                  }`}
+                  title="Large Form Size (115% - Recommended)"
+                >
+                  Large (115%)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormScale('huge')}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all ${
+                    formScale === 'huge'
+                      ? 'bg-emerald-600 text-white shadow-xs ring-2 ring-emerald-300'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
+                  }`}
+                  title="Huge Form Size (130% - Maximum Readability)"
+                >
+                  Huge (130%)
+                </button>
+              </div>
+
+              {/* Layout Switcher */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <button
                   type="button"
                   onClick={() => setInspectorLayout('split')}
@@ -679,10 +755,23 @@ export const Module2ClaimForms: React.FC = () => {
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
-                  title="2-Column Side-by-Side Split"
+                  title="Side-by-Side: Form on Left, Description Beside on Right"
                 >
                   <Columns2 className="w-3.5 h-3.5" />
-                  <span>Split 2-Col</span>
+                  <span>Beside Form (Split)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setInspectorLayout('drawer'); setIsCmsDrawerOpen(true); }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'drawer'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Expand Form to Full 100% Width with Slide-Out Inspector"
+                >
+                  <PanelRightOpen className="w-3.5 h-3.5" />
+                  <span>Full-Width Form</span>
                 </button>
                 <button
                   type="button"
@@ -692,7 +781,7 @@ export const Module2ClaimForms: React.FC = () => {
                       ? 'bg-emerald-600 text-white shadow-xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
-                  title="Stacked Below Form"
+                  title="Stack Description Below Form"
                 >
                   <Table className="w-3.5 h-3.5" />
                   <span>Stacked</span>
@@ -700,7 +789,19 @@ export const Module2ClaimForms: React.FC = () => {
               </div>
 
               {/* View Modes */}
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => setCmsViewMode('visual')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    cmsViewMode === 'visual'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>1. Interactive Form (Clear & Big)</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => setCmsViewMode('original')}
@@ -711,7 +812,7 @@ export const Module2ClaimForms: React.FC = () => {
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  <span>1. Original Form</span>
+                  <span>2. Scanned Paper (NUCC)</span>
                 </button>
                 <button
                   type="button"
@@ -723,19 +824,7 @@ export const Module2ClaimForms: React.FC = () => {
                   }`}
                 >
                   <ListFilter className="w-3.5 h-3.5" />
-                  <span>2. All 33 Boxes</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCmsViewMode('visual')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                    cmsViewMode === 'visual'
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>3. Filled Sample</span>
+                  <span>3. All 33 Boxes</span>
                 </button>
               </div>
             </div>
@@ -743,13 +832,13 @@ export const Module2ClaimForms: React.FC = () => {
 
           <div className={
             inspectorLayout === 'split'
-              ? "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+              ? "grid grid-cols-1 xl:grid-cols-12 gap-6 items-start"
               : "space-y-6"
           }>
-            {/* Form Area: in split mode takes 7/12, in drawer/bottom mode takes full width (no shrinking!) */}
+            {/* Form Area: in split mode takes 7 or 8 columns, in drawer/bottom takes 100% full width */}
             <div className={
               inspectorLayout === 'split'
-                ? "lg:col-span-7 xl:col-span-8 space-y-4"
+                ? "xl:col-span-7 2xl:col-span-8 space-y-4"
                 : "w-full space-y-4"
             }>
               {cmsViewMode === 'original' && (
@@ -781,557 +870,771 @@ export const Module2ClaimForms: React.FC = () => {
               )}
 
               {cmsViewMode === 'visual' && (
-                /* AUTHENTIC VISUAL CMS-1500 FORM SAMPLE */
-                <div className="bg-white border-2 border-rose-300 rounded-3xl p-5 shadow-md relative overflow-hidden font-sans">
+                /* AUTHENTIC LARGE INTERACTIVE CMS-1500 FORM STUDIO */
+                <div className="bg-white dark:bg-slate-900 border-2 border-rose-300 dark:border-rose-900/60 rounded-3xl p-5 sm:p-7 shadow-lg relative font-sans space-y-6 transition-all">
                   {/* Top Paper Header Strip */}
-                  <div className="flex items-center justify-between border-b-2 border-rose-300 pb-3 mb-4 text-rose-800">
-                    <div className="text-[10px] font-black uppercase tracking-wider">
-                      HEALTH INSURANCE CLAIM FORM • APPROVED BY NUCC (02/12)
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-rose-400/40 text-rose-900 dark:text-rose-400 gap-2">
+                    <div>
+                      <div className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 font-mono text-xs">NUCC 02/12</span>
+                        <span>HEALTH INSURANCE CLAIM FORM (CMS-1500)</span>
+                      </div>
+                      <div className="text-xs text-slate-500 font-semibold mt-0.5">
+                        Standard Professional Outpatient Claim Format • EDI ANSI-837P Aligned
+                      </div>
                     </div>
-                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      Sample Case: Eleanor Johnson (BCBS Texas)
+                    <div className="text-left sm:text-right">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 text-xs font-black">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        Case Study: Eleanor Johnson (BCBS Texas)
+                      </span>
                     </div>
                   </div>
 
                   {/* Payer Header Section */}
-                  <div className="border border-rose-300 rounded-xl p-3 mb-3 bg-rose-50/20">
-                    <div className="text-xs font-medium font-bold text-rose-700 uppercase">
-                      Payer Header • Insurance Carrier
+                  <div 
+                    onClick={() => handleSelectCmsBoxNumber('1a')}
+                    className="border-2 border-rose-200 dark:border-rose-900/40 rounded-2xl p-4 bg-rose-50/30 dark:bg-rose-950/20 hover:border-emerald-500 cursor-pointer transition-all"
+                  >
+                    <div className="flex items-center justify-between text-xs font-bold text-rose-700 dark:text-rose-400 uppercase tracking-wide">
+                      <span>Carrier Header • Primary Insurance Carrier Destination</span>
+                      <span className="font-mono text-xs bg-white dark:bg-slate-800 px-2.5 py-0.5 rounded border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300 font-black">
+                        Loop 2010BB
+                      </span>
                     </div>
-                    <div className="text-xs font-mono font-bold text-slate-800">
+                    <div className="text-base sm:text-lg font-black font-mono text-slate-900 dark:text-white mt-1">
                       {SAMPLE_CMS1500_CLAIM.payerName} • Payer ID: {SAMPLE_CMS1500_CLAIM.payerId}
                     </div>
-                    <div className="text-[10px] text-slate-500 font-mono">
+                    <div className="text-xs font-mono text-slate-600 dark:text-slate-400 mt-0.5">
                       {SAMPLE_CMS1500_CLAIM.payerAddress}
                     </div>
                   </div>
 
+                  {/* SECTION 1: PATIENT & INSURED DEMOGRAPHICS (BOXES 1 - 8) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                      Section 1: Patient & Insured Demographics (Boxes 1 – 8)
+                    </span>
+                  </div>
+
                   {/* Row 1: Box 1 & 1a */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('1')}
-                      className={`col-span-7 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '1'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-7 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('1')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        1. MEDICARE / MEDICAID / TRICARE / GROUP HEALTH PLAN / OTHER
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1.5`}>
+                        1. TYPE OF HEALTH INSURANCE COVERAGE
                       </div>
-                      <div className="text-[10px] font-bold text-emerald-700 mt-1 flex items-center gap-1 font-mono">
-                        <span className="w-2.5 h-2.5 rounded bg-emerald-600 text-white flex items-center justify-center text-xs font-medium">✓</span>
-                        Group Health Plan
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2 text-xs font-mono">
+                        {['Medicare', 'Medicaid', 'TRICARE', 'CHAMPVA', 'Group Health Plan', 'FECA', 'Other'].map(type => (
+                          <span 
+                            key={type}
+                            className={`px-2.5 py-1 rounded-lg border font-bold flex items-center gap-1 ${
+                              type === 'Group Health Plan'
+                                ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs'
+                                : 'bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                            }`}
+                          >
+                            {type === 'Group Health Plan' && '✓'} {type}
+                          </span>
+                        ))}
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('1a')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '1a'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-5 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('1a')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         1a. INSURED'S I.D. NUMBER
                       </div>
-                      <div className="text-xs font-mono font-black text-slate-900 mt-1">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_CMS1500_CLAIM.subscriber.id}
+                      </div>
+                      <div className="text-xs font-semibold text-slate-500 mt-1">
+                        Primary Member Policy ID (Loop 2010BA NM109)
                       </div>
                     </div>
                   </div>
 
                   {/* Patient Demographics Row: Box 2, 3, 4 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('2')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '2'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-5 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('2')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         2. PATIENT'S NAME (Last, First, Middle)
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-slate-900 mt-0.5">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_CMS1500_CLAIM.patient.name}
+                      </div>
+                      <div className="text-xs font-semibold text-slate-500 mt-1">
+                        Legal patient name matching payer eligibility
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('3')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '3'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('3')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        3. PATIENT'S BIRTH DATE & SEX
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        3. BIRTH DATE & SEX
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900 mt-0.5">
-                        {SAMPLE_CMS1500_CLAIM.patient.dob} | F
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        {SAMPLE_CMS1500_CLAIM.patient.dob}
+                      </div>
+                      <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-1 flex items-center gap-1">
+                        <span>[✓] Female (F)</span>
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('4')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '4'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('4')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         4. INSURED'S NAME
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-slate-900 mt-0.5">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_CMS1500_CLAIM.subscriber.name}
+                      </div>
+                      <div className="text-xs font-semibold text-slate-500 mt-1">
+                        Subscriber on policy contract
                       </div>
                     </div>
                   </div>
 
                   {/* Address Row: Box 5, 6, 7 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('5')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '5'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-5 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('5')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         5. PATIENT'S ADDRESS & PHONE
                       </div>
-                      <div className="text-[10px] font-mono text-slate-900">
-                        {SAMPLE_CMS1500_CLAIM.patient.address}, {SAMPLE_CMS1500_CLAIM.patient.city} {SAMPLE_CMS1500_CLAIM.patient.state} {SAMPLE_CMS1500_CLAIM.patient.zip}
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        {SAMPLE_CMS1500_CLAIM.patient.address}
+                      </div>
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mt-1">
+                        {SAMPLE_CMS1500_CLAIM.patient.city}, {SAMPLE_CMS1500_CLAIM.patient.state} {SAMPLE_CMS1500_CLAIM.patient.zip} • Tel: (214) 555-0144
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('6')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '6'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('6')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         6. RELATION TO INSURED
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-emerald-700 mt-0.5">
-                        ✓ Self
+                      <div className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400`}>
+                        ✓ Self (18)
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        [ ] Spouse  [ ] Child  [ ] Other
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('7')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '7'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('7')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         7. INSURED'S ADDRESS
                       </div>
-                      <div className="text-[10px] font-mono text-slate-600">
-                        (SAME AS PATIENT)
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        SAME AS PATIENT
+                      </div>
+                      <div className="text-xs font-mono text-slate-500 mt-1">
+                        Dallas, TX 75207
                       </div>
                     </div>
                   </div>
 
-                  {/* Secondary & Primary Policy: Box 9, 10, 11 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* SECTION 2: SECONDARY INSURANCE & ACCIDENT DETAILS (BOXES 9 – 11d) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                      Section 2: Secondary Insurance (COB) & Accident Details (Boxes 9 – 11d)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('9')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '9' || selectedCmsBox.boxNumber === '9a' || selectedCmsBox.boxNumber === '9d'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('9')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         9. OTHER INSURED'S NAME & POLICY
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-800">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_CMS1500_CLAIM.secondaryPayer.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mt-1">
                         Policy: {SAMPLE_CMS1500_CLAIM.secondaryPayer.policy}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        Secondary Coordination of Benefits (COB)
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('10a-c')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isCmsSelected('10a-c')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         10. IS CONDITION RELATED TO:
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5 space-y-0.5">
-                        <div>Employment: NO</div>
-                        <div>Auto Accident: NO (TX)</div>
-                        <div>Other Accident: NO</div>
+                      <div className="space-y-1 mt-1 text-xs sm:text-sm font-mono font-bold text-slate-800 dark:text-slate-200">
+                        <div className="flex items-center justify-between">
+                          <span>10a. Employment:</span>
+                          <span className="text-rose-700 dark:text-rose-400">[✓] NO</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span>10b. Auto Accident:</span>
+                          <span className="text-rose-700 dark:text-rose-400">[✓] NO (State: TX)</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span>10c. Other Accident:</span>
+                          <span className="text-rose-700 dark:text-rose-400">[✓] NO</span>
+                        </div>
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('11')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '11' || selectedCmsBox.boxNumber === '11d'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('11')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        11. INSURED'S POLICY / GROUP
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        11. INSURED'S POLICY / GROUP NUMBER
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_CMS1500_CLAIM.subscriber.policyGroup}
                       </div>
-                      <div className="text-xs font-medium font-mono text-emerald-700 font-bold mt-0.5">
-                        11d. Other Plan: YES
+                      <div className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 mt-1">
+                        11d. Other Plan: [✓] YES (Secondary Coverage)
                       </div>
                     </div>
                   </div>
 
-                  {/* Signatures: Box 12 & 13 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* SECTION 3: SIGNATURES & AUTHORIZATIONS (BOXES 12 & 13) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                      Section 3: Patient Authorizations & Benefits Assignment (Boxes 12 & 13)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('12')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '12'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('12')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        12. PATIENT'S SIGNATURE (Release of Information - ROI)
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        12. PATIENT'S SIGNATURE (RELEASE OF INFORMATION - ROI)
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-emerald-800 mt-0.5 flex items-center justify-between">
-                        <span>SIGNATURE ON FILE (SOF)</span>
-                        <span className="text-xs font-medium text-slate-500">Date: 01/15/2025</span>
+                      <div className="flex items-center justify-between mt-1">
+                        <span className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400`}>
+                          SIGNATURE ON FILE (SOF)
+                        </span>
+                        <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400">
+                          Date: 01/15/2025
+                        </span>
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Authorizes medical records release to BCBS Texas for claims adjudication
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('13')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '13'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('13')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        13. INSURED'S SIGNATURE (Assignment of Benefits - AOB)
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        13. INSURED'S SIGNATURE (ASSIGNMENT OF BENEFITS - AOB)
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-emerald-800 mt-0.5">
-                        SIGNATURE ON FILE (SOF) - Pay Doctor Directly
+                      <div className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400 mt-1`}>
+                        SIGNATURE ON FILE (SOF)
+                      </div>
+                      <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-1">
+                        ✓ Authorizes insurance payment to go DIRECTLY to Dr. Jenkins instead of patient
                       </div>
                     </div>
                   </div>
 
-                  {/* Clinical Context Row: Box 14, 17, 19 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* SECTION 4: CLINICAL CONTEXT, REFERRALS & PRIOR AUTH (BOXES 14 - 23) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                      Section 4: Clinical History, Prior Auth & ICD-10 Diagnoses (Boxes 14 – 23)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('14')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '14'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('14')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        14. DATE OF ILLNESS / LMP
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        14. DATE OF CURRENT ILLNESS / INJURY / LMP
                       </div>
-                      <div className="text-[10px] font-mono text-slate-800 mt-0.5">
-                        Qual 431: 01/10/2025
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        01/10/2025
+                      </div>
+                      <div className="text-xs font-bold text-slate-600 dark:text-slate-400 mt-1">
+                        Qualifier 431: Onset of Current Symptoms
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('17')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '17' || selectedCmsBox.boxNumber === '17b'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('17')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         17. REFERRING PROVIDER & 17b NPI
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         DN {SAMPLE_CMS1500_CLAIM.clinical.referringProvider}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
+                      <div className="text-xs font-mono font-bold text-blue-700 dark:text-blue-400 mt-1">
                         NPI: {SAMPLE_CMS1500_CLAIM.clinical.referringNpi}
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('19')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '19'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('19')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        19. ADDITIONAL CLAIM INFO
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        19. ADDITIONAL CLAIM INFO (NOC)
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         NOC: Radiculopathy Eval
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Not Otherwise Classified clinical documentation
                       </div>
                     </div>
                   </div>
 
-                  {/* Diagnosis Codes: Box 21 */}
+                  {/* Box 21: ICD-10 Diagnoses */}
                   <div 
                     onClick={() => handleSelectCmsBoxNumber('21')}
-                    className={`border p-2.5 rounded-lg mb-2 cursor-pointer transition-all ${
-                      selectedCmsBox.boxNumber === '21'
-                        ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                        : 'border-rose-300 hover:border-emerald-400 bg-white'
+                    className={`border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                      isCmsSelected('21')
+                        ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                        : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase mb-1">
-                      <span>21. DIAGNOSIS OR NATURE OF ILLNESS OR INJURY (ICD-10-CM)</span>
-                      <span className="text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded font-bold">ICD Ind: 0</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-2">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide`}>
+                        21. DIAGNOSIS OR NATURE OF ILLNESS OR INJURY (ICD-10-CM)
+                      </div>
+                      <span className="font-mono text-xs font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 self-start sm:self-auto">
+                        ICD Indicator: 0 (ICD-10-CM)
+                      </span>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-mono">
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                       {SAMPLE_CMS1500_CLAIM.clinical.diagnoses.map(d => (
-                        <div key={d.letter} className="bg-slate-50 border border-slate-200 p-1.5 rounded">
-                          <span className="font-bold text-rose-700">{d.letter}: </span>
-                          <span className="font-black text-slate-900">{d.code}</span>
-                          <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">{d.desc}</div>
+                        <div key={d.letter} className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 p-3 rounded-xl">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <span className="w-5 h-5 rounded-full bg-rose-600 text-white font-mono font-black text-xs flex items-center justify-center">
+                              {d.letter}
+                            </span>
+                            <span className="font-mono font-black text-slate-900 dark:text-white text-sm sm:text-base">
+                              {d.code}
+                            </span>
+                          </div>
+                          <div className="text-xs font-semibold text-slate-600 dark:text-slate-400 line-clamp-2">
+                            {d.desc}
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  {/* Resubmission & Prior Auth: Box 22 & 23 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* Box 22 & 23 */}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('22')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '22'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('22')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         22. RESUBMISSION CODE & ORIGINAL REF NO.
                       </div>
-                      <div className="text-[10px] font-mono text-slate-800">
-                        Code: 7 (Replacement) | Ref: 2025011500892X
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        Code: 7 (Replacement Claim)
+                      </div>
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mt-1">
+                        Original ICN / Ref #: 2025011500892X
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('23')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '23'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('23')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        23. PRIOR AUTH / REFERRAL / CLIA NUMBER
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        23. PRIOR AUTHORIZATION / REFERRAL / CLIA NUMBER
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400`}>
                         PA: {SAMPLE_CMS1500_CLAIM.clinical.priorAuthNumber}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Pre-certified authorization code for high-level E/M evaluation
                       </div>
                     </div>
                   </div>
 
-                  {/* Box 24 Service Lines (The Core Billing Grid) */}
-                  <div className="border border-rose-300 rounded-xl overflow-hidden mb-2">
-                    <div className="bg-rose-100/60 p-2 text-xs font-medium font-black text-rose-800 uppercase grid grid-cols-12 text-center">
-                      <div className="col-span-2">24A. Dates of Service</div>
-                      <div className="col-span-1">24B. POS</div>
-                      <div className="col-span-3">24D. CPT / HCPCS & Modifiers</div>
-                      <div className="col-span-2">24E. Diag Pointer</div>
-                      <div className="col-span-2">24F. $ Charges</div>
-                      <div className="col-span-1">24G. Units</div>
-                      <div className="col-span-1">24J. Rend NPI</div>
+                  {/* SECTION 5: BOX 24 SERVICE LINES (THE CORE PROFESSIONAL CHARGE GRID) */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-800 gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                      <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                        Section 5: Box 24 Service Lines & Charges (CPT / HCPCS / Modifiers)
+                      </span>
                     </div>
-
-                    <div className="divide-y divide-rose-200">
-                      {SAMPLE_CMS1500_CLAIM.serviceLines.map((line, idx) => (
-                        <div 
-                          key={idx}
-                          onClick={() => handleSelectCmsBoxNumber('24D')}
-                          className={`p-2 grid grid-cols-12 text-[10px] font-mono items-center text-center cursor-pointer transition-all ${
-                            selectedCmsBox.boxNumber.startsWith('24')
-                              ? 'bg-emerald-50/80 hover:bg-emerald-100/80'
-                              : 'hover:bg-slate-50'
+                    <div className="flex items-center gap-1 flex-wrap">
+                      <span className="text-xs font-bold text-slate-500 mr-1">Inspect:</span>
+                      {['24A', '24B', '24D', '24E', '24F', '24G', '24J'].map(sub => (
+                        <button
+                          key={sub}
+                          type="button"
+                          onClick={() => handleSelectCmsBoxNumber(sub)}
+                          className={`px-2 py-0.5 rounded-lg text-xs font-mono font-black transition-all ${
+                            selectedCmsBox.boxNumber === sub
+                              ? 'bg-emerald-600 text-white shadow-xs'
+                              : 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 hover:bg-rose-200'
                           }`}
                         >
-                          <div className="col-span-2 font-bold text-slate-800">{line.dos}</div>
-                          <div className="col-span-1 font-bold text-blue-700">{line.pos}</div>
-                          <div className="col-span-3 font-black text-slate-900 text-left pl-2">
-                            {line.cpt} {line.mod && <span className="text-purple-700 font-black">-{line.mod}</span>}
-                          </div>
-                          <div className="col-span-2 font-bold text-rose-700">{line.pointer}</div>
-                          <div className="col-span-2 font-bold text-slate-900">${line.charge.toFixed(2)}</div>
-                          <div className="col-span-1 font-bold text-slate-700">{line.units}</div>
-                          <div className="col-span-1 text-xs font-bold text-slate-700 dark:text-slate-300 truncate">{line.renderingNpi}</div>
-                        </div>
+                          {sub}
+                        </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Financial Footer: Box 25, 26, 27, 28, 29 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* Dedicated Service Lines Table with Horiz Scroll */}
+                  <div className="border-2 border-rose-300 dark:border-rose-900/50 rounded-2xl overflow-hidden shadow-xs bg-white dark:bg-slate-800">
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse text-left">
+                        <thead>
+                          <tr className="bg-rose-100/70 dark:bg-rose-950/40 text-rose-950 dark:text-rose-300 border-b border-rose-200 dark:border-rose-800 text-xs sm:text-sm font-black uppercase tracking-wide">
+                            <th className="py-3 px-3 min-w-[130px]">24A. Dates of Service</th>
+                            <th className="py-3 px-2 min-w-[80px] text-center">24B. POS</th>
+                            <th className="py-3 px-3 min-w-[200px]">24D. Procedures & Modifiers</th>
+                            <th className="py-3 px-2 min-w-[90px] text-center">24E. Diag Pointer</th>
+                            <th className="py-3 px-3 min-w-[110px] text-right">24F. $ Charges</th>
+                            <th className="py-3 px-2 min-w-[70px] text-center">24G. Units</th>
+                            <th className="py-3 px-3 min-w-[140px] text-right">24J. Rend NPI</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-rose-100 dark:divide-slate-700">
+                          {SAMPLE_CMS1500_CLAIM.serviceLines.map((line, idx) => (
+                            <tr 
+                              key={idx}
+                              onClick={() => handleSelectCmsBoxNumber('24D')}
+                              className={`cursor-pointer transition-all hover:bg-emerald-50/60 dark:hover:bg-emerald-950/20 ${scale.tableText} ${
+                                selectedCmsBox.boxNumber.startsWith('24')
+                                  ? 'bg-emerald-50/30 dark:bg-emerald-950/10'
+                                  : ''
+                              }`}
+                            >
+                              <td className="py-3.5 px-3 text-slate-900 dark:text-white font-bold">
+                                {line.dos}
+                              </td>
+                              <td className="py-3.5 px-2 text-center">
+                                <span className="px-2 py-1 rounded bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-black">
+                                  {line.pos} (Office)
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-3">
+                                <span className="text-slate-950 dark:text-white font-black text-sm sm:text-base mr-1.5">
+                                  {line.cpt}
+                                </span>
+                                {line.mod && (
+                                  <span className="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-black border border-purple-300 dark:border-purple-700 text-xs">
+                                    -{line.mod}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3.5 px-2 text-center">
+                                <span className="px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300 font-black text-xs">
+                                  {line.pointer}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-black text-slate-950 dark:text-white text-sm sm:text-base">
+                                ${line.charge.toFixed(2)}
+                              </td>
+                              <td className="py-3.5 px-2 text-center font-bold text-slate-700 dark:text-slate-300">
+                                {line.units}
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-mono text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400">
+                                {line.renderingNpi}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* SECTION 6: FINANCIAL TOTALS & TAX ID (BOXES 25 – 30) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                      Section 6: Billing Totals, Payments & Tax ID (Boxes 25 – 30)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('25')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '25'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('25')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         25. FEDERAL TAX I.D.
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
-                        {SAMPLE_CMS1500_CLAIM.totals.taxId} (EIN)
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        {SAMPLE_CMS1500_CLAIM.totals.taxId}
+                      </div>
+                      <div className="text-xs font-bold text-slate-500 mt-1">
+                        [✓] EIN  [ ] SSN
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('26')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '26'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('26')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         26. PATIENT'S ACCOUNT NO.
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-800">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_CMS1500_CLAIM.patient.accountNumber}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Clinic internal ledger ID
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('27')}
-                      className={`col-span-2 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '27'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-2 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('27')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         27. ACCEPT ASSIGN?
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-emerald-700">
+                      <div className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400`}>
                         ✓ YES
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Govt Participating
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('28')}
-                      className={`col-span-2 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '28'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-2 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('28')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         28. TOTAL CHARGE
                       </div>
-                      <div className="text-xs font-mono font-black text-slate-900">
+                      <div className="text-base sm:text-lg font-black font-mono text-emerald-700 dark:text-emerald-400">
                         ${SAMPLE_CMS1500_CLAIM.totals.totalCharge.toFixed(2)}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Sum of Box 24F lines
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('29')}
-                      className={`col-span-2 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '29'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-2 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('29')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         29. AMT PAID
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-600">
+                      <div className={`${scale.valueSize} text-slate-600 dark:text-slate-400`}>
                         ${SAMPLE_CMS1500_CLAIM.totals.amountPaid.toFixed(2)}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Copay at DOS
                       </div>
                     </div>
                   </div>
 
-                  {/* Provider & Facility Row: Box 31, 32, 33 */}
-                  <div className="grid grid-cols-12 gap-2">
+                  {/* SECTION 7: PHYSICIAN SIGNATURE & FACILITY LOCATION (BOXES 31 – 33) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
+                    <span className="text-xs font-black uppercase tracking-wider text-rose-950 dark:text-rose-300">
+                      Section 7: Physician Signature, Facility Location & Billing Provider (Boxes 31 – 33)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('31')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '31'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('31')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        31. PHYSICIAN SIGNATURE
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        31. PHYSICIAN SIGNATURE & DATE
                       </div>
-                      <div className="text-[10px] font-mono text-slate-800">
-                        DR. SARAH JENKINS MD
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        DR. SARAH JENKINS, MD
                       </div>
-                      <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">Date: 01/16/2025</div>
+                      <div className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400 mt-1">
+                        Date: 01/16/2025 (Signature on File)
+                      </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('32')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '32' || selectedCmsBox.boxNumber === '32a'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('32')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
-                        32. SERVICE FACILITY LOCATION (Physical Street - No P.O. Box!)
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
+                        32. SERVICE FACILITY (NO P.O. BOX!)
                       </div>
-                      <div className="text-xs font-medium font-mono text-slate-900 leading-tight">
-                        {SAMPLE_CMS1500_CLAIM.facility.name}, {SAMPLE_CMS1500_CLAIM.facility.address}
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white truncate`}>
+                        {SAMPLE_CMS1500_CLAIM.facility.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                      <div className="text-xs font-mono text-slate-600 dark:text-slate-400 mt-0.5 truncate">
+                        {SAMPLE_CMS1500_CLAIM.facility.address}
+                      </div>
+                      <div className="text-xs font-mono font-bold text-blue-700 dark:text-blue-400 mt-1">
                         NPI 32a: {SAMPLE_CMS1500_CLAIM.facility.npi}
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('33')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '33' || selectedCmsBox.boxNumber === '33a' || selectedCmsBox.boxNumber === '33b'
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-rose-300 hover:border-emerald-400 bg-white'
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
+                        isCmsSelected('33')
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-rose-200 dark:border-rose-900/40 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
+                      <div className={`${scale.labelSize} text-rose-950 dark:text-rose-300 uppercase tracking-wide mb-1`}>
                         33. BILLING PROVIDER & PHONE
                       </div>
-                      <div className="text-xs font-medium font-mono font-bold text-slate-900 truncate">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white truncate`}>
                         {SAMPLE_CMS1500_CLAIM.billing.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
-                        NPI 33a: {SAMPLE_CMS1500_CLAIM.billing.npi} | {SAMPLE_CMS1500_CLAIM.billing.taxonomy}
+                      <div className="text-xs font-mono text-slate-600 dark:text-slate-400 mt-0.5">
+                        Phone: (214) 555-0199
+                      </div>
+                      <div className="text-xs font-mono font-bold text-purple-700 dark:text-purple-400 mt-1">
+                        NPI 33a: {SAMPLE_CMS1500_CLAIM.billing.npi} | Taxo: {SAMPLE_CMS1500_CLAIM.billing.taxonomy}
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3 text-center text-xs text-slate-700 dark:text-slate-300 font-bold italic">
-                    💡 Click on any box on the sample claim above to inspect its rules, EDI mapping, and rejection causes!
+                  <div className="mt-4 p-3 rounded-2xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/50 text-center text-xs text-rose-950 dark:text-rose-200 font-bold">
+                    💡 Click on any Box on the claim above to inspect its rules, EDI 837P mapping, and rejection causes beside the form!
                   </div>
                 </div>
               )}
@@ -1423,7 +1726,7 @@ export const Module2ClaimForms: React.FC = () => {
 
             {/* Split Mode: Fixed In-Grid Beside Column */}
             {inspectorLayout === 'split' && (
-              <div id="cms-inspector-panel" className="lg:col-span-5 xl:col-span-4 space-y-4 lg:sticky lg:top-20">
+              <div id="cms-inspector-panel" className="xl:col-span-5 2xl:col-span-4 space-y-4 xl:sticky xl:top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pr-1">
                 {renderCmsInspectorCard()}
               </div>
             )}
@@ -1502,21 +1805,52 @@ export const Module2ClaimForms: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-              {/* Layout Switcher */}
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+              {/* Form Scaling / Zoom Controls */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <span className="text-[11px] font-black uppercase text-slate-500 dark:text-slate-400 px-2 flex items-center gap-1">
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Size:</span>
+                </span>
                 <button
                   type="button"
-                  onClick={() => { setInspectorLayout('drawer'); setIsUb04DrawerOpen(true); }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                    inspectorLayout === 'drawer'
-                      ? 'bg-amber-600 text-white shadow-xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  onClick={() => setFormScale('normal')}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all ${
+                    formScale === 'normal'
+                      ? 'bg-slate-900 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
                   }`}
-                  title="Keep form full-size & show explanation beside it in a slide-over drawer"
+                  title="Standard Form Size (100%)"
                 >
-                  <PanelRightOpen className="w-3.5 h-3.5" />
-                  <span>Drawer (Big Form)</span>
+                  Normal
                 </button>
+                <button
+                  type="button"
+                  onClick={() => setFormScale('large')}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all ${
+                    formScale === 'large'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
+                  }`}
+                  title="Large Form Size (115% - Recommended)"
+                >
+                  Large (115%)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormScale('huge')}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all ${
+                    formScale === 'huge'
+                      ? 'bg-amber-600 text-white shadow-xs ring-2 ring-amber-300'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900'
+                  }`}
+                  title="Huge Form Size (130% - Maximum Readability)"
+                >
+                  Huge (130%)
+                </button>
+              </div>
+
+              {/* Layout Switcher */}
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
                 <button
                   type="button"
                   onClick={() => setInspectorLayout('split')}
@@ -1525,10 +1859,23 @@ export const Module2ClaimForms: React.FC = () => {
                       ? 'bg-amber-600 text-white shadow-xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
-                  title="2-Column Side-by-Side Split"
+                  title="Side-by-Side: Form on Left, Description Beside on Right"
                 >
                   <Columns2 className="w-3.5 h-3.5" />
-                  <span>Split 2-Col</span>
+                  <span>Beside Form (Split)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setInspectorLayout('drawer'); setIsUb04DrawerOpen(true); }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    inspectorLayout === 'drawer'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Expand Form to Full 100% Width with Slide-Out Inspector"
+                >
+                  <PanelRightOpen className="w-3.5 h-3.5" />
+                  <span>Full-Width Form</span>
                 </button>
                 <button
                   type="button"
@@ -1538,7 +1885,7 @@ export const Module2ClaimForms: React.FC = () => {
                       ? 'bg-amber-600 text-white shadow-xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
-                  title="Stacked Below Form"
+                  title="Stack Description Below Form"
                 >
                   <Table className="w-3.5 h-3.5" />
                   <span>Stacked</span>
@@ -1546,18 +1893,30 @@ export const Module2ClaimForms: React.FC = () => {
               </div>
 
               {/* View Modes */}
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl">
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => setUb04ViewMode('visual')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    ub04ViewMode === 'visual'
+                      ? 'bg-amber-700 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>1. Interactive Form (Clear & Big)</span>
+                </button>
                 <button
                   type="button"
                   onClick={() => setUb04ViewMode('original')}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
                     ub04ViewMode === 'original'
-                      ? 'bg-amber-800 text-white shadow-xs'
+                      ? 'bg-amber-900 text-white shadow-xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  <span>1. Original Form</span>
+                  <span>2. Scanned Paper (NUBC)</span>
                 </button>
                 <button
                   type="button"
@@ -1569,19 +1928,7 @@ export const Module2ClaimForms: React.FC = () => {
                   }`}
                 >
                   <ListFilter className="w-3.5 h-3.5" />
-                  <span>2. All 81 FLs</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUb04ViewMode('visual')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
-                    ub04ViewMode === 'visual'
-                      ? 'bg-purple-600 text-white shadow-xs'
-                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>3. Filled Sample</span>
+                  <span>3. All 81 FLs</span>
                 </button>
               </div>
             </div>
@@ -1589,13 +1936,13 @@ export const Module2ClaimForms: React.FC = () => {
 
           <div className={
             inspectorLayout === 'split'
-              ? "grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+              ? "grid grid-cols-1 xl:grid-cols-12 gap-6 items-start"
               : "space-y-6"
           }>
-            {/* Form Area */}
+            {/* Form Area: in split mode takes 7 or 8 columns, in drawer/bottom takes 100% full width */}
             <div className={
               inspectorLayout === 'split'
-                ? "lg:col-span-7 xl:col-span-8 space-y-4"
+                ? "xl:col-span-7 2xl:col-span-8 space-y-4"
                 : "w-full space-y-4"
             }>
               {ub04ViewMode === 'original' && (
@@ -1627,373 +1974,483 @@ export const Module2ClaimForms: React.FC = () => {
               )}
 
               {ub04ViewMode === 'visual' && (
-                /* AUTHENTIC VISUAL UB-04 FORM SAMPLE */
-                <div className="bg-white border-2 border-amber-800/40 rounded-3xl p-5 shadow-md relative overflow-hidden font-sans">
+                /* AUTHENTIC LARGE INTERACTIVE UB-04 FORM STUDIO */
+                <div className="bg-white dark:bg-slate-900 border-2 border-amber-800/40 rounded-3xl p-5 sm:p-7 shadow-lg relative font-sans space-y-6 transition-all">
                   {/* Top Paper Header Strip */}
-                  <div className="flex items-center justify-between border-b-2 border-amber-800/30 pb-3 mb-4 text-amber-900">
-                    <div className="text-[10px] font-black uppercase tracking-wider">
-                      UNIFORM BILL (UB-04 / CMS-1450) • NATIONAL UNIFORM BILLING COMMITTEE (NUBC)
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-amber-800/30 text-amber-950 dark:text-amber-400 gap-2">
+                    <div>
+                      <div className="text-xs sm:text-sm font-black uppercase tracking-wider flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-mono text-xs">NUBC UB-04</span>
+                        <span>UNIFORM BILLING FORM (CMS-1450)</span>
+                      </div>
+                      <div className="text-xs text-slate-500 font-semibold mt-0.5">
+                        Standard Institutional Inpatient & Outpatient Hospital Facility Format • EDI ANSI-837I Aligned
+                      </div>
                     </div>
-                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      Sample Case: Carlos Ramirez (Inpatient Stemi Admission)
+                    <div className="text-left sm:text-right">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-700 text-xs font-black">
+                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                        Case Study: Carlos Ramirez (Inpatient STEMI Admission)
+                      </span>
                     </div>
                   </div>
 
+                  {/* SECTION 1: FACILITY BILLING & STATEMENT PERIOD (FL 01 – FL 07) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 1: Billing Facility & Statement Covers Period (FL 01 – FL 07)
+                    </span>
+                  </div>
+
                   {/* FL 01 & FL 04 Header Row */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 01')}
-                      className={`col-span-8 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-8 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 01')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 01. BILLING PROVIDER NAME, ADDRESS & TELEPHONE
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 01. BILLING PROVIDER NAME, PHYSICAL ADDRESS & TELEPHONE
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.facility.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
-                        {SAMPLE_UB04_CLAIM.facility.address}, {SAMPLE_UB04_CLAIM.facility.city} {SAMPLE_UB04_CLAIM.facility.state} {SAMPLE_UB04_CLAIM.facility.zip} • {SAMPLE_UB04_CLAIM.facility.phone}
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mt-1">
+                        {SAMPLE_UB04_CLAIM.facility.address}, {SAMPLE_UB04_CLAIM.facility.city} {SAMPLE_UB04_CLAIM.facility.state} {SAMPLE_UB04_CLAIM.facility.zip} • Tel: {SAMPLE_UB04_CLAIM.facility.phone}
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 04')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 04')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 04. TYPE OF BILL (TOB)
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 04. TYPE OF BILL (TOB 4-DIGIT CODE)
                       </div>
-                      <div className="text-sm font-mono font-black text-emerald-700 mt-0.5">
+                      <div className="text-base sm:text-lg font-mono font-black text-emerald-700 dark:text-emerald-400">
                         {SAMPLE_UB04_CLAIM.billingType.tob}
                       </div>
-                      <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono truncate">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
                         {SAMPLE_UB04_CLAIM.billingType.tobMeaning}
                       </div>
                     </div>
                   </div>
 
                   {/* FL 03, 05, 06 Row */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 03a-b')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 03a-b')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
                         FL 03. PATIENT CONTROL # & MRN
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
-                        Acc: {SAMPLE_UB04_CLAIM.patient.controlNumber}
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
+                        Acct: {SAMPLE_UB04_CLAIM.patient.controlNumber}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+                      <div className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400 mt-1">
                         MRN: {SAMPLE_UB04_CLAIM.patient.mrn}
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 05')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 05')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 05. FED TAX NO.
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 05. FED TAX NO. (TIN)
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900 mt-1">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.facility.tin}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Hospital Taxpayer ID
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 06')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-5 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 06')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 06. STATEMENT COVERS PERIOD
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 06. STATEMENT COVERS PERIOD (FROM - THROUGH)
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-800 mt-1">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.billingType.statementFrom} - {SAMPLE_UB04_CLAIM.billingType.statementThrough}
+                      </div>
+                      <div className="text-xs font-bold text-slate-600 dark:text-slate-400 mt-1">
+                        Total Stay: 4 Inpatient Billing Days
                       </div>
                     </div>
                   </div>
 
-                  {/* Patient Demographics: FL 08, 12, 14, 17 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* SECTION 2: PATIENT DEMOGRAPHICS & INPATIENT ADMISSION (FL 08 – FL 17) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 2: Patient Demographics & Admission / Discharge Status (FL 08 – FL 17)
+                    </span>
+                  </div>
+
+                  {/* Patient Demographics: FL 08, 12, 17 */}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 08')}
-                      className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-5 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 08')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 08. PATIENT LEGAL NAME
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 08. PATIENT LEGAL NAME & IDENTIFIERS
                       </div>
-                      <div className="text-[11px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.patient.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
-                        DOB: {SAMPLE_UB04_CLAIM.patient.dob} | Sex: {SAMPLE_UB04_CLAIM.patient.sex}
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mt-1">
+                        DOB: {SAMPLE_UB04_CLAIM.patient.dob} • Sex: {SAMPLE_UB04_CLAIM.patient.sex} (Male)
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 12')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-4 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 12')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 12. ADMISSION DATE
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 12-15. ADMISSION DATE, HOUR, TYPE & SOURCE
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900 mt-1">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.admission.date} (Hr: {SAMPLE_UB04_CLAIM.admission.hour})
+                      </div>
+                      <div className="text-xs font-bold text-slate-600 dark:text-slate-400 mt-1">
+                        Type: 1 (Emergency) • Source: 1 (Physician Referral)
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 17')}
-                      className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 17')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 17. DISCHARGE STATUS
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 17. PATIENT DISCHARGE STATUS
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-emerald-800 mt-1 truncate">
-                        {SAMPLE_UB04_CLAIM.admission.dischargeStatus}
+                      <div className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400`}>
+                        01 Routine Home
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1 truncate">
+                        Discharged to Home / Self Care
                       </div>
                     </div>
                   </div>
 
+                  {/* SECTION 3: INSTITUTIONAL CODES & OCCURRENCE (FL 18 – FL 41) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 3: Condition Codes, Occurrence & Value Amounts (FL 18 – FL 41)
+                    </span>
+                  </div>
+
                   {/* Value Codes & Condition Codes: FL 18-28 & FL 39-41 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 18-28')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 18-28')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1.5`}>
                         FL 18-28. CONDITION CODES
                       </div>
-                      <div className="text-[10px] font-mono text-slate-800 flex gap-2">
+                      <div className="flex flex-wrap gap-2 text-xs font-mono">
                         {SAMPLE_UB04_CLAIM.codes.conditionCodes.map(c => (
-                          <span key={c} className="bg-slate-100 px-1.5 py-0.5 rounded font-bold">{c}</span>
+                          <span key={c} className="bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white px-2.5 py-1 rounded-lg font-bold border border-slate-300 dark:border-slate-600">
+                            Code {c} (Same-Day Transfer)
+                          </span>
                         ))}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1.5">
+                        Inpatient admission special operational circumstances
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 39-41')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 39-41')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1.5`}>
                         FL 39-41. VALUE CODES & AMOUNTS
                       </div>
-                      <div className="text-[10px] font-mono text-slate-800 space-y-0.5">
+                      <div className="space-y-1 text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200">
                         {SAMPLE_UB04_CLAIM.codes.valueCodes.map(v => (
-                          <div key={v.code} className="flex justify-between">
-                            <span className="font-bold">Code {v.code}:</span>
-                            <span>{v.amount} ({v.desc})</span>
+                          <div key={v.code} className="flex justify-between items-center bg-slate-50 dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <span className="font-bold text-amber-800 dark:text-amber-300">Code {v.code}:</span>
+                            <span className="font-black">${v.amount} ({v.desc})</span>
                           </div>
                         ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* FL 42 - FL 47 REVENUE CHARGES GRID */}
-                  <div className="border border-amber-800/30 rounded-xl overflow-hidden mb-2">
-                    <div className="bg-amber-100/60 p-2 text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase grid grid-cols-12 text-center">
-                      <div className="col-span-2">FL 42. Rev Code</div>
-                      <div className="col-span-4">FL 43. Revenue Description</div>
-                      <div className="col-span-2">FL 44. HCPCS</div>
-                      <div className="col-span-1">FL 46. Units</div>
-                      <div className="col-span-3">FL 47. Total Charges</div>
-                    </div>
+                  {/* SECTION 4: REVENUE CODES & ITEMIZED CHARGES (FL 42 – FL 47) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 4: Itemized Hospital Revenue Codes & Charges (FL 42 – FL 47)
+                    </span>
+                  </div>
 
-                    <div className="divide-y divide-amber-200">
-                      {SAMPLE_UB04_CLAIM.revenueGrid.map((row, idx) => (
-                        <div 
-                          key={idx}
-                          onClick={() => handleSelectUb04Locator('FL 42')}
-                          className={`p-2 grid grid-cols-12 text-[10px] font-mono items-center text-center cursor-pointer transition-all ${
-                            row.rev === '0001' ? 'bg-amber-100/70 font-black' : 'hover:bg-slate-50'
-                          }`}
-                        >
-                          <div className="col-span-2 font-bold text-rose-800">{row.rev}</div>
-                          <div className="col-span-4 text-left font-bold text-slate-900 truncate pl-2">{row.desc}</div>
-                          <div className="col-span-2 text-slate-600 font-bold">{row.hcpcs || '--'}</div>
-                          <div className="col-span-1 text-slate-800 font-bold">{row.units}</div>
-                          <div className="col-span-3 font-black text-slate-900">${row.charge.toFixed(2)}</div>
-                        </div>
-                      ))}
+                  {/* FL 42 - FL 47 REVENUE CHARGES GRID */}
+                  <div className="border-2 border-amber-800/40 rounded-2xl overflow-hidden shadow-xs bg-white dark:bg-slate-800">
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse text-left">
+                        <thead>
+                          <tr className="bg-amber-100/70 dark:bg-amber-950/40 text-amber-950 dark:text-amber-300 border-b border-amber-200 dark:border-amber-800 text-xs sm:text-sm font-black uppercase tracking-wide">
+                            <th className="py-3 px-3 min-w-[110px]">FL 42. Rev Code</th>
+                            <th className="py-3 px-3 min-w-[240px]">FL 43. Revenue Description</th>
+                            <th className="py-3 px-2 min-w-[100px] text-center">FL 44. HCPCS</th>
+                            <th className="py-3 px-2 min-w-[80px] text-center">FL 46. Units</th>
+                            <th className="py-3 px-3 min-w-[140px] text-right">FL 47. Total Charges</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-amber-100 dark:divide-slate-700">
+                          {SAMPLE_UB04_CLAIM.revenueGrid.map((row, idx) => (
+                            <tr 
+                              key={idx}
+                              onClick={() => handleSelectUb04Locator('FL 42')}
+                              className={`cursor-pointer transition-all hover:bg-emerald-50/60 dark:hover:bg-emerald-950/20 ${scale.tableText} ${
+                                row.rev === '0001' ? 'bg-amber-100/70 dark:bg-amber-950/50 font-black' : ''
+                              }`}
+                            >
+                              <td className="py-3.5 px-3 text-rose-800 dark:text-rose-400 font-bold">
+                                {row.rev}
+                              </td>
+                              <td className="py-3.5 px-3 font-bold text-slate-900 dark:text-white">
+                                {row.desc}
+                              </td>
+                              <td className="py-3.5 px-2 text-center text-slate-600 dark:text-slate-400 font-bold">
+                                {row.hcpcs || '--'}
+                              </td>
+                              <td className="py-3.5 px-2 text-center font-bold text-slate-800 dark:text-slate-200">
+                                {row.units}
+                              </td>
+                              <td className="py-3.5 px-3 text-right font-black text-slate-950 dark:text-white text-sm sm:text-base">
+                                ${row.charge.toFixed(2)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
 
+                  {/* SECTION 5: PAYER INFORMATION & PRIOR AUTHORIZATION (FL 50 – FL 65) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 5: Payer Information & Prior Authorization (FL 50 – FL 65)
+                    </span>
+                  </div>
+
                   {/* Payer & Insured: FL 50, 56, 60, 63 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 50')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 50')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 50. PAYER NAME (Line A Primary)
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 50. PAYER NAME (LINE A PRIMARY)
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900 truncate">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white truncate`}>
                         {SAMPLE_UB04_CLAIM.payer.primaryPayer}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Line B Secondary: BCBS Texas
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 60')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 60')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 60. INSURED UNIQUE ID
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 60. INSURED UNIQUE ID (MBI)
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900 truncate">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white truncate`}>
                         {SAMPLE_UB04_CLAIM.payer.mbi}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Medicare Beneficiary Identifier
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 63')}
-                      className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-3 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 63')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 63. PRIOR AUTH
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 63. PRIOR AUTH NUMBER
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-emerald-800 truncate">
+                      <div className={`${scale.valueSize} text-emerald-700 dark:text-emerald-400 truncate`}>
                         {SAMPLE_UB04_CLAIM.payer.priorAuth}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-1">
+                        Inpatient acute authorization
                       </div>
                     </div>
                   </div>
 
-                  {/* Clinical Diagnoses & Procedures: FL 67 & FL 74 */}
-                  <div className="grid grid-cols-12 gap-2 mb-2">
+                  {/* SECTION 6: CLINICAL DIAGNOSES & PROCEDURES (FL 67 – FL 74) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 6: Principal Diagnosis (ICD-10-CM) & Procedure (ICD-10-PCS) (FL 67 – FL 74)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 67')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 67')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 67. PRINCIPAL DIAGNOSIS & POA
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 67. PRINCIPAL DIAGNOSIS & POA INDICATOR
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.diagnoses.principal.code} (POA: {SAMPLE_UB04_CLAIM.diagnoses.principal.poa})
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 truncate">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
                         {SAMPLE_UB04_CLAIM.diagnoses.principal.desc}
+                      </div>
+                      <div className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">
+                        POA 'Y': Present at time of inpatient admission
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 74')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 74')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
-                        FL 74. PRINCIPAL PROCEDURE (ICD-10-PCS)
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
+                        FL 74. PRINCIPAL PROCEDURE (ICD-10-PCS) & DATE
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.procedures[0].code} • Date: {SAMPLE_UB04_CLAIM.procedures[0].date}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 truncate">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mt-1">
                         {SAMPLE_UB04_CLAIM.procedures[0].desc}
+                      </div>
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        Inpatient hospital surgical operating room procedure
                       </div>
                     </div>
                   </div>
 
-                  {/* Attending & Operating Physicians: FL 76 & FL 77 */}
-                  <div className="grid grid-cols-12 gap-2">
+                  {/* SECTION 7: ATTENDING & OPERATING PHYSICIANS (FL 76 – FL 77) */}
+                  <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-700" />
+                    <span className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300">
+                      Section 7: Attending Physician & Operating Surgeon (FL 76 – FL 77)
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 sm:gap-4">
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 76')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 76')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
                         FL 76. ATTENDING PHYSICIAN & NPI
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.physicians.attending.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+                      <div className="text-xs font-mono font-bold text-blue-700 dark:text-blue-400 mt-1">
                         NPI: {SAMPLE_UB04_CLAIM.physicians.attending.npi}
                       </div>
                     </div>
 
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 77')}
-                      className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
+                      className={`md:col-span-6 border-2 ${scale.cardPadding} rounded-2xl cursor-pointer transition-all ${
                         isUb04Selected('FL 77')
-                          ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
-                          : 'border-amber-700/30 hover:border-emerald-400 bg-white'
+                          ? 'border-emerald-600 ring-4 ring-emerald-400/40 bg-emerald-50 dark:bg-emerald-950/30 shadow-md'
+                          : 'border-amber-800/30 hover:border-emerald-400 bg-white dark:bg-slate-800/80'
                       }`}
                     >
-                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
+                      <div className={`${scale.labelSize} text-amber-950 dark:text-amber-300 uppercase tracking-wide mb-1`}>
                         FL 77. OPERATING SURGEON & NPI
                       </div>
-                      <div className="text-[10px] font-mono font-bold text-slate-900">
+                      <div className={`${scale.valueSize} text-slate-950 dark:text-white`}>
                         {SAMPLE_UB04_CLAIM.physicians.operating.name}
                       </div>
-                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
+                      <div className="text-xs font-mono font-bold text-blue-700 dark:text-blue-400 mt-1">
                         NPI: {SAMPLE_UB04_CLAIM.physicians.operating.npi}
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3 text-center text-[10px] text-slate-700 dark:text-slate-300 font-bold italic">
-                    💡 Click on any Form Locator above to inspect hospital DRG impact, rules, sample values, and denial triggers!
+                  <div className="mt-4 p-3 rounded-2xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-center text-xs text-amber-950 dark:text-amber-200 font-bold">
+                    💡 Click on any Form Locator on the claim above to inspect hospital DRG impact, rules, sample values, and denial triggers beside the form!
                   </div>
                 </div>
               )}
@@ -2085,7 +2542,7 @@ export const Module2ClaimForms: React.FC = () => {
 
             {/* Split Mode: Fixed In-Grid Beside Column */}
             {inspectorLayout === 'split' && (
-              <div id="ub04-inspector-panel" className="lg:col-span-5 xl:col-span-4 space-y-4 lg:sticky lg:top-20">
+              <div id="ub04-inspector-panel" className="xl:col-span-5 2xl:col-span-4 space-y-4 xl:sticky xl:top-20 max-h-[calc(100vh-6rem)] overflow-y-auto pr-1">
                 {renderUb04InspectorCard()}
               </div>
             )}

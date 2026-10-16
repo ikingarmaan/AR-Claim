@@ -70,10 +70,9 @@ export function OfficialFormViewer<T>({
   onToggleWideLayout,
   onOpenInspector
 }: OfficialFormViewerProps<T>) {
-  // Fit Mode: 'fit-width' fits 100% of the allocated site container (up to 1024px)
-  // 'custom' applies explicit zoom scaling
-  const [fitMode, setFitMode] = useState<'fit-width' | 'custom'>('fit-width');
-  const [zoom, setZoom] = useState<number>(1.0);
+  // Fit Mode: 'custom' with 1.45 default zoom for large, readable text
+  const [fitMode, setFitMode] = useState<'fit-width' | 'custom'>('custom');
+  const [zoom, setZoom] = useState<number>(1.45);
   const [viewportHeight, setViewportHeight] = useState<'standard' | 'large' | 'tall' | 'full'>('large');
   const [displayFilter, setDisplayFilter] = useState<'normal' | 'high-contrast' | 'dark-mode'>('normal');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -306,7 +305,33 @@ export function OfficialFormViewer<T>({
               }`}
               title="Enlarge to 125% for easy inspection of fine print"
             >
-              125% Large
+              125%
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSetCustomZoom(1.5)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                fitMode === 'custom' && zoom === 1.5
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+              title="Enlarge to 150% for large readable print"
+            >
+              150% (Big)
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSetCustomZoom(1.8)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                fitMode === 'custom' && zoom === 1.8
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+              title="Enlarge to 180% for extra large magnification"
+            >
+              180% (Huge)
             </button>
           </div>
 

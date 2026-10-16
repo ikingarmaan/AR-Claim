@@ -49,7 +49,7 @@ const MainLayout: React.FC = () => {
         />
 
         {/* Dynamic Page Views */}
-        <main className={`flex-1 p-4 sm:p-6 lg:p-8 mx-auto w-full ${activeModule === 'claim-forms' ? 'max-w-[1720px]' : 'max-w-7xl'}`}>
+        <main className={`flex-1 p-3 sm:p-5 lg:p-6 mx-auto w-full ${activeModule === 'claim-forms' ? 'max-w-full 2xl:max-w-[1880px]' : 'max-w-7xl'}`}>
           {activeModule === 'dashboard' && (
             <div className="space-y-6 animate-in fade-in duration-300">
               {/* Clean Welcome & Academy Mission Hub */}
