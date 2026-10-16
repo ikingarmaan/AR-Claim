@@ -48,7 +48,7 @@ export const Module2ClaimForms: React.FC = () => {
   const [ub04ViewMode, setUb04ViewMode] = useState<'visual' | 'directory'>('visual');
   const [selectedUb04Box, setSelectedUb04Box] = useState<Ub04BoxDetail>(UB_04_BOXES.find(b => b.locatorNumber === 'FL 04') || UB_04_BOXES[0]);
   const [ub04Search, setUb04Search] = useState('');
-  const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical'>('all');
+  const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved'>('all');
 
   // Auditor Sandbox State
   const [discoveredTraps, setDiscoveredTraps] = useState<string[]>([]);
@@ -79,13 +79,103 @@ export const Module2ClaimForms: React.FC = () => {
   });
 
   const handleSelectCmsBoxNumber = (num: string) => {
-    const found = CMS_1500_BOXES.find(b => b.boxNumber === num);
+    if (num === '10a-c' || num === '10') {
+      const b = CMS_1500_BOXES.find(x => x.boxNumber === '10a');
+      if (b) { setSelectedCmsBox(b); return; }
+    }
+    const clean = num.toLowerCase().replace(/[^0-9a-z]/g, '');
+    const found = CMS_1500_BOXES.find(b => {
+      const bClean = b.boxNumber.toLowerCase().replace(/[^0-9a-z]/g, '');
+      return bClean === clean || bClean.startsWith(clean) || clean.startsWith(bClean);
+    });
     if (found) setSelectedCmsBox(found);
   };
 
+  const isCmsSelected = (num: string) => {
+    const cur = selectedCmsBox.boxNumber;
+    if (num === '10a-c') {
+      return cur === '10a' || cur === '10b' || cur === '10c' || cur === '10d';
+    }
+    if (num === '9') {
+      return cur === '9' || cur === '9a' || cur === '9b' || cur === '9c' || cur === '9d';
+    }
+    if (num === '11') {
+      return cur === '11' || cur === '11a' || cur === '11b' || cur === '11c' || cur === '11d';
+    }
+    if (num === '17') {
+      return cur === '17' || cur === '17a' || cur === '17b';
+    }
+    if (num === '32') {
+      return cur === '32' || cur === '32a' || cur === '32b';
+    }
+    if (num === '33') {
+      return cur === '33' || cur === '33a' || cur === '33b';
+    }
+    const cleanCur = cur.toLowerCase().replace(/[^0-9a-z]/g, '');
+    const cleanNum = num.toLowerCase().replace(/[^0-9a-z]/g, '');
+    return cleanCur === cleanNum || cleanCur.startsWith(cleanNum) || cleanNum.startsWith(cleanCur);
+  };
+
   const handleSelectUb04Locator = (loc: string) => {
-    const found = UB_04_BOXES.find(b => b.locatorNumber === loc);
+    if (loc === 'FL 18-28' || loc === 'FL 18') {
+      const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 18');
+      if (b) { setSelectedUb04Box(b); return; }
+    }
+    if (loc === 'FL 31-34' || loc === 'FL 31') {
+      const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 31');
+      if (b) { setSelectedUb04Box(b); return; }
+    }
+    if (loc === 'FL 35-36' || loc === 'FL 35') {
+      const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 35');
+      if (b) { setSelectedUb04Box(b); return; }
+    }
+    if (loc === 'FL 39-41' || loc === 'FL 39') {
+      const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 39');
+      if (b) { setSelectedUb04Box(b); return; }
+    }
+    if (loc === 'FL 03' || loc === 'FL 03a-b') {
+      const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 03a');
+      if (b) { setSelectedUb04Box(b); return; }
+    }
+    if (loc === 'FL 08') {
+      const b = UB_04_BOXES.find(x => x.locatorNumber === 'FL 08b' || x.locatorNumber === 'FL 08a');
+      if (b) { setSelectedUb04Box(b); return; }
+    }
+    const clean = loc.toLowerCase().replace(/[^0-9a-z]/g, '');
+    const found = UB_04_BOXES.find(b => {
+      const bClean = b.locatorNumber.toLowerCase().replace(/[^0-9a-z]/g, '');
+      return bClean === clean || bClean.startsWith(clean) || clean.startsWith(bClean);
+    });
     if (found) setSelectedUb04Box(found);
+  };
+
+  const isUb04Selected = (loc: string) => {
+    const cur = selectedUb04Box.locatorNumber;
+    if (loc === 'FL 18-28') {
+      const num = parseInt(cur.replace(/[^0-9]/g, ''), 10);
+      return num >= 18 && num <= 28;
+    }
+    if (loc === 'FL 31-34') {
+      const num = parseInt(cur.replace(/[^0-9]/g, ''), 10);
+      return num >= 31 && num <= 34;
+    }
+    if (loc === 'FL 35-36') {
+      const num = parseInt(cur.replace(/[^0-9]/g, ''), 10);
+      return num === 35 || num === 36;
+    }
+    if (loc === 'FL 39-41') {
+      const num = parseInt(cur.replace(/[^0-9]/g, ''), 10);
+      return num >= 39 && num <= 41;
+    }
+    if (loc === 'FL 03a-b') {
+      return cur === 'FL 03a' || cur === 'FL 03b';
+    }
+    if (loc === 'FL 08') {
+      return cur === 'FL 08a' || cur === 'FL 08b';
+    }
+    const cleanCur = cur.toLowerCase().replace(/[^0-9a-z]/g, '');
+    const cleanLoc = loc.toLowerCase().replace(/[^0-9a-z]/g, '');
+    return cleanCur === cleanLoc || cleanCur.startsWith(cleanLoc) || cleanLoc.startsWith(cleanCur);
   };
 
   const handleToggleTrap = (trapId: string) => {
@@ -459,7 +549,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectCmsBoxNumber('10a-c')}
                       className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedCmsBox.boxNumber === '10a-c'
+                        isCmsSelected('10a-c')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
@@ -828,6 +918,21 @@ export const Module2ClaimForms: React.FC = () => {
               ) : (
                 /* BOX-BY-BOX MASTER DIRECTORY (ALL 33 BOXES) */
                 <div className="bg-white dark:bg-health-darkCard p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                  {/* Header Badge */}
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs font-black text-rose-900 bg-rose-100 px-2.5 py-1 rounded-lg border border-rose-300">
+                        All 33 Claim Boxes
+                      </span>
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        NUCC Standard (Boxes 1 through 33)
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-slate-500">
+                      Showing {filteredCmsBoxes.length} of {CMS_1500_BOXES.length} Detailed Fields
+                    </span>
+                  </div>
+
                   {/* Search and Filters */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="relative flex-1">
@@ -1064,7 +1169,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 01')}
                       className={`col-span-8 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 01'
+                        isUb04Selected('FL 01')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1083,7 +1188,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 04')}
                       className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 04'
+                        isUb04Selected('FL 04')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1105,7 +1210,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 03a-b')}
                       className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 03a-b'
+                        isUb04Selected('FL 03a-b')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1124,7 +1229,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 05')}
                       className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 05'
+                        isUb04Selected('FL 05')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1140,7 +1245,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 06')}
                       className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 06'
+                        isUb04Selected('FL 06')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1159,7 +1264,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 08')}
                       className={`col-span-5 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 08'
+                        isUb04Selected('FL 08')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1178,7 +1283,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 12')}
                       className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 12'
+                        isUb04Selected('FL 12')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1194,7 +1299,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 17')}
                       className={`col-span-4 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 17'
+                        isUb04Selected('FL 17')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1213,7 +1318,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 18-28')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 18-28'
+                        isUb04Selected('FL 18-28')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1231,7 +1336,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 39-41')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 39-41'
+                        isUb04Selected('FL 39-41')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1284,7 +1389,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 50')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 50'
+                        isUb04Selected('FL 50')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1300,7 +1405,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 60')}
                       className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 60'
+                        isUb04Selected('FL 60')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1316,7 +1421,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 63')}
                       className={`col-span-3 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 63'
+                        isUb04Selected('FL 63')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1335,7 +1440,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 67')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 67'
+                        isUb04Selected('FL 67')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1354,7 +1459,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 74')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 74'
+                        isUb04Selected('FL 74')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1376,7 +1481,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 76')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 76'
+                        isUb04Selected('FL 76')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1395,7 +1500,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div 
                       onClick={() => handleSelectUb04Locator('FL 77')}
                       className={`col-span-6 border p-2 rounded-lg cursor-pointer transition-all ${
-                        selectedUb04Box.locatorNumber === 'FL 77'
+                        isUb04Selected('FL 77')
                           ? 'border-emerald-600 ring-2 ring-emerald-300 bg-emerald-50'
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
@@ -1419,6 +1524,21 @@ export const Module2ClaimForms: React.FC = () => {
               ) : (
                 /* UB-04 MASTER DIRECTORY (FL 01 to FL 81) */
                 <div className="bg-white dark:bg-health-darkCard p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                  {/* Header Badge */}
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-xs font-black text-amber-900 bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-300">
+                        All 81 Form Locators
+                      </span>
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Exact Sequential Order (FL 01 through FL 81)
+                      </span>
+                    </div>
+                    <span className="text-[11px] font-mono font-bold text-slate-500">
+                      Showing {filteredUb04Boxes.length} of {UB_04_BOXES.length} Locators
+                    </span>
+                  </div>
+
                   {/* Search and Filters */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="relative flex-1">
@@ -1433,7 +1553,7 @@ export const Module2ClaimForms: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-1">
-                      {(['all', 'provider', 'patient', 'codes', 'charges', 'payer', 'clinical'] as const).map(cat => (
+                      {(['all', 'provider', 'patient', 'codes', 'charges', 'payer', 'clinical', 'reserved'] as const).map(cat => (
                         <button
                           key={cat}
                           type="button"

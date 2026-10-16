@@ -39,7 +39,7 @@ export interface Ub04BoxDetail {
   locatorNumber: string;
   name: string;
   shortName: string;
-  category: 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical';
+  category: 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved';
   description: string;
   sampleValue: string;
   ediMapping: string;

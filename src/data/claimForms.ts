@@ -9,8 +9,8 @@ export interface FormComparisonRow {
 export const FORM_COMPARISONS: FormComparisonRow[] = [
   {
     feature: 'Official Form Name',
-    professional: 'CMS-1500 (formerly HCFA-1500, version 02/12)',
-    facility: 'UB-04 (CMS-1450)'
+    professional: 'CMS-1500 (formerly HCFA-1500, current version 02/12)',
+    facility: 'UB-04 (CMS-1450, uniform institutional billing form)'
   },
   {
     feature: 'Electronic EDI Standard',
@@ -19,8 +19,8 @@ export const FORM_COMPARISONS: FormComparisonRow[] = [
   },
   {
     feature: 'Total Box Count',
-    professional: '33 numbered boxes (plus lettered sub-fields)',
-    facility: '81 numbered Form Locators (FL 01 to FL 81)'
+    professional: '33 numbered boxes (Boxes 1 through 33)',
+    facility: '81 numbered Form Locators (FL 01 through FL 81)'
   },
   {
     feature: 'Billing Entities',
@@ -64,14 +64,14 @@ export const FORM_COMPARISONS: FormComparisonRow[] = [
   }
 ];
 
-// ==========================================
-// ALL 33 BOXES OF THE CMS-1500 (HCFA-1500)
-// ==========================================
+// ==============================================================
+// COMPLETE CMS-1500 (HCFA-1500) DIRECTORY - ALL 33 BOXES
+// ==============================================================
 export const CMS_1500_BOXES: ClaimBoxDetail[] = [
   {
     boxNumber: '1',
     name: 'Type of Health Insurance Coverage',
-    shortName: 'Insurance Type Indicator',
+    shortName: 'Insurance Program Type',
     category: 'patient',
     sampleValue: 'Group Health Plan (Checked)',
     ediMapping: '837P Loop 2000B SBR09 (Claim Filing Indicator Code: CI, MB, MC, etc.)',
@@ -89,7 +89,7 @@ export const CMS_1500_BOXES: ClaimBoxDetail[] = [
   {
     boxNumber: '1a',
     name: "Insured's ID Number",
-    shortName: 'Subscriber Member ID',
+    shortName: 'Subscriber Member ID / MBI',
     category: 'patient',
     sampleValue: 'XYZ123456789 (or Medicare MBI: 1EG4-TE5-MK72)',
     ediMapping: '837P Loop 2010BA NM109 (Subscriber Primary Identifier)',
@@ -297,22 +297,53 @@ export const CMS_1500_BOXES: ClaimBoxDetail[] = [
     rejectionCauses: ['Vague plan descriptions (e.g. "COMMERCIAL") with no electronic routing ID.']
   },
   {
-    boxNumber: '10a-c',
-    name: "Is Patient's Condition Related To:",
-    shortName: 'Condition Related To (Employment / Auto / Other)',
+    boxNumber: '10a',
+    name: "Is Patient's Condition Related to Employment?",
+    shortName: 'Employment Related (Workers Comp)',
     category: 'clinical',
-    sampleValue: '10a Employment: NO | 10b Auto Accident: NO (Place: TX) | 10c Other Accident: NO',
-    ediMapping: '837P Loop 2300 CLM11-1 (Related-Causes Code: EM=Employment, AA=Auto, OA=Other), CLM11-4 (Auto State)',
-    description: 'Reports whether the patient’s clinical condition resulted from employment (Workers Comp), an auto accident (No-Fault / PIP), or other third-party liability accident.',
+    sampleValue: 'NO (Checked)',
+    ediMapping: '837P Loop 2300 CLM11-1 (Related-Causes Code: EM=Employment)',
+    description: 'Reports whether the patient’s clinical condition resulted from employment (triggering Workers Compensation as primary payer).',
     rules: [
-      'Check "YES" or "NO" for each of the three sub-boxes.',
-      'If 10b (Auto Accident) is "YES", the 2-letter USPS postal code for the state where the accident occurred MUST be reported in the right margin.',
-      'If any is "YES", commercial health plans become SECONDARY to Workers Comp or Auto PIP!'
+      'Check "YES" or "NO".',
+      'If "YES", commercial health plans become SECONDARY to Workers Comp insurance.',
+      'Must be accompanied by date of injury in Box 14 and claim ID in Box 11b.'
     ],
     rejectionCauses: [
-      'Marking "YES" to auto accident without entering the 2-letter state code in Box 10b.',
-      'Marking "YES" to employment when no Workers Comp claim was opened (causes commercial health plan denial CO-24).'
+      'Marking "YES" when no Workers Comp claim was opened causes immediate health plan denial CARC CO-24.'
     ]
+  },
+  {
+    boxNumber: '10b',
+    name: "Is Patient's Condition Related to Auto Accident?",
+    shortName: 'Auto Accident & Place State',
+    category: 'clinical',
+    sampleValue: 'NO (Checked) | State: TX',
+    ediMapping: '837P Loop 2300 CLM11-1 (AA=Auto Accident), CLM11-4 (Auto Accident State Code)',
+    description: 'Reports whether the medical condition was caused by a motor vehicle accident, and indicates the 2-letter state USPS abbreviation where the crash occurred.',
+    rules: [
+      'Check "YES" or "NO".',
+      'If "YES", the 2-letter USPS postal code for the state where the accident occurred MUST be reported in the right margin.',
+      'Automobile No-Fault (PIP) or Med-Pay insurance is PRIMARY to commercial health coverage.'
+    ],
+    rejectionCauses: [
+      'Checking "YES" but leaving the 2-letter state code blank.',
+      'Auto insurer not billed first prior to commercial health submission.'
+    ]
+  },
+  {
+    boxNumber: '10c',
+    name: "Is Patient's Condition Related to Other Accident?",
+    shortName: 'Other Accident (Third-Party Liability)',
+    category: 'clinical',
+    sampleValue: 'NO (Checked)',
+    ediMapping: '837P Loop 2300 CLM11-1 (OA=Other Accident)',
+    description: 'Reports whether the illness or injury resulted from a non-automobile, non-employment accident (e.g. slip and fall on commercial property, homeowner liability).',
+    rules: [
+      'Check "YES" or "NO".',
+      'If "YES", liability insurance or property coverage is primary.'
+    ],
+    rejectionCauses: ['Marking "YES" without opening subrogation case with payer.']
   },
   {
     boxNumber: '10d',
@@ -973,7 +1004,7 @@ export const CMS_1500_BOXES: ClaimBoxDetail[] = [
     rules: [
       'Can be a physical address or P.O. Box for payments.',
       'Must match the billing entity registered with the payer under the TIN reported in Box 25.',
-      'All EFT electronic funds transfers and paper paper checks are mailed according to this box.'
+      'All EFT electronic funds transfers and paper checks are mailed according to this box.'
     ],
     rejectionCauses: [
       'Billing entity address or telephone missing.',
@@ -1016,9 +1047,10 @@ export const CMS_1500_BOXES: ClaimBoxDetail[] = [
   }
 ];
 
-// ==========================================
-// VITAL FORM LOCATORS OF THE UB-04 (CMS-1450)
-// ==========================================
+// ==============================================================
+// COMPLETE UB-04 (CMS-1450) DIRECTORY - ALL 81 FORM LOCATORS
+// In 100% Correct Sequential Order (FL 01 through FL 81)
+// ==============================================================
 export const UB_04_BOXES: Ub04BoxDetail[] = [
   {
     locatorNumber: 'FL 01',
@@ -1027,17 +1059,17 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     category: 'provider',
     sampleValue: 'TEXAS GENERAL HOSPITAL, 1000 HEALTHCARE BLVD, AUSTIN TX 78705 | (512) 555-0100',
     ediMapping: '837I Loop 2010AA NM1/N3/N4',
-    description: 'The legal name, physical street address, and telephone number of the institutional facility submitting the claim.',
+    description: 'The official legal name, physical street address, and telephone number of the institutional facility submitting the claim.',
     rules: [
-      'Must match the facility enrollment record and state hospital license.',
-      'Payment remittance checks are sent according to this information unless FL 02 (Pay-To) is populated.'
+      'Must match state hospital licensure and Medicare provider enrollment records.',
+      'Remittance checks are sent to this address unless FL 02 (Pay-To) is populated.'
     ],
     rejectionCauses: ['Address mismatch against Medicare PECOS master institutional file.']
   },
   {
     locatorNumber: 'FL 02',
     name: 'Pay-To Name and Address',
-    shortName: 'Pay-To Address (Lockbox)',
+    shortName: 'Pay-To Address (Bank Lockbox)',
     category: 'provider',
     sampleValue: 'TEXAS GENERAL HEALTH SYSTEM, PO BOX 4000, AUSTIN TX 78767',
     ediMapping: '837I Loop 2010AB NM1/N3/N4',
@@ -1046,23 +1078,34 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     rejectionCauses: ['Invalid bank lockbox ZIP code.']
   },
   {
-    locatorNumber: 'FL 03a-b',
-    name: 'Patient Control Number & Medical Record Number',
-    shortName: 'Patient Account # & MRN',
+    locatorNumber: 'FL 03a',
+    name: 'Patient Control Number',
+    shortName: 'Patient Billing Account #',
     category: 'patient',
-    sampleValue: '3a Patient Control: HOSP-889921 | 3b MRN: MRN-442190',
-    ediMapping: '837I Loop 2300 CLM01 (Patient Control Number) & Loop 2300 REF*EA (Medical Record #)',
-    description: 'The hospital’s internal patient billing account number (3a) and permanent Medical Record Number (3b).',
+    sampleValue: 'HOSP-889921',
+    ediMapping: '837I Loop 2300 CLM01 (Patient Control Number)',
+    description: 'The hospital’s internal patient billing account number assigned by the hospital information system (HIS).',
     rules: [
-      'Returned on the 835 ERA remittance to enable automatic electronic cash application.',
-      'Vital for hospital HIM (Health Information Management) chart auditing.'
+      'Returned on the 835 ERA remittance (CLP01 segment) to enable automated cash posting.',
+      'Can be up to 24 alphanumeric characters.'
     ],
-    rejectionCauses: ['Missing patient control number prevents automated reconciliation.']
+    rejectionCauses: ['Missing patient control number prevents automated payment posting.']
+  },
+  {
+    locatorNumber: 'FL 03b',
+    name: 'Medical Record Number (MRN)',
+    shortName: 'Medical Record Number (MRN)',
+    category: 'patient',
+    sampleValue: 'MRN-442190',
+    ediMapping: '837I Loop 2300 REF*EA (Medical Record Number)',
+    description: 'The patient’s permanent hospital chart/EMR identifier used for medical records auditing and clinical chart retrieval.',
+    rules: ['Must match the hospital HIM (Health Information Management) permanent chart index.'],
+    rejectionCauses: ['MRN mismatch on clinical audit reviews.']
   },
   {
     locatorNumber: 'FL 04',
-    name: 'Type of Bill (TOB)',
-    shortName: 'Type of Bill (TOB - 4 Digits)',
+    name: 'Type of Bill (TOB - 4 Digits)',
+    shortName: 'Type of Bill (TOB)',
     category: 'codes',
     sampleValue: '0111 (Hospital Inpatient, Admit through Discharge)',
     ediMapping: '837I Loop 2300 CLM05-1 (Facility Code), CLM05-2 (Bill Classification), CLM05-3 (Frequency)',
@@ -1084,7 +1127,7 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     category: 'provider',
     sampleValue: '74-9876543',
     ediMapping: '837I Loop 2010AA REF*EI',
-    description: 'The 9-digit IRS Taxpayer Identification Number of the hospital or institution.',
+    description: 'The 9-digit IRS Taxpayer Identification Number (EIN) of the billing hospital or institution.',
     rules: ['Must match the IRS W-9 form and Medicare provider agreement.'],
     rejectionCauses: ['TIN mismatch causes immediate claim suspension or withholding.']
   },
@@ -1103,15 +1146,76 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     rejectionCauses: ['Line item service date falls outside the Statement Covers Period.']
   },
   {
-    locatorNumber: 'FL 08',
-    name: 'Patient Name / Identifier',
+    locatorNumber: 'FL 07',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 07',
+    category: 'reserved',
+    sampleValue: '[BLANK - Do Not Populate]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the National Uniform Billing Committee (NUBC).',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Populating text in reserved fields causes optical scanning failure.']
+  },
+  {
+    locatorNumber: 'FL 08a',
+    name: 'Patient Identifier (Patient ID)',
+    shortName: 'Patient Identifier / Card ID',
+    category: 'patient',
+    sampleValue: '1EG4-TE5-MK72 (or Card ID)',
+    ediMapping: '837I Loop 2010CA REF*EJ',
+    description: 'An internal hospital patient identifier number or state-specific Medicaid patient ID.',
+    rules: ['Used when state regulations or specific payers mandate a patient identification number distinct from FL 60.'],
+    rejectionCauses: ['Entering invalid patient identifier.']
+  },
+  {
+    locatorNumber: 'FL 08b',
+    name: 'Patient Name (Last, First, Middle Initial)',
     shortName: 'Patient Full Legal Name',
     category: 'patient',
     sampleValue: 'RAMIREZ, CARLOS D.',
-    ediMapping: '837I Loop 2010CA NM103/NM104',
+    ediMapping: '837I Loop 2010CA NM103 (Last), NM104 (First), NM105 (Middle)',
     description: 'The patient’s legal name formatted as Last Name, First Name, Middle Initial.',
     rules: ['Must match the hospital admission face sheet and government insurance card.'],
     rejectionCauses: ['Demographic spelling mismatch with payer records.']
+  },
+  {
+    locatorNumber: 'FL 09',
+    name: 'Patient Address (Street, City, State, ZIP, Country)',
+    shortName: 'Patient Residential Address',
+    category: 'patient',
+    sampleValue: '9a: 502 CONGRESS AVE | 9b: AUSTIN | 9c: TX | 9d: 78701 | 9e: USA',
+    ediMapping: '837I Loop 2010CA N301 (Street), N401 (City), N402 (State), N403 (ZIP), N404 (Country)',
+    description: 'The patient’s primary physical residential address broken down into street, city, state, ZIP code, and country.',
+    rules: [
+      'Street address in 9a, City in 9b, State in 9c, ZIP code in 9d, Country code in 9e.',
+      'Must contain a valid 5- or 9-digit postal code.'
+    ],
+    rejectionCauses: ['Invalid ZIP code or missing city/state.']
+  },
+  {
+    locatorNumber: 'FL 10',
+    name: 'Patient Birthdate',
+    shortName: 'Patient Date of Birth',
+    category: 'patient',
+    sampleValue: '11 22 1958',
+    ediMapping: '837I Loop 2010CA DMG02 (YYYYMMDD)',
+    description: 'The patient’s date of birth in 8-digit format (MM DD YYYY).',
+    rules: [
+      'Must be 8 numeric digits.',
+      'Used to calculate pediatric vs adult DRG groupers.'
+    ],
+    rejectionCauses: ['DOB discrepancy against Medicare/Social Security master enrollment files.']
+  },
+  {
+    locatorNumber: 'FL 11',
+    name: 'Patient Sex',
+    shortName: 'Patient Biological Sex',
+    category: 'patient',
+    sampleValue: 'M (Male)',
+    ediMapping: '837I Loop 2010CA DMG03 (M, F, U)',
+    description: 'Reports the biological sex of the patient: M (Male), F (Female), or U (Unknown).',
+    rules: ['Must be compatible with gender-specific diagnoses and procedure codes.'],
+    rejectionCauses: ['Gender mismatch edit against ICD-10 diagnosis.']
   },
   {
     locatorNumber: 'FL 12',
@@ -1128,6 +1232,20 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     rejectionCauses: ['Admission date later than Statement Covers Period From date.']
   },
   {
+    locatorNumber: 'FL 13',
+    name: 'Admission Hour',
+    shortName: 'Admission Hour (Military Time)',
+    category: 'patient',
+    sampleValue: '08 (8:00 AM)',
+    ediMapping: '837I Loop 2300 CL102 (Admission Hour: 00-23)',
+    description: 'The time of day the patient was admitted, reported in 2-digit military time (00 to 23).',
+    rules: [
+      'Enter 00 for midnight, 12 for noon, 23 for 11:00 PM.',
+      'Required on all inpatient claims.'
+    ],
+    rejectionCauses: ['Hour values greater than 23 or invalid formatting.']
+  },
+  {
     locatorNumber: 'FL 14',
     name: 'Priority (Type) of Admission',
     shortName: 'Admission Priority Code',
@@ -1140,6 +1258,34 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
       'Elective (3) requires prior authorization before hospital admission.'
     ],
     rejectionCauses: ['Billing Elective admission without prior authorization in FL 63.']
+  },
+  {
+    locatorNumber: 'FL 15',
+    name: 'Point of Origin for Admission',
+    shortName: 'Point of Origin (Source of Admission)',
+    category: 'codes',
+    sampleValue: '7 (Emergency Room Transfer)',
+    ediMapping: '837I Loop 2300 CL103 (Point of Origin Code)',
+    description: 'Indicates where the patient was prior to hospital admission: 1=Non-health care facility (Home), 2=Clinic referral, 4=Transfer from hospital, 7=Emergency room, 8=Court/law enforcement.',
+    rules: [
+      'Identifies whether patient was admitted through the hospital’s own ER.',
+      'For newborns: 5=Born inside hospital, 6=Born outside hospital.'
+    ],
+    rejectionCauses: ['Code inconsistent with billed ER revenue codes (Rev 0450).']
+  },
+  {
+    locatorNumber: 'FL 16',
+    name: 'Discharge Hour',
+    shortName: 'Discharge Hour (Military Time)',
+    category: 'patient',
+    sampleValue: '14 (2:00 PM)',
+    ediMapping: '837I Loop 2300 DTP*096 (Discharge Date & Time)',
+    description: 'The time of day the patient was formally discharged, in 2-digit military time (00 to 23).',
+    rules: [
+      'Required on all inpatient claims with discharge status other than 30 (Still patient).',
+      'Leave blank if patient has not been discharged.'
+    ],
+    rejectionCauses: ['Discharge hour populated when patient status is 30 (Still a patient).']
   },
   {
     locatorNumber: 'FL 17',
@@ -1159,70 +1305,325 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     ]
   },
   {
-    locatorNumber: 'FL 18-28',
-    name: 'Condition Codes',
-    shortName: 'Condition Codes (2 Characters)',
+    locatorNumber: 'FL 18',
+    name: 'Condition Code 1',
+    shortName: 'Condition Code 1',
     category: 'codes',
-    sampleValue: 'P1 (DNR order) | 40 (Same-day transfer)',
-    ediMapping: '837I Loop 2300 HI segment (Condition Codes)',
-    description: 'Up to 11 two-character codes identifying special clinical, billing, or administrative conditions relating to this claim.',
+    sampleValue: 'P1 (Do Not Resuscitate DNR order on file)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG:P1)',
+    description: 'First of up to 11 two-character codes identifying special conditions, clinical circumstances, or statutory exceptions relating to this claim.',
     rules: [
-      'Code 02: Employment related.',
-      'Code 21: Billing for denial notice (used to obtain official denial for secondary insurance).',
-      'Code P1: Do Not Resuscitate (DNR) order on file.'
+      'Code P1: Do Not Resuscitate (DNR) order on file in medical chart.',
+      'Code 02: Employment related condition (Workers Comp secondary).',
+      'Code 21: Billing for denial notice (demanded by secondary payer).',
+      'Condition codes alter payer processing rules, waiver liability, and statutory time limits.'
     ],
     rejectionCauses: ['Missing condition code required for statutory billing exception.']
   },
   {
-    locatorNumber: 'FL 31-34',
-    name: 'Occurrence Codes & Dates',
-    shortName: 'Occurrence Codes & Dates',
+    locatorNumber: 'FL 19',
+    name: 'Condition Code 2',
+    shortName: 'Condition Code 2',
     category: 'codes',
-    sampleValue: 'Code 11: 01 09 2025 (Onset of Symptoms) | Code 01: 01 10 2025 (Auto Accident)',
-    ediMapping: '837I Loop 2300 HI segment (Occurrence Code & Date)',
-    description: 'Reports specific event codes and the corresponding calendar dates that affect insurance coverage.',
+    sampleValue: '40 (Same-day transfer from hospital to another facility)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG:40)',
+    description: 'Second condition code slot for reporting additional administrative, clinical, or billing qualifiers.',
     rules: [
-      'Code 01: Auto accident date.',
-      'Code 04: Industrial/work accident date.',
-      'Code 11: Onset of symptoms/illness.',
-      'Code 29: Date of last physical therapy visit.'
+      'Code 40: Same-day transfer to another health care facility.',
+      'Code 38: Billed for Medicare Secondary Payer (MSP) purposes.'
     ],
-    rejectionCauses: ['Reporting occurrence code without accompanying valid calendar date.']
+    rejectionCauses: ['Entering invalid 2-digit condition code syntax.']
   },
   {
-    locatorNumber: 'FL 35-36',
-    name: 'Occurrence Span Codes & Dates (From / Through)',
-    shortName: 'Occurrence Span Codes & Dates',
+    locatorNumber: 'FL 20',
+    name: 'Condition Code 3',
+    shortName: 'Condition Code 3',
     category: 'codes',
-    sampleValue: 'Code 74: 01 10 2025 - 01 14 2025 (Non-Covered Level of Care)',
-    ediMapping: '837I Loop 2300 HI segment (Span Code, From Date, To Date)',
-    description: 'Reports event codes with a beginning and ending date span affecting billing periods.',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Third condition code slot for reporting clinical or administrative circumstances.',
     rules: [
-      'Code 70: Qualifying stay dates for SNF coverage (3-day prior inpatient hospital stay).',
+      'Code 28: Patient and/or spouse is employed and covered under employer group plan.',
+      'Leave blank if fewer than 3 condition codes apply.'
+    ],
+    rejectionCauses: ['Entering duplicate condition codes across FL 18-28.']
+  },
+  {
+    locatorNumber: 'FL 21',
+    name: 'Condition Code 4',
+    shortName: 'Condition Code 4',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Fourth condition code slot for institutional billing qualifiers.',
+    rules: [
+      'Code 42: Continuing Care.',
+      'Code 55: SNF bed not available.'
+    ],
+    rejectionCauses: ['Invalid condition code format.']
+  },
+  {
+    locatorNumber: 'FL 22',
+    name: 'Condition Code 5',
+    shortName: 'Condition Code 5',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Fifth condition code slot for reporting special patient circumstances.',
+    rules: ['Leave blank if fewer than 5 condition codes apply.'],
+    rejectionCauses: ['Invalid condition code format.']
+  },
+  {
+    locatorNumber: 'FL 23',
+    name: 'Condition Code 6',
+    shortName: 'Condition Code 6',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Sixth condition code slot for reporting institutional qualifiers.',
+    rules: ['Leave blank if fewer than 6 condition codes apply.'],
+    rejectionCauses: ['Invalid condition code format.']
+  },
+  {
+    locatorNumber: 'FL 24',
+    name: 'Condition Code 7',
+    shortName: 'Condition Code 7',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Seventh condition code slot for reporting institutional qualifiers.',
+    rules: ['Leave blank if fewer than 7 condition codes apply.'],
+    rejectionCauses: ['Invalid condition code format.']
+  },
+  {
+    locatorNumber: 'FL 25',
+    name: 'Condition Code 8',
+    shortName: 'Condition Code 8',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Eighth condition code slot for reporting institutional qualifiers.',
+    rules: ['Leave blank if fewer than 8 condition codes apply.'],
+    rejectionCauses: ['Invalid condition code format.']
+  },
+  {
+    locatorNumber: 'FL 26',
+    name: 'Condition Code 9',
+    shortName: 'Condition Code 9',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Ninth condition code slot for reporting replacement or void qualifiers.',
+    rules: [
+      'Code 67: Replacement claim for a previously adjudicated claim.',
+      'Code 68: Void / Cancel previously adjudicated claim.'
+    ],
+    rejectionCauses: ['Entering replacement condition code without original DCN in FL 64.']
+  },
+  {
+    locatorNumber: 'FL 27',
+    name: 'Condition Code 10',
+    shortName: 'Condition Code 10',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Tenth condition code slot for reporting institutional billing qualifiers.',
+    rules: ['Leave blank if not applicable.'],
+    rejectionCauses: ['Invalid condition code format.']
+  },
+  {
+    locatorNumber: 'FL 28',
+    name: 'Condition Code 11',
+    shortName: 'Condition Code 11',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BG)',
+    description: 'Eleventh condition code slot (final condition code box on paper form).',
+    rules: [
+      'Code A1: Early and Periodic Screening, Diagnostic and Treatment (EPSDT).',
+      'Electronic 837I can transmit more than 11 condition codes in Loop 2300.'
+    ],
+    rejectionCauses: ['Entering text longer than 2 alphanumeric characters.']
+  },
+  {
+    locatorNumber: 'FL 29',
+    name: 'Accident State',
+    shortName: 'Accident State Code',
+    category: 'codes',
+    sampleValue: 'TX (2-letter postal abbreviation)',
+    ediMapping: '837I Loop 2300 HI segment (Accident State)',
+    description: 'The 2-character USPS state postal abbreviation where the auto or other accident occurred.',
+    rules: ['Required when Occurrence Code 01 (Auto accident) is reported in FL 31-34.'],
+    rejectionCauses: ['Missing state code when auto accident occurrence is claimed.']
+  },
+  {
+    locatorNumber: 'FL 30',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 30',
+    category: 'reserved',
+    sampleValue: '[BLANK]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the NUBC.',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Text entered in reserved fields.']
+  },
+  {
+    locatorNumber: 'FL 31',
+    name: 'Occurrence Code and Date 1 (FL 31a/b)',
+    shortName: 'Occurrence Code & Date 1',
+    category: 'codes',
+    sampleValue: 'Code 11: 01 09 2025 (Onset of Symptoms / Illness)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BH:11:D8:20250109)',
+    description: 'First occurrence code (FL 31a, 2 alphanumeric chars) and associated calendar date (FL 31b, MMDDYYYY) defining a specific event affecting benefits.',
+    rules: [
+      'Code 11: Onset of symptoms or illness.',
+      'Code 01: Auto accident date (requires state in FL 29).',
+      'Code 04: Employment / Industrial accident date.'
+    ],
+    rejectionCauses: ['Submitting an occurrence code without a valid calendar date or invalid MMDDYYYY format.']
+  },
+  {
+    locatorNumber: 'FL 32',
+    name: 'Occurrence Code and Date 2 (FL 32a/b)',
+    shortName: 'Occurrence Code & Date 2',
+    category: 'codes',
+    sampleValue: 'Code 01: 01 10 2025 (Auto Accident Date)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BH:01:D8:20250110)',
+    description: 'Second occurrence code and date field for reporting additional events affecting claim processing.',
+    rules: [
+      'Code 01: Auto accident date. Must report 2-letter state code in FL 29.',
+      'Code 24: Date insurance denied prior authorization or coverage.'
+    ],
+    rejectionCauses: ['Missing accident state in FL 29 when occurrence code 01 is reported.']
+  },
+  {
+    locatorNumber: 'FL 33',
+    name: 'Occurrence Code and Date 3 (FL 33a/b)',
+    shortName: 'Occurrence Code & Date 3',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BH)',
+    description: 'Third occurrence code and date field for reporting coverage-impacting events.',
+    rules: [
+      'Code 29: Date of last physical therapy visit.',
+      'Code 50: Date of Assessment (used in home health and hospice).',
+      'Leave blank if no 3rd occurrence code applies.'
+    ],
+    rejectionCauses: ['Reporting occurrence code without date.']
+  },
+  {
+    locatorNumber: 'FL 34',
+    name: 'Occurrence Code and Date 4 (FL 34a/b)',
+    shortName: 'Occurrence Code & Date 4',
+    category: 'codes',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BH)',
+    description: 'Fourth occurrence code and date field on the paper UB-04 form.',
+    rules: [
+      'Code 35: Date of termination of Medicare secondary coverage.',
+      'Leave blank if no 4th occurrence code applies.'
+    ],
+    rejectionCauses: ['Invalid occurrence code.']
+  },
+  {
+    locatorNumber: 'FL 35',
+    name: 'Occurrence Span Code & Dates 1 (FL 35a/b)',
+    shortName: 'Occurrence Span Code 1 (From/Through)',
+    category: 'codes',
+    sampleValue: 'Code 70: 01 05 2025 - 01 08 2025 (Qualifying Stay Dates for SNF)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BI:70:RD8:20250105-20250108)',
+    description: 'First occurrence span code (2 characters) and From / Through calendar date range (MMDDYYYY to MMDDYYYY) defining an event spanning a period of time.',
+    rules: [
+      'Code 70: Qualifying stay dates for SNF coverage (3 consecutive midnight hospital stay).',
       'Code 74: Non-covered level of care dates.'
     ],
-    rejectionCauses: ['Span dates exceed Statement Covers Period.']
+    rejectionCauses: ['Span Through Date precedes Span From Date or spans outside Statement Covers Period.']
   },
   {
-    locatorNumber: 'FL 39-41',
-    name: 'Value Codes & Amounts',
-    shortName: 'Value Codes & Monetary Amounts',
+    locatorNumber: 'FL 36',
+    name: 'Occurrence Span Code & Dates 2 (FL 36a/b)',
+    shortName: 'Occurrence Span Code 2 (From/Through)',
     category: 'codes',
-    sampleValue: 'Code 01: $2,200.00 (Semi-Private Rate) | Code 80: 4.0 (Covered Days)',
-    ediMapping: '837I Loop 2300 HI segment (Value Code & Amount)',
-    description: 'Reports 2-digit alphanumeric codes and associated numeric/dollar values representing statistical data or payment limits.',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BI)',
+    description: 'Second occurrence span code and date range field for hospital billing periods.',
+    rules: [
+      'Code 71: Prior stay dates.',
+      'Code 76: Patient liability period.'
+    ],
+    rejectionCauses: ['Reporting span code without valid start and end dates.']
+  },
+  {
+    locatorNumber: 'FL 37',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 37',
+    category: 'reserved',
+    sampleValue: '[BLANK]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the NUBC.',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Text entered in reserved fields.']
+  },
+  {
+    locatorNumber: 'FL 38',
+    name: 'Responsible Party Name and Address',
+    shortName: 'Responsible Party / Guarantor',
+    category: 'patient',
+    sampleValue: 'RAMIREZ, CARLOS D., 502 CONGRESS AVE, AUSTIN TX 78701',
+    ediMapping: '837I Loop 2010BD NM1/N3/N4 (Responsible Party Name & Address)',
+    description: 'The name and physical billing address of the individual or legal entity responsible for the patient’s financial obligations.',
+    rules: ['Required when patient is a minor or under legal guardianship.'],
+    rejectionCauses: ['Missing responsible party when billing minor patients.']
+  },
+  {
+    locatorNumber: 'FL 39',
+    name: 'Value Code & Amount A (FL 39a/b)',
+    shortName: 'Value Code & Amount A',
+    category: 'charges',
+    sampleValue: 'Code 01: $2,200.00 (Most Common Semi-Private Rate)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BE:01:::2200.00)',
+    description: 'First of three value code blocks. Reports a 2-digit alphanumeric code (FL 39a) and associated monetary dollar amount or unit count (FL 39b).',
     rules: [
       'Code 01: Most common semi-private room rate.',
-      'Code 80: Number of covered inpatient hospital days.',
-      'Code 81: Number of non-covered days.',
-      'Code 24: Units of whole blood/PRBC transfused.'
+      'Code 80: Covered days (must equal room and board revenue days in FL 46).',
+      'Value amounts are reported in dollars and cents (no dollar signs or commas on paper form).'
     ],
     rejectionCauses: ['Mismatch between Value Code 80 covered days and room & board revenue units in FL 46.']
   },
   {
+    locatorNumber: 'FL 40',
+    name: 'Value Code & Amount B (FL 40a/b)',
+    shortName: 'Value Code & Amount B',
+    category: 'charges',
+    sampleValue: 'Code 80: 4.0 (Covered Inpatient Days)',
+    ediMapping: '837I Loop 2300 HI segment (HI*BE:80:::4)',
+    description: 'Second value code block for statistical, demographic, and financial thresholds.',
+    rules: [
+      'Code 80: Number of covered days in this inpatient stay.',
+      'Code 81: Number of non-covered days in this inpatient stay.',
+      'Code 24: Units of whole blood / PRBC furnished.'
+    ],
+    rejectionCauses: ['Covered days reported when billing outpatient claims.']
+  },
+  {
+    locatorNumber: 'FL 41',
+    name: 'Value Code & Amount C (FL 41a/b)',
+    shortName: 'Value Code & Amount C',
+    category: 'charges',
+    sampleValue: '[OPTIONAL / BLANK]',
+    ediMapping: '837I Loop 2300 HI segment (HI*BE)',
+    description: 'Third value code block on the paper form.',
+    rules: [
+      'Code 48: Hemoglobin reading (e.g. 9.4 g/dL).',
+      'Code 49: Hematocrit reading.',
+      'Electronic 837I transmits unlimited value code pairs in Loop 2300.'
+    ],
+    rejectionCauses: ['Invalid value code syntax.']
+  },
+  {
     locatorNumber: 'FL 42',
     name: 'Revenue Code (4 Digits)',
-    shortName: 'Revenue Code',
+    shortName: 'Revenue Code (4 Digits)',
     category: 'charges',
     sampleValue: '0110 (Room & Board Private) | 0250 (Pharmacy) | 0300 (Lab) | 0360 (OR) | 0450 (ER) | 0001 (Total)',
     ediMapping: '837I Loop 2400 SV201 (Revenue Code)',
@@ -1238,6 +1639,17 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     ]
   },
   {
+    locatorNumber: 'FL 43',
+    name: 'Revenue Description',
+    shortName: 'Revenue Description Text',
+    category: 'charges',
+    sampleValue: 'Room & Board - Private Med/Surg',
+    ediMapping: '837I Loop 2400 SV202-7 (Description)',
+    description: 'The standard text description of the revenue accommodation or ancillary hospital service.',
+    rules: ['Must correspond directly to the official 4-digit revenue code entered in FL 42.'],
+    rejectionCauses: ['Vague or mismatched descriptions.']
+  },
+  {
     locatorNumber: 'FL 44',
     name: 'HCPCS / Accommodation Rates / HIPPS Rate Codes',
     shortName: 'HCPCS / HIPPS Rate Codes',
@@ -1250,6 +1662,20 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
       'Accompanied by HCPCS modifiers when applicable.'
     ],
     rejectionCauses: ['Outpatient hospital claim submitted with revenue code but missing mandatory CPT code.']
+  },
+  {
+    locatorNumber: 'FL 45',
+    name: 'Service Date',
+    shortName: 'Line Item Service Date',
+    category: 'charges',
+    sampleValue: '01 10 25',
+    ediMapping: '837I Loop 2400 DTP*472 (Date of Service: YYYYMMDD)',
+    description: 'The calendar date on which the specific ancillary service or outpatient procedure was performed.',
+    rules: [
+      'Required on outpatient hospital bills for each individual line item.',
+      'On inpatient bills, reports bill creation date or specific procedure date.'
+    ],
+    rejectionCauses: ['Service date outside the Statement Covers Period.']
   },
   {
     locatorNumber: 'FL 46',
@@ -1274,9 +1700,31 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     rejectionCauses: ['Mathematical addition discrepancy between line items and total charges.']
   },
   {
+    locatorNumber: 'FL 48',
+    name: 'Non-Covered Charges',
+    shortName: 'Non-Covered Charges Amount',
+    category: 'charges',
+    sampleValue: '$0.00 (or $150.00 Non-Covered Private Room Difference)',
+    ediMapping: '837I Loop 2400 SV207 (Non-Covered Amount)',
+    description: 'The portion of total line item charges that are known to be non-covered or excluded under the patient’s insurance policy.',
+    rules: ['Must be reported for statutory exclusions (e.g. personal convenience items, TV rental).'],
+    rejectionCauses: ['Failure to report non-covered days under Value Code 81.']
+  },
+  {
+    locatorNumber: 'FL 49',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 49',
+    category: 'reserved',
+    sampleValue: '[BLANK]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the NUBC.',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Text entered in reserved fields.']
+  },
+  {
     locatorNumber: 'FL 50',
     name: 'Payer Name (Lines A, B, C)',
-    shortName: 'Payer Name (Primary, Secondary, Tertiary)',
+    shortName: 'Payer Name (Lines A, B, C)',
     category: 'payer',
     sampleValue: 'Line A: MEDICARE PART A - NOVITAS SOLUTIONS MAC',
     ediMapping: '837I Loop 2000B SBR / Loop 2010BB NM103',
@@ -1288,15 +1736,106 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     rejectionCauses: ['Inverted payer order violating Coordination of Benefits (COB) rules.']
   },
   {
+    locatorNumber: 'FL 51',
+    name: 'Health Plan ID (Lines A, B, C)',
+    shortName: 'Health Plan Electronic Routing ID',
+    category: 'payer',
+    sampleValue: '04402 (Novitas Solutions Medicare MAC)',
+    ediMapping: '837I Loop 2010BB NM109 (Payor Identifier)',
+    description: 'The unique electronic Payer ID number used to route the claim through the clearinghouse to the health plan.',
+    rules: ['Must be a valid 5-character electronic routing Payer ID.'],
+    rejectionCauses: ['Invalid payer routing ID causing clearinghouse reject.']
+  },
+  {
+    locatorNumber: 'FL 52',
+    name: 'Release of Information Certification Indicator',
+    shortName: 'Release of Information (ROI Indicator)',
+    category: 'payer',
+    sampleValue: 'Y (Signature on file)',
+    ediMapping: '837I Loop 2300 CLM09 (Release of Information Code: Y or I)',
+    description: 'Indicates whether the hospital has a signed authorization on file from the patient to release medical records.',
+    rules: [
+      'Enter "Y" (Yes), "I" (Informed consent), or "N" (No).',
+      'Electronic 837I requires "Y" for claim processing.'
+    ],
+    rejectionCauses: ['Entering "N" causes immediate claim refusal.']
+  },
+  {
+    locatorNumber: 'FL 53',
+    name: 'Assignment of Benefits Certification Indicator',
+    shortName: 'Assignment of Benefits (AOB Indicator)',
+    category: 'payer',
+    sampleValue: 'Y (Pay hospital directly)',
+    ediMapping: '837I Loop 2300 CLM08 (Benefits Assignment Indicator: Y or N)',
+    description: 'Indicates whether the patient authorized payment of benefits directly to the hospital.',
+    rules: ['Must be "Y" for the hospital to receive electronic funds transfer (EFT) reimbursement.'],
+    rejectionCauses: ['Entering "N" causes payer to mail reimbursement check to patient home.']
+  },
+  {
+    locatorNumber: 'FL 54',
+    name: 'Prior Payments (Lines A, B, C)',
+    shortName: 'Prior Payments Received',
+    category: 'charges',
+    sampleValue: '$0.00 (or $500.00 Prior Commercial Payment on Secondary Claim)',
+    ediMapping: '837I Loop 2300 AMT*D (Prior Payments)',
+    description: 'Reports any payment amount received from the primary payer or patient prior to billing this claim.',
+    rules: ['Mandatory when billing secondary/tertiary payers to show primary adjudication payment.'],
+    rejectionCauses: ['Failure to report primary payment on secondary hospital bills.']
+  },
+  {
+    locatorNumber: 'FL 55',
+    name: 'Estimated Amount Due (Lines A, B, C)',
+    shortName: 'Estimated Net Amount Due',
+    category: 'charges',
+    sampleValue: '$20,870.00',
+    ediMapping: '837I Loop 2300 AMT*F5 (Estimated Amount Due)',
+    description: 'The net estimated dollar amount expected from this specific payer after deducting prior payments and non-covered charges.',
+    rules: ['Equals Total Charges minus Prior Payments minus Non-Covered Charges.'],
+    rejectionCauses: ['Negative balance amounts.']
+  },
+  {
     locatorNumber: 'FL 56',
     name: 'National Provider Identifier (Billing NPI)',
     shortName: 'Hospital Facility NPI',
     category: 'provider',
-    sampleValue: '1457896321',
+    sampleValue: '1457896321 (Type 2 Facility NPI)',
     ediMapping: '837I Loop 2010AA NM109',
     description: 'The 10-digit Type 2 National Provider Identifier of the billing hospital or facility.',
     rules: ['Mandatory on all institutional claims.'],
     rejectionCauses: ['Missing or uncredentialed hospital NPI.']
+  },
+  {
+    locatorNumber: 'FL 57',
+    name: 'Other Provider ID (Lines A, B, C)',
+    shortName: 'Facility Legacy Provider Number',
+    category: 'provider',
+    sampleValue: 'LIC-TX99884 (State License)',
+    ediMapping: '837I Loop 2010AA REF segment',
+    description: 'Reports a legacy non-NPI identifier (Medicaid legacy PIN or state hospital license).',
+    rules: ['Leave blank unless specifically required by state Medicaid or local plans.'],
+    rejectionCauses: ['Entering legacy ID when NPI is mandated.']
+  },
+  {
+    locatorNumber: 'FL 58',
+    name: "Insured's Name (Lines A, B, C)",
+    shortName: 'Policyholder Legal Name',
+    category: 'payer',
+    sampleValue: 'RAMIREZ, CARLOS D.',
+    ediMapping: '837I Loop 2010BA NM103/NM104',
+    description: 'The legal name of the person who holds the insurance policy on lines A, B, and C.',
+    rules: ['Formatted as Last Name, First Name, Middle Initial.'],
+    rejectionCauses: ['Subscriber name spelling mismatch against eligibility record.']
+  },
+  {
+    locatorNumber: 'FL 59',
+    name: "Patient's Relationship to Insured (Lines A, B, C)",
+    shortName: 'Relationship to Insured (2 Digits)',
+    category: 'payer',
+    sampleValue: '18 (Self)',
+    ediMapping: '837I Loop 2000B SBR02 (18=Self, 01=Spouse, 19=Child)',
+    description: 'A 2-digit code identifying the patient’s relationship to the policyholder: 18=Self, 01=Spouse, 19=Child, 20=Employee.',
+    rules: ['Select code corresponding to insurance enrollment relationship.'],
+    rejectionCauses: ['Reporting 18 Self when patient is a dependent child.']
   },
   {
     locatorNumber: 'FL 60',
@@ -1310,8 +1849,30 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     rejectionCauses: ['Member ID mismatch against payer eligibility database.']
   },
   {
+    locatorNumber: 'FL 61',
+    name: 'Insurance Group Name (Lines A, B, C)',
+    shortName: 'Employer / Group Plan Name',
+    category: 'payer',
+    sampleValue: 'TEXAS STATE EMPLOYEES HEALTH PLAN',
+    ediMapping: '837I Loop 2000B SBR03',
+    description: 'The name of the employer group, union, or association that sponsors the health plan.',
+    rules: ['Enter employer name sponsoring commercial policy.'],
+    rejectionCauses: ['Omission on employer-sponsored commercial claims.']
+  },
+  {
+    locatorNumber: 'FL 62',
+    name: 'Insurance Group Number (Lines A, B, C)',
+    shortName: 'Insurance Group Number',
+    category: 'payer',
+    sampleValue: 'GRP-99882',
+    ediMapping: '837I Loop 2000B SBR03',
+    description: 'The alphanumeric group number identifying the specific employer plan benefits.',
+    rules: ['Enter group number printed on subscriber card.'],
+    rejectionCauses: ['Invalid group number causing benefit adjudication delay.']
+  },
+  {
     locatorNumber: 'FL 63',
-    name: 'Treatment Authorization Codes',
+    name: 'Treatment Authorization Codes (Lines A, B, C)',
     shortName: 'Prior Authorization / Precert Code',
     category: 'payer',
     sampleValue: 'AUTH-HOSP7781',
@@ -1319,6 +1880,39 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     description: 'The formal precertification or prior authorization number issued by the payer utilization management department.',
     rules: ['Mandatory for elective hospital admissions and specialized surgical procedures.'],
     rejectionCauses: ['Missing authorization triggers fatal CARC CO-197 hospital denial.']
+  },
+  {
+    locatorNumber: 'FL 64',
+    name: 'Document Control Number (DCN / Lines A, B, C)',
+    shortName: 'Original Claim Reference ICN / DCN',
+    category: 'payer',
+    sampleValue: '20250110009874X',
+    ediMapping: '837I Loop 2300 REF*F8 (Original Claim Number)',
+    description: 'The unique tracking number assigned by the payer to the original claim when submitting a replacement/corrected claim (TOB 0117).',
+    rules: ['Mandatory when FL 04 frequency digit is "7" (Replacement) or "8" (Void).'],
+    rejectionCauses: ['Submitting corrected bill without prior DCN causes duplicate claim denial.']
+  },
+  {
+    locatorNumber: 'FL 65',
+    name: 'Employer Name of the Insured',
+    shortName: 'Insured Employer Name',
+    category: 'payer',
+    sampleValue: 'STATE OF TEXAS RETIREMENT SYSTEM',
+    ediMapping: '837I Loop 2010BA NM1',
+    description: 'The legal name of the employer that provides health insurance coverage to the policyholder.',
+    rules: ['Required when Medicare Secondary Payer (MSP) Working Aged rules apply.'],
+    rejectionCauses: ['Missing employer name on MSP coordination claims.']
+  },
+  {
+    locatorNumber: 'FL 66',
+    name: 'Diagnosis Version Qualifier',
+    shortName: 'Diagnosis Version (0 = ICD-10)',
+    category: 'clinical',
+    sampleValue: '0 (ICD-10-CM)',
+    ediMapping: '837I Loop 2300 HI segment (ABK qualifier)',
+    description: 'A 1-character code indicating the diagnostic classification system used: "0" indicates ICD-10-CM, "9" indicates legacy ICD-9.',
+    rules: ['Must be "0" for all healthcare encounters since October 1, 2015.'],
+    rejectionCauses: ['Reporting "9" on modern claims.']
   },
   {
     locatorNumber: 'FL 67',
@@ -1341,7 +1935,7 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
   {
     locatorNumber: 'FL 67A-Q',
     name: 'Other (Secondary) Diagnosis Codes & POA',
-    shortName: 'Secondary Diagnoses & POA',
+    shortName: 'Secondary Diagnoses & POA (FL 67A-Q)',
     category: 'clinical',
     sampleValue: '67A: I10 (Hypertension) POA: Y | 67B: E11.9 (Type 2 Diabetes) POA: Y',
     ediMapping: '837I Loop 2300 HI*ABF (Secondary Diagnoses) and HI*PO',
@@ -1350,6 +1944,72 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
       'Determines whether the patient qualifies for a higher-weighted Complication/Comorbidity (CC) or Major CC (MCC) DRG reimbursement!'
     ],
     rejectionCauses: ['Listing hospital-acquired conditions as present on admission.']
+  },
+  {
+    locatorNumber: 'FL 68',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 68',
+    category: 'reserved',
+    sampleValue: '[BLANK]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the NUBC.',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Text entered in reserved fields.']
+  },
+  {
+    locatorNumber: 'FL 69',
+    name: 'Admitting Diagnosis Code',
+    shortName: 'Admitting Diagnosis (ICD-10)',
+    category: 'clinical',
+    sampleValue: 'R07.9 (Chest pain, unspecified)',
+    ediMapping: '837I Loop 2300 HI*ABJ (Admitting Diagnosis)',
+    description: 'The initial diagnosis code describing the patient’s clinical symptoms or condition at the moment they presented for admission.',
+    rules: ['Required on all inpatient hospital claims.'],
+    rejectionCauses: ['Missing admitting diagnosis on inpatient admissions.']
+  },
+  {
+    locatorNumber: 'FL 70',
+    name: "Patient's Reason for Visit (Lines a, b, c)",
+    shortName: "Patient's Reason for Visit",
+    category: 'clinical',
+    sampleValue: 'R07.9 (Chest pain, unspecified)',
+    ediMapping: '837I Loop 2300 HI*PR (Patient Reason for Visit)',
+    description: 'The primary symptom, complaint, or clinical reason stated by the patient for seeking outpatient emergency or clinic care.',
+    rules: ['Required for unscheduled outpatient hospital encounters (e.g. emergency room visits).'],
+    rejectionCauses: ['Omission on outpatient ER claims.']
+  },
+  {
+    locatorNumber: 'FL 71',
+    name: 'Prospective Payment System (PPS) Code',
+    shortName: 'PPS Code (Home Health / Hospice)',
+    category: 'codes',
+    sampleValue: 'HIPPS Code (e.g. 1AFKS)',
+    ediMapping: '837I Loop 2300 CLM segment',
+    description: 'Reports specialized case-mix or Prospective Payment System codes used in Home Health (OASIS) or SNF PPS billing.',
+    rules: ['Used when specific PPS payment models govern reimbursement.'],
+    rejectionCauses: ['Invalid HIPPS rate code.']
+  },
+  {
+    locatorNumber: 'FL 72',
+    name: 'External Cause of Injury (ECI) Codes & POA',
+    shortName: 'External Cause of Injury Codes',
+    category: 'clinical',
+    sampleValue: 'V43.52XA (Passenger in car injured in collision) | POA: Y',
+    ediMapping: '837I Loop 2300 HI*BN (External Cause of Injury)',
+    description: 'Reports secondary ICD-10 external cause codes (V00-Y99) describing environmental events, circumstances, or accident causes of injury.',
+    rules: ['Mandatory when primary diagnosis is traumatic injury, burn, or poisoning.'],
+    rejectionCauses: ['Trauma claim submitted without secondary E-code.']
+  },
+  {
+    locatorNumber: 'FL 73',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 73',
+    category: 'reserved',
+    sampleValue: '[BLANK]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the NUBC.',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Text entered in reserved fields.']
   },
   {
     locatorNumber: 'FL 74',
@@ -1370,8 +2030,30 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     ]
   },
   {
+    locatorNumber: 'FL 74a-e',
+    name: 'Other Procedure Codes & Dates',
+    shortName: 'Secondary Inpatient Procedures (FL 74a-e)',
+    category: 'clinical',
+    sampleValue: '74a: B2111ZZ (Fluoroscopy single coronary artery) | Date: 01 10 2025',
+    ediMapping: '837I Loop 2300 HI*BBR (Secondary Inpatient Procedures)',
+    description: 'Up to 5 additional secondary surgical or therapeutic procedures performed during the hospital stay.',
+    rules: ['Reported in descending order of surgical complexity.'],
+    rejectionCauses: ['Procedure dates outside inpatient admission span.']
+  },
+  {
+    locatorNumber: 'FL 75',
+    name: 'Reserved for Assignment by NUBC',
+    shortName: 'Reserved FL 75',
+    category: 'reserved',
+    sampleValue: '[BLANK]',
+    ediMapping: 'N/A',
+    description: 'Reserved for future national assignment by the NUBC.',
+    rules: ['Must be left completely blank.'],
+    rejectionCauses: ['Text entered in reserved fields.']
+  },
+  {
     locatorNumber: 'FL 76',
-    name: 'Attending Provider Name & NPI',
+    name: 'Attending Provider Name & Identifiers (NPI)',
     shortName: 'Attending Physician Name & NPI',
     category: 'provider',
     sampleValue: 'DR. MARCUS WELBY MD | NPI: 1659874123',
@@ -1385,7 +2067,7 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
   },
   {
     locatorNumber: 'FL 77',
-    name: 'Operating Physician Name & NPI',
+    name: 'Operating Physician Name & Identifiers (NPI)',
     shortName: 'Operating Surgeon Name & NPI',
     category: 'provider',
     sampleValue: 'DR. DENTON COOLEY MD | NPI: 1346798520',
@@ -1393,6 +2075,53 @@ export const UB_04_BOXES: Ub04BoxDetail[] = [
     description: 'The individual surgeon who performed the principal surgical procedure reported in FL 74.',
     rules: ['Required whenever a surgical procedure code is reported in FL 74.'],
     rejectionCauses: ['Reporting surgical procedure in FL 74 without operating surgeon NPI in FL 77.']
+  },
+  {
+    locatorNumber: 'FL 78',
+    name: 'Other Provider (Rendering / Consulting) Name & NPI',
+    shortName: 'Consulting / Rendering Clinician & NPI',
+    category: 'provider',
+    sampleValue: 'DR. ALICE STERLING MD | NPI: 1982736450',
+    ediMapping: '837I Loop 2310C NM1*82 (Rendering Provider)',
+    description: 'Reports the name and NPI of a consulting specialist or secondary clinician involved in patient care.',
+    rules: ['Used when specialist consultations are billed within the institutional claim.'],
+    rejectionCauses: ['Invalid NPI syntax.']
+  },
+  {
+    locatorNumber: 'FL 79',
+    name: 'Other Provider (Assisting Surgeon) Name & NPI',
+    shortName: 'Assistant Surgeon / Other Clinician & NPI',
+    category: 'provider',
+    sampleValue: 'DR. KEVIN CHEN MD | NPI: 1122334455',
+    ediMapping: '837I Loop 2310D NM1*ZZ (Other Operating Physician)',
+    description: 'Reports the name and NPI of the assistant surgeon or secondary physician.',
+    rules: ['Required when surgical assistant fees are included in facility billing.'],
+    rejectionCauses: ['Missing credentialing for assistant surgeon.']
+  },
+  {
+    locatorNumber: 'FL 80',
+    name: 'Remarks Field',
+    shortName: 'Remarks / Clinical Free Text',
+    category: 'clinical',
+    sampleValue: 'Emergency coronary angioplasty following acute anterior STEMI with cardiogenic shock',
+    ediMapping: '837I Loop 2300 NTE segment (Billing Remarks)',
+    description: 'A free-text space used to communicate special clinical context, non-standard authorization notes, or justification for unusual emergency care.',
+    rules: ['Keep concise; used when no standardized condition or occurrence code fits.'],
+    rejectionCauses: ['Failing to provide remarks when unlisted hospital services are billed.']
+  },
+  {
+    locatorNumber: 'FL 81',
+    name: 'CC (Code-Code) Field & Taxonomy Qualifier',
+    shortName: 'Healthcare Provider Taxonomy (FL 81)',
+    category: 'provider',
+    sampleValue: 'B3: 282N00000X (General Acute Care Hospital Taxonomy)',
+    ediMapping: '837I Loop 2000A PRV segment (Provider Taxonomy)',
+    description: 'Reports specific national billing codes or the hospital’s 10-character Healthcare Provider Taxonomy Code preceded by qualifier "B3".',
+    rules: [
+      'Qualifier "B3" indicates Healthcare Provider Taxonomy.',
+      'Mandatory for Medicaid institutional billing and Medicare specialty carve-outs.'
+    ],
+    rejectionCauses: ['Missing B3 qualifier or invalid 10-character taxonomy code.']
   }
 ];
 
