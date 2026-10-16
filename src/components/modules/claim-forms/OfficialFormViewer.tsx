@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   ZoomIn, 
   ZoomOut, 
@@ -6,14 +6,16 @@ import {
   Download, 
   Search, 
   Sparkles, 
-  CheckCircle2, 
   ArrowRight,
   Maximize2,
   Minimize2,
   Move,
   Contrast,
   SlidersHorizontal,
-  Columns2
+  Columns2,
+  Maximize,
+  Check,
+  Expand
 } from 'lucide-react';
 
 export interface FormSectionFilter<T> {
@@ -69,16 +71,19 @@ export function OfficialFormViewer<T>({
   isWideLayout = false,
   onToggleWideLayout
 }: OfficialFormViewerProps<T>) {
-  // Adjustable Controls State
-  const [zoom, setZoom] = useState<number>(1.1);
-  const [viewportHeight, setViewportHeight] = useState<'standard' | 'large' | 'tall' | 'full'>('large');
+  // Fit Mode: 'fit-width' (100% responsive width), 'fit-page' (entire sheet in viewport), 'custom' (zoom slider)
+  const [fitMode, setFitMode] = useState<'fit-width' | 'fit-page' | 'custom'>('fit-width');
+  const [zoom, setZoom] = useState<number>(1.0);
+  const [viewportHeight, setViewportHeight] = useState<'screen' | 'standard' | 'large' | 'full'>('screen');
   const [displayFilter, setDisplayFilter] = useState<'normal' | 'high-contrast' | 'dark-mode'>('normal');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [boxSearch, setBoxSearch] = useState<string>('');
 
-  // Drag-to-Pan State
+  // Viewport Container Refs
   const viewportRef = useRef<HTMLDivElement>(null);
   const fullscreenViewportRef = useRef<HTMLDivElement>(null);
+
+  // Drag-to-Pan State
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
@@ -110,11 +115,31 @@ export function OfficialFormViewer<T>({
     return key.includes(query) || name.includes(query) || shortName.includes(query);
   });
 
-  // Zoom Helpers
-  const handleZoomIn = () => setZoom(z => Math.min(2.5, +(z + 0.15).toFixed(2)));
-  const handleZoomOut = () => setZoom(z => Math.max(0.5, +(z - 0.15).toFixed(2)));
-  const handleResetZoom = () => setZoom(1.1);
-  const handlePresetZoom = (val: number) => setZoom(val);
+  // Fit & Zoom Handlers
+  const handleSetFitWidth = () => {
+    setFitMode('fit-width');
+    setZoom(1.0);
+  };
+
+  const handleSetFitPage = () => {
+    setFitMode('fit-page');
+    setZoom(1.0);
+  };
+
+  const handleCustomZoomChange = (val: number) => {
+    setFitMode('custom');
+    setZoom(val);
+  };
+
+  const handleZoomIn = () => {
+    setFitMode('custom');
+    setZoom(z => Math.min(2.5, +(z + 0.15).toFixed(2)));
+  };
+
+  const handleZoomOut = () => {
+    setFitMode('custom');
+    setZoom(z => Math.max(0.5, +(z - 0.15).toFixed(2)));
+  };
 
   // Drag-to-Pan Handlers
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, isFs = false) => {
@@ -134,8 +159,8 @@ export function OfficialFormViewer<T>({
     e.preventDefault();
     const x = e.pageX - target.offsetLeft;
     const y = e.pageY - target.offsetTop;
-    const walkX = (x - startX) * 1.4;
-    const walkY = (y - startY) * 1.4;
+    const walkX = (x - startX) * 1.3;
+    const walkY = (y - startY) * 1.3;
     target.scrollLeft = scrollLeft - walkX;
     target.scrollTop = scrollTop - walkY;
   };
@@ -144,11 +169,11 @@ export function OfficialFormViewer<T>({
 
   const isRose = badgeColor === 'rose';
 
-  // Height preset styling
+  // Responsive Height Presets
   const heightStyles = {
-    standard: 'h-[620px]',
+    screen: 'h-[75vh] min-h-[550px] max-h-[850px]',
+    standard: 'h-[600px]',
     large: 'h-[850px]',
-    tall: 'h-[1080px]',
     full: 'h-auto max-h-none'
   };
 
@@ -158,8 +183,6 @@ export function OfficialFormViewer<T>({
     'high-contrast': 'contrast(1.4) brightness(0.97)',
     'dark-mode': 'invert(0.92) hue-rotate(180deg) contrast(1.25)'
   };
-
-  const baseImageWidth = formType === 'cms1500' ? 940 : 920;
 
   return (
     <div className="bg-white dark:bg-health-darkCard border-2 border-slate-300 dark:border-slate-700 rounded-3xl p-4 sm:p-6 shadow-md space-y-4">
@@ -178,31 +201,32 @@ export function OfficialFormViewer<T>({
               {officialSubtitle}
             </span>
             <span className="text-[11px] font-mono font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-700">
-              300 DPI Ultra HD Vector Scan
+              300 DPI Official Vector Scan
             </span>
           </div>
+
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
             {officialTitle}
           </h2>
           <p className="text-xs text-slate-700 dark:text-slate-300 max-w-2xl mt-0.5 font-medium leading-relaxed">
-            Ultra-sharp official blank document. Use the zoom slider, presets, or mouse drag-to-pan below to inspect all box boundaries, fine-print instructions, and form locators.
+            Auto-fitted to your screen. The form scales dynamically so all boxes from left to right are 100% visible. Use the toolbar below to switch to Full Page, zoom in, or expand to Full-Width.
           </p>
         </div>
 
-        {/* Action Buttons: Fullscreen & Download */}
+        {/* Action Buttons: Full-Width, Theater Fullscreen, & Download */}
         <div className="flex items-center gap-2 flex-wrap self-start lg:self-auto">
           {onToggleWideLayout && (
             <button
               type="button"
               onClick={onToggleWideLayout}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-all border ${
                 isWideLayout
-                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs'
+                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs ring-2 ring-emerald-200'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-200'
               }`}
-              title={isWideLayout ? "Switch to Split 60/40 View" : "Expand Document to 100% Full-Width"}
+              title={isWideLayout ? "Switch back to Split 60/40 View" : "Expand Form to 100% Full-Width (12 Columns)"}
             >
-              <Columns2 className="w-3.5 h-3.5" />
+              <Columns2 className="w-4 h-4" />
               <span>{isWideLayout ? 'Split View' : 'Full-Width View'}</span>
             </button>
           )}
@@ -210,10 +234,10 @@ export function OfficialFormViewer<T>({
           <button
             type="button"
             onClick={() => setIsFullscreen(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-colors shadow-xs"
-            title="Expand into full-screen theater mode"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black transition-colors shadow-xs"
+            title="Open theater fullscreen mode"
           >
-            <Maximize2 className="w-3.5 h-3.5" />
+            <Maximize2 className="w-4 h-4" />
             <span>Theater Fullscreen</span>
           </button>
 
@@ -225,72 +249,110 @@ export function OfficialFormViewer<T>({
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white text-xs font-bold transition-colors shadow-xs"
             title="Download full 300 DPI high-resolution PNG"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Save HD Form</span>
+            <Download className="w-4 h-4" />
+            <span>Download</span>
           </a>
         </div>
       </div>
 
-      {/* 2. Adjustable Document View Controls Toolbar */}
+      {/* 2. AUTO-FIT & SCREEN ADJUSTMENT TOOLBAR */}
       <div className="bg-slate-100 dark:bg-slate-800/90 p-3 rounded-2xl border border-slate-300 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
-        {/* Zoom Controls with Slider */}
+        {/* Fit to Screen Mode Switchers */}
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1 shrink-0">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-blue-600" />
-            <span>Zoom:</span>
+          <span className="font-extrabold text-slate-900 dark:text-white flex items-center gap-1 shrink-0">
+            <Maximize className="w-4 h-4 text-emerald-600" />
+            <span>Screen Fitting:</span>
           </span>
 
-          <button
-            type="button"
-            onClick={handleZoomOut}
-            className="p-1.5 rounded-lg text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-200 transition-colors border border-slate-300 dark:border-slate-600"
-            title="Zoom Out"
-          >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-
-          <input
-            type="range"
-            min="0.5"
-            max="2.5"
-            step="0.05"
-            value={zoom}
-            onChange={e => setZoom(parseFloat(e.target.value))}
-            className="w-24 sm:w-32 accent-emerald-600 cursor-pointer"
-            title={`Zoom Level: ${Math.round(zoom * 100)}%`}
-          />
-
-          <button
-            type="button"
-            onClick={handleZoomIn}
-            className="p-1.5 rounded-lg text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-200 transition-colors border border-slate-300 dark:border-slate-600"
-            title="Zoom In"
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-          </button>
-
-          <span className="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 font-mono font-black text-slate-900 dark:text-white border border-slate-300 dark:border-slate-700 min-w-[50px] text-center">
-            {Math.round(zoom * 100)}%
-          </span>
-
-          {/* Quick Presets */}
-          <div className="hidden sm:flex items-center gap-1 ml-1">
+          <div className="flex items-center bg-white dark:bg-slate-900 p-0.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-xs">
             <button
               type="button"
-              onClick={() => handlePresetZoom(0.85)}
-              className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
-                zoom === 0.85
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
+              onClick={handleSetFitWidth}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
+                fitMode === 'fit-width'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
+              title="Fit entire form width into available screen with zero horizontal overflow"
             >
-              Fit
+              <Expand className="w-3.5 h-3.5" />
+              <span>Fit to Width (100%)</span>
             </button>
+
             <button
               type="button"
-              onClick={() => handlePresetZoom(1.0)}
-              className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
-                zoom === 1.0
+              onClick={handleSetFitPage}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
+                fitMode === 'fit-page'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+              title="Fit entire single page in viewport height and width without scrolling"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>Fit Entire Page</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleCustomZoomChange(1.35)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
+                fitMode === 'custom'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+              }`}
+              title="Custom Zoom with Slider & Mouse Pan"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Zoom & Pan</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Zoom Slider (available when zooming or fine-tuning) */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-2 py-1 rounded-xl border border-slate-300 dark:border-slate-700 shadow-xs">
+            <button
+              type="button"
+              onClick={handleZoomOut}
+              className="p-1 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              title="Zoom Out"
+            >
+              <ZoomOut className="w-3.5 h-3.5" />
+            </button>
+
+            <input
+              type="range"
+              min="0.5"
+              max="2.5"
+              step="0.05"
+              value={zoom}
+              onChange={e => handleCustomZoomChange(parseFloat(e.target.value))}
+              className="w-20 sm:w-28 accent-emerald-600 cursor-pointer"
+              title={`Zoom Level: ${Math.round(zoom * 100)}%`}
+            />
+
+            <button
+              type="button"
+              onClick={handleZoomIn}
+              className="p-1 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              title="Zoom In"
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+            </button>
+
+            <span className="px-1.5 py-0.5 rounded font-mono font-black text-slate-900 dark:text-white text-xs min-w-[44px] text-center">
+              {fitMode === 'fit-width' ? 'Auto' : fitMode === 'fit-page' ? 'Page' : `${Math.round(zoom * 100)}%`}
+            </span>
+          </div>
+
+          {/* Quick Zoom Presets */}
+          <div className="hidden sm:flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => handleCustomZoomChange(1.0)}
+              className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors ${
+                fitMode === 'custom' && zoom === 1.0
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
                   : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
               }`}
@@ -299,68 +361,63 @@ export function OfficialFormViewer<T>({
             </button>
             <button
               type="button"
-              onClick={() => handlePresetZoom(1.4)}
-              className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
-                zoom === 1.4
+              onClick={() => handleCustomZoomChange(1.4)}
+              className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors ${
+                fitMode === 'custom' && zoom === 1.4
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
                   : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
               }`}
             >
-              140% Large
+              140%
             </button>
             <button
               type="button"
-              onClick={() => handlePresetZoom(1.8)}
-              className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
-                zoom === 1.8
+              onClick={() => handleCustomZoomChange(1.8)}
+              className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors ${
+                fitMode === 'custom' && zoom === 1.8
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
                   : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
               }`}
             >
-              180% Ultra HD
+              180% HD
             </button>
           </div>
-        </div>
 
-        {/* Viewport Height & Display Filter Adjustments */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Height Adjuster */}
-          <div className="flex items-center gap-1">
-            <span className="font-bold text-slate-700 dark:text-slate-300 hidden md:inline">Height:</span>
-            {(['standard', 'large', 'tall'] as const).map(h => (
+          {/* Viewport Height Preset Selector */}
+          <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-0.5 rounded-xl border border-slate-300 dark:border-slate-700">
+            {(['screen', 'large', 'full'] as const).map(h => (
               <button
                 key={h}
                 type="button"
                 onClick={() => setViewportHeight(h)}
-                className={`px-2 py-1 rounded-lg text-[11px] font-bold capitalize border transition-all ${
+                className={`px-2 py-1 rounded-lg text-xs font-bold capitalize transition-all ${
                   viewportHeight === h
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                    : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
+                title={`Set Viewport Height to ${h}`}
               >
-                {h === 'standard' ? '600px' : h === 'large' ? '850px' : '1080px'}
+                {h === 'screen' ? 'Auto Screen' : h === 'large' ? '850px' : 'Full'}
               </button>
             ))}
           </div>
 
-          {/* Contrast & Paper Filter Toggle */}
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setDisplayFilter(f => f === 'normal' ? 'high-contrast' : f === 'high-contrast' ? 'dark-mode' : 'normal')}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors ${
-                displayFilter !== 'normal'
-                  ? 'bg-purple-600 text-white border-purple-500 shadow-xs'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
-              }`}
-              title="Toggle Document Contrast / Invert Paper Mode"
-            >
-              <Contrast className="w-3.5 h-3.5" />
-              <span>
-                {displayFilter === 'normal' ? 'Normal Ink' : displayFilter === 'high-contrast' ? 'Deep Contrast' : 'Inverted Paper'}
-              </span>
-            </button>
-          </div>
+          {/* Contrast & Paper Mode Toggle */}
+          <button
+            type="button"
+            onClick={() => setDisplayFilter(f => f === 'normal' ? 'high-contrast' : f === 'high-contrast' ? 'dark-mode' : 'normal')}
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+              displayFilter !== 'normal'
+                ? 'bg-purple-600 text-white border-purple-500 shadow-xs'
+                : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-100'
+            }`}
+            title="Toggle Document Contrast / Invert Paper Mode"
+          >
+            <Contrast className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">
+              {displayFilter === 'normal' ? 'Normal' : displayFilter === 'high-contrast' ? 'High Contrast' : 'Inverted'}
+            </span>
+          </button>
         </div>
       </div>
 
@@ -445,10 +502,12 @@ export function OfficialFormViewer<T>({
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[11px] text-slate-500 font-normal hidden lg:inline flex items-center gap-1">
-              <Move className="w-3 h-3 text-slate-400" />
-              <span>Click & drag document to pan</span>
-            </span>
+            {fitMode === 'custom' && (
+              <span className="text-[11px] text-slate-500 font-normal hidden lg:inline flex items-center gap-1">
+                <Move className="w-3 h-3 text-slate-400" />
+                <span>Click & drag to pan</span>
+              </span>
+            )}
             <button
               type="button"
               onClick={() => {
@@ -464,36 +523,67 @@ export function OfficialFormViewer<T>({
         </div>
       </div>
 
-      {/* 4. Interactive Scalable Document Viewport with Mouse Drag-to-Pan */}
+      {/* 4. RESPONSIVE AUTO-FITTING DOCUMENT VIEWPORT */}
       <div 
         ref={viewportRef}
-        onMouseDown={e => handleMouseDown(e, false)}
-        onMouseMove={e => handleMouseMove(e, false)}
+        onMouseDown={e => {
+          if (fitMode === 'custom') handleMouseDown(e, false);
+        }}
+        onMouseMove={e => {
+          if (fitMode === 'custom') handleMouseMove(e, false);
+        }}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className={`relative overflow-auto rounded-2xl border-2 border-slate-300 dark:border-slate-700 p-6 flex justify-center items-start shadow-inner select-none transition-all ${
+        className={`relative overflow-auto rounded-2xl border-2 border-slate-300 dark:border-slate-700 p-3 sm:p-5 flex justify-center items-start shadow-inner select-none transition-all ${
           heightStyles[viewportHeight]
-        } ${isMouseDown ? 'cursor-grabbing' : 'cursor-grab'} bg-slate-900/10 dark:bg-slate-950`}
+        } ${fitMode === 'custom' ? (isMouseDown ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'} bg-slate-900/10 dark:bg-slate-950`}
       >
+        {/* Responsive Paper Container */}
         <div 
-          style={{ 
-            transform: `scale(${zoom})`, 
-            transformOrigin: 'top center',
-            transition: isMouseDown ? 'none' : 'transform 0.15s ease-out',
+          className={`flex justify-center transition-all duration-200 ${
+            fitMode === 'fit-width'
+              ? 'w-full max-w-full'
+              : fitMode === 'fit-page'
+              ? 'w-full h-full items-center'
+              : 'w-auto'
+          }`}
+          style={{
             filter: filterStyles[displayFilter]
           }}
-          className="pb-24 pointer-events-none"
         >
-          <img
-            src={imageSrc}
-            alt={imageAlt}
-            draggable={false}
-            className="max-w-none shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
-            style={{ 
-              width: `${baseImageWidth}px`, 
-              height: 'auto'
-            }}
-          />
+          {fitMode === 'fit-width' ? (
+            /* 100% CONTAINER WIDTH - COMPLETELY VISIBLE HORIZONTALLY */
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              draggable={false}
+              className="w-full max-w-full h-auto shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
+            />
+          ) : fitMode === 'fit-page' ? (
+            /* FIT FULL PAGE (BOTH HEIGHT & WIDTH WITHOUT SCROLLING) */
+            <img
+              src={imageSrc}
+              alt={imageAlt}
+              draggable={false}
+              className="max-h-[calc(75vh-100px)] max-w-full w-auto h-auto object-contain shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
+            />
+          ) : (
+            /* CUSTOM ZOOM LEVEL WITH DRAG-TO-PAN */
+            <div 
+              style={{ 
+                width: `${Math.round(850 * zoom)}px`,
+                transition: isMouseDown ? 'none' : 'width 0.15s ease-out'
+              }}
+              className="pointer-events-none pb-20"
+            >
+              <img
+                src={imageSrc}
+                alt={imageAlt}
+                draggable={false}
+                className="w-full max-w-none shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
+              />
+            </div>
+          )}
         </div>
 
         {/* Floating Quick Action Footer inside Viewport */}
@@ -539,7 +629,7 @@ export function OfficialFormViewer<T>({
       {isFullscreen && (
         <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl p-4 sm:p-6 flex flex-col space-y-3 animate-in fade-in duration-200">
           {/* Fullscreen Header Controls */}
-          <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 p-3 rounded-2xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 p-3 rounded-2xl">
             <div className="flex items-center gap-3">
               <span className={`px-2.5 py-1 rounded-xl text-xs font-black uppercase tracking-wider text-white ${
                 isRose ? 'bg-rose-700' : 'bg-amber-700'
@@ -551,50 +641,57 @@ export function OfficialFormViewer<T>({
               </span>
             </div>
 
-            {/* Fullscreen Zoom Controls */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleZoomOut}
-                className="p-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-700"
-                title="Zoom Out"
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
+            {/* Fullscreen Fit & Zoom Controls */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center bg-slate-800 p-0.5 rounded-xl border border-slate-700">
+                <button
+                  type="button"
+                  onClick={handleSetFitWidth}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
+                    fitMode === 'fit-width' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-slate-700'
+                  }`}
+                >
+                  Fit Width
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSetFitPage}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
+                    fitMode === 'fit-page' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-slate-700'
+                  }`}
+                >
+                  Fit Page
+                </button>
+              </div>
 
-              <span className="text-xs font-mono font-bold text-emerald-400 min-w-[45px] text-center">
-                {Math.round(zoom * 100)}%
-              </span>
+              <div className="flex items-center gap-1 bg-slate-800 px-2 py-1 rounded-xl border border-slate-700">
+                <button
+                  type="button"
+                  onClick={handleZoomOut}
+                  className="p-1 rounded text-white hover:bg-slate-700"
+                  title="Zoom Out"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
 
-              <button
-                type="button"
-                onClick={handleZoomIn}
-                className="p-1.5 rounded-lg bg-slate-800 text-white hover:bg-slate-700"
-                title="Zoom In"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
+                <span className="text-xs font-mono font-bold text-emerald-400 min-w-[45px] text-center">
+                  {fitMode === 'fit-width' ? 'Width' : fitMode === 'fit-page' ? 'Page' : `${Math.round(zoom * 100)}%`}
+                </span>
 
-              <button
-                type="button"
-                onClick={handleResetZoom}
-                className="px-2.5 py-1 rounded-lg bg-slate-800 text-white text-xs font-bold hover:bg-slate-700 ml-1"
-              >
-                Reset
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handlePresetZoom(1.8)}
-                className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 ml-1"
-              >
-                180% HD
-              </button>
+                <button
+                  type="button"
+                  onClick={handleZoomIn}
+                  className="p-1 rounded text-white hover:bg-slate-700"
+                  title="Zoom In"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+              </div>
 
               <button
                 type="button"
                 onClick={() => setIsFullscreen(false)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold ml-3"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black ml-2 transition-colors"
               >
                 <Minimize2 className="w-4 h-4" />
                 <span>Exit Fullscreen</span>
@@ -605,33 +702,60 @@ export function OfficialFormViewer<T>({
           {/* Fullscreen Viewport */}
           <div 
             ref={fullscreenViewportRef}
-            onMouseDown={e => handleMouseDown(e, true)}
-            onMouseMove={e => handleMouseMove(e, true)}
+            onMouseDown={e => {
+              if (fitMode === 'custom') handleMouseDown(e, true);
+            }}
+            onMouseMove={e => {
+              if (fitMode === 'custom') handleMouseMove(e, true);
+            }}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             className={`flex-1 overflow-auto bg-slate-900 rounded-2xl border border-slate-800 p-6 flex justify-center items-start shadow-2xl select-none ${
-              isMouseDown ? 'cursor-grabbing' : 'cursor-grab'
+              fitMode === 'custom' ? (isMouseDown ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
             }`}
           >
             <div 
-              style={{ 
-                transform: `scale(${zoom})`, 
-                transformOrigin: 'top center',
-                transition: isMouseDown ? 'none' : 'transform 0.15s ease-out',
+              className={`flex justify-center transition-all duration-200 ${
+                fitMode === 'fit-width'
+                  ? 'w-full max-w-5xl'
+                  : fitMode === 'fit-page'
+                  ? 'h-full items-center'
+                  : 'w-auto'
+              }`}
+              style={{
                 filter: filterStyles[displayFilter]
               }}
-              className="pb-24 pointer-events-none"
             >
-              <img
-                src={imageSrc}
-                alt={imageAlt}
-                draggable={false}
-                className="max-w-none shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
-                style={{ 
-                  width: `${baseImageWidth + 100}px`, 
-                  height: 'auto'
-                }}
-              />
+              {fitMode === 'fit-width' ? (
+                <img
+                  src={imageSrc}
+                  alt={imageAlt}
+                  draggable={false}
+                  className="w-full max-w-full h-auto shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
+                />
+              ) : fitMode === 'fit-page' ? (
+                <img
+                  src={imageSrc}
+                  alt={imageAlt}
+                  draggable={false}
+                  className="max-h-[calc(100vh-170px)] max-w-full w-auto h-auto object-contain shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
+                />
+              ) : (
+                <div 
+                  style={{ 
+                    width: `${Math.round(1100 * zoom)}px`,
+                    transition: isMouseDown ? 'none' : 'width 0.15s ease-out'
+                  }}
+                  className="pointer-events-none pb-20"
+                >
+                  <img
+                    src={imageSrc}
+                    alt={imageAlt}
+                    draggable={false}
+                    className="w-full max-w-none shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
