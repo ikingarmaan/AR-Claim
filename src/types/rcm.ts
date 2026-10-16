@@ -30,8 +30,21 @@ export interface ClaimBoxDetail {
   rules: string[];
   rejectionCauses: string[];
   sampleValue: string;
+  ediMapping?: string;
   category: 'patient' | 'provider' | 'clinical' | 'billing';
-  coordinates: { x: number; y: number; width: number; height: number }; // For visual hotspot overlay
+  coordinates?: { x: number; y: number; width: number; height: number }; // For visual hotspot overlay
+}
+
+export interface Ub04BoxDetail {
+  locatorNumber: string;
+  name: string;
+  shortName: string;
+  category: 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical';
+  description: string;
+  sampleValue: string;
+  ediMapping: string;
+  rules: string[];
+  rejectionCauses: string[];
 }
 
 export interface Ub04CodeItem {
