@@ -146,7 +146,7 @@ export const Module2ClaimForms: React.FC = () => {
   const [selectedUb04Box, setSelectedUb04Box] = useState<Ub04BoxDetail>(UB_04_BOXES.find(b => b.locatorNumber === 'FL 04') || UB_04_BOXES[0]);
   const [ub04Search, setUb04Search] = useState('');
   const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved'>('all');
-  const [isWideLayout, setIsWideLayout] = useState<boolean>(false);
+  const [isWideLayout, setIsWideLayout] = useState<boolean>(true);
 
   // Auditor Sandbox State
   const [discoveredTraps, setDiscoveredTraps] = useState<string[]>([]);
@@ -1182,54 +1182,60 @@ export const Module2ClaimForms: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Sample Filled Value Monospace Banner */}
-                <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
-                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
-                    <span>Authentic Claim Sample Value:</span>
-                    <span className="text-emerald-400 font-bold">● Valid Syntax</span>
-                  </div>
-                  <div className="font-bold">{selectedCmsBox.sampleValue}</div>
-                </div>
-
-                {/* EDI 837P Mapping */}
-                {selectedCmsBox.ediMapping && (
-                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-xs text-blue-900 dark:text-blue-200 font-mono">
-                    <div className="font-bold text-[10px] uppercase text-blue-600 mb-0.5">
-                      HIPAA EDI 837P Loop & Segment:
+                <div className={`grid grid-cols-1 ${isWideLayout ? 'lg:grid-cols-2' : ''} gap-5`}>
+                  <div className="space-y-4">
+                    {/* Sample Filled Value Monospace Banner */}
+                    <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
+                      <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+                        <span>Authentic Claim Sample Value:</span>
+                        <span className="text-emerald-400 font-bold">● Valid Syntax</span>
+                      </div>
+                      <div className="font-bold">{selectedCmsBox.sampleValue}</div>
                     </div>
-                    {selectedCmsBox.ediMapping}
-                  </div>
-                )}
 
-                {/* Rules & NUCC Guidelines */}
-                <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Key Guidelines & NUCC Rules
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {selectedCmsBox.rules.map((r, i) => (
-                      <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{r}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Rejection Causes & Denial Codes */}
-                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
-                    <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
-                    <span>Top AR Denial Triggers & Traps</span>
+                    {/* EDI 837P Mapping */}
+                    {selectedCmsBox.ediMapping && (
+                      <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-xs text-blue-900 dark:text-blue-200 font-mono">
+                        <div className="font-bold text-[10px] uppercase text-blue-600 mb-0.5">
+                          HIPAA EDI 837P Loop & Segment:
+                        </div>
+                        {selectedCmsBox.ediMapping}
+                      </div>
+                    )}
                   </div>
-                  <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
-                    {selectedCmsBox.rejectionCauses.map((c, i) => (
-                      <li key={i} className="flex items-start gap-1.5 font-medium">
-                        <span className="text-red-500 font-bold">•</span>
-                        <span>{c}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                  <div className="space-y-4">
+                    {/* Rules & NUCC Guidelines */}
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                        Key Guidelines & NUCC Rules
+                      </h4>
+                      <ul className="space-y-1.5">
+                        {selectedCmsBox.rules.map((r, i) => (
+                          <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Rejection Causes & Denial Codes */}
+                    <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
+                        <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
+                        <span>Top AR Denial Triggers & Traps</span>
+                      </div>
+                      <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
+                        {selectedCmsBox.rejectionCauses.map((c, i) => (
+                          <li key={i} className="flex items-start gap-1.5 font-medium">
+                            <span className="text-red-500 font-bold">•</span>
+                            <span>{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1828,52 +1834,58 @@ export const Module2ClaimForms: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Sample Filled Value Monospace Banner */}
-                <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
-                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
-                    <span>Authentic Hospital Sample Value:</span>
-                    <span className="text-amber-400 font-bold">● Valid Syntax</span>
-                  </div>
-                  <div className="font-bold">{selectedUb04Box.sampleValue}</div>
-                </div>
+                <div className={`grid grid-cols-1 ${isWideLayout ? 'lg:grid-cols-2' : ''} gap-5`}>
+                  <div className="space-y-4">
+                    {/* Sample Filled Value Monospace Banner */}
+                    <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
+                      <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+                        <span>Authentic Hospital Sample Value:</span>
+                        <span className="text-amber-400 font-bold">● Valid Syntax</span>
+                      </div>
+                      <div className="font-bold">{selectedUb04Box.sampleValue}</div>
+                    </div>
 
-                {/* EDI 837I Mapping */}
-                <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 font-mono">
-                  <div className="font-bold text-[10px] uppercase text-purple-600 mb-0.5">
-                    HIPAA EDI 837I Loop & Segment:
+                    {/* EDI 837I Mapping */}
+                    <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 font-mono">
+                      <div className="font-bold text-[10px] uppercase text-purple-600 mb-0.5">
+                        HIPAA EDI 837I Loop & Segment:
+                      </div>
+                      {selectedUb04Box.ediMapping}
+                    </div>
                   </div>
-                  {selectedUb04Box.ediMapping}
-                </div>
 
-                {/* Rules & Hospital Guidelines */}
-                <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                    Hospital Guidelines & Inpatient / Outpatient Rules
-                  </h4>
-                  <ul className="space-y-1.5">
-                    {selectedUb04Box.rules.map((r, i) => (
-                      <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{r}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                  <div className="space-y-4">
+                    {/* Rules & Hospital Guidelines */}
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                        Hospital Guidelines & Inpatient / Outpatient Rules
+                      </h4>
+                      <ul className="space-y-1.5">
+                        {selectedUb04Box.rules.map((r, i) => (
+                          <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-                {/* Rejection Causes & Denial Codes */}
-                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
-                    <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
-                    <span>Hospital Rejection & DRG Audit Risks</span>
+                    {/* Rejection Causes & Denial Codes */}
+                    <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
+                      <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
+                        <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
+                        <span>Hospital Rejection & DRG Audit Risks</span>
+                      </div>
+                      <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
+                        {selectedUb04Box.rejectionCauses.map((c, i) => (
+                          <li key={i} className="flex items-start gap-1.5 font-medium">
+                            <span className="text-red-500 font-bold">•</span>
+                            <span>{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                  <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
-                    {selectedUb04Box.rejectionCauses.map((c, i) => (
-                      <li key={i} className="flex items-start gap-1.5 font-medium">
-                        <span className="text-red-500 font-bold">•</span>
-                        <span>{c}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </div>
             </div>

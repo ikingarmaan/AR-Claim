@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   ZoomIn, 
   ZoomOut, 
-  RotateCcw, 
   Download, 
   Search, 
   Sparkles, 
@@ -13,9 +12,7 @@ import {
   Contrast,
   SlidersHorizontal,
   Columns2,
-  Maximize,
-  Check,
-  Expand
+  Check
 } from 'lucide-react';
 
 export interface FormSectionFilter<T> {
@@ -68,22 +65,22 @@ export function OfficialFormViewer<T>({
   activeSection,
   onSelectSection,
   inspectorElementId,
-  isWideLayout = false,
+  isWideLayout = true,
   onToggleWideLayout
 }: OfficialFormViewerProps<T>) {
-  // Fit Mode: 'fit-width' (100% responsive width), 'fit-page' (entire sheet in viewport), 'custom' (zoom slider)
-  const [fitMode, setFitMode] = useState<'fit-width' | 'fit-page' | 'custom'>('fit-width');
+  // Fit Mode: 'fit-width' fits 100% of the allocated site container (up to 1024px)
+  // 'custom' applies explicit zoom scaling
+  const [fitMode, setFitMode] = useState<'fit-width' | 'custom'>('fit-width');
   const [zoom, setZoom] = useState<number>(1.0);
-  const [viewportHeight, setViewportHeight] = useState<'screen' | 'standard' | 'large' | 'full'>('screen');
+  const [viewportHeight, setViewportHeight] = useState<'standard' | 'large' | 'tall' | 'full'>('large');
   const [displayFilter, setDisplayFilter] = useState<'normal' | 'high-contrast' | 'dark-mode'>('normal');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [boxSearch, setBoxSearch] = useState<string>('');
 
-  // Viewport Container Refs
+  // Viewport Container Refs for Drag-to-Pan
   const viewportRef = useRef<HTMLDivElement>(null);
   const fullscreenViewportRef = useRef<HTMLDivElement>(null);
 
-  // Drag-to-Pan State
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
@@ -121,24 +118,24 @@ export function OfficialFormViewer<T>({
     setZoom(1.0);
   };
 
-  const handleSetFitPage = () => {
-    setFitMode('fit-page');
-    setZoom(1.0);
-  };
-
-  const handleCustomZoomChange = (val: number) => {
+  const handleSetCustomZoom = (level: number) => {
     setFitMode('custom');
-    setZoom(val);
+    setZoom(level);
   };
 
   const handleZoomIn = () => {
     setFitMode('custom');
-    setZoom(z => Math.min(2.5, +(z + 0.15).toFixed(2)));
+    setZoom(z => Math.min(2.5, +(z + 0.1).toFixed(2)));
   };
 
   const handleZoomOut = () => {
     setFitMode('custom');
-    setZoom(z => Math.max(0.5, +(z - 0.15).toFixed(2)));
+    setZoom(z => Math.max(0.6, +(z - 0.1).toFixed(2)));
+  };
+
+  const handleResetZoom = () => {
+    setFitMode('fit-width');
+    setZoom(1.0);
   };
 
   // Drag-to-Pan Handlers
@@ -171,18 +168,24 @@ export function OfficialFormViewer<T>({
 
   // Responsive Height Presets
   const heightStyles = {
-    screen: 'h-[75vh] min-h-[550px] max-h-[850px]',
-    standard: 'h-[600px]',
+    standard: 'h-[680px]',
     large: 'h-[850px]',
+    tall: 'h-[1050px]',
     full: 'h-auto max-h-none'
   };
 
   // Filter effect styling
   const filterStyles = {
     'normal': 'none',
-    'high-contrast': 'contrast(1.4) brightness(0.97)',
-    'dark-mode': 'invert(0.92) hue-rotate(180deg) contrast(1.25)'
+    'high-contrast': 'contrast(1.35) brightness(0.97)',
+    'dark-mode': 'invert(0.92) hue-rotate(180deg) contrast(1.2)'
   };
+
+  // Optimal Allocated Paper Width:
+  // In wide layout: 960px base (near 1:1 physical paper size, perfectly readable on laptop/desktop!)
+  // In split layout: 860px base
+  const basePaperWidth = isWideLayout ? 960 : 860;
+  const currentPaperWidth = Math.round(basePaperWidth * zoom);
 
   return (
     <div className="bg-white dark:bg-health-darkCard border-2 border-slate-300 dark:border-slate-700 rounded-3xl p-4 sm:p-6 shadow-md space-y-4">
@@ -209,7 +212,7 @@ export function OfficialFormViewer<T>({
             {officialTitle}
           </h2>
           <p className="text-xs text-slate-700 dark:text-slate-300 max-w-2xl mt-0.5 font-medium leading-relaxed">
-            Auto-fitted to your screen. The form scales dynamically so all boxes from left to right are 100% visible. Use the toolbar below to switch to Full Page, zoom in, or expand to Full-Width.
+            Sized to fit your screen at full natural reading scale. Every box, code, and checkbox is sharp and legible. Use the box navigator below to inspect official billing rules, EDI loops, and denial traps.
           </p>
         </div>
 
@@ -224,10 +227,10 @@ export function OfficialFormViewer<T>({
                   ? 'bg-emerald-600 text-white border-emerald-500 shadow-xs ring-2 ring-emerald-200'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700 hover:bg-slate-200'
               }`}
-              title={isWideLayout ? "Switch back to Split 60/40 View" : "Expand Form to 100% Full-Width (12 Columns)"}
+              title={isWideLayout ? "Switch to Split 60/40 View" : "Expand Form to 100% Full-Width"}
             >
               <Columns2 className="w-4 h-4" />
-              <span>{isWideLayout ? 'Split View' : 'Full-Width View'}</span>
+              <span>{isWideLayout ? 'Full-Width (Active)' : 'Side-by-Side'}</span>
             </button>
           )}
 
@@ -250,68 +253,63 @@ export function OfficialFormViewer<T>({
             title="Download full 300 DPI high-resolution PNG"
           >
             <Download className="w-4 h-4" />
-            <span>Download</span>
+            <span>Save HD Form</span>
           </a>
         </div>
       </div>
 
-      {/* 2. AUTO-FIT & SCREEN ADJUSTMENT TOOLBAR */}
+      {/* 2. SIZING & SCREEN ADJUSTMENT TOOLBAR */}
       <div className="bg-slate-100 dark:bg-slate-800/90 p-3 rounded-2xl border border-slate-300 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
-        {/* Fit to Screen Mode Switchers */}
+        {/* Zoom & Paper Sizing Controls */}
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-extrabold text-slate-900 dark:text-white flex items-center gap-1 shrink-0">
-            <Maximize className="w-4 h-4 text-emerald-600" />
-            <span>Screen Fitting:</span>
+            <SlidersHorizontal className="w-4 h-4 text-emerald-600" />
+            <span>Form Size:</span>
           </span>
 
           <div className="flex items-center bg-white dark:bg-slate-900 p-0.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-xs">
             <button
               type="button"
               onClick={handleSetFitWidth}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
                 fitMode === 'fit-width'
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
-              title="Fit entire form width into available screen with zero horizontal overflow"
+              title="Automatically fit 100% of the allocated site container width"
             >
-              <Expand className="w-3.5 h-3.5" />
-              <span>Fit to Width (100%)</span>
+              Fit Width (Site)
             </button>
 
             <button
               type="button"
-              onClick={handleSetFitPage}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
-                fitMode === 'fit-page'
+              onClick={() => handleSetCustomZoom(1.0)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                fitMode === 'custom' && zoom === 1.0
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
-              title="Fit entire single page in viewport height and width without scrolling"
+              title="Standard 960px physical print scale"
             >
-              <Maximize2 className="w-3.5 h-3.5" />
-              <span>Fit Entire Page</span>
+              100% (960px)
             </button>
 
             <button
               type="button"
-              onClick={() => handleCustomZoomChange(1.35)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all flex items-center gap-1.5 ${
-                fitMode === 'custom'
-                  ? 'bg-blue-600 text-white shadow-xs'
+              onClick={() => handleSetCustomZoom(1.25)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${
+                fitMode === 'custom' && zoom === 1.25
+                  ? 'bg-emerald-600 text-white shadow-xs'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
-              title="Custom Zoom with Slider & Mouse Pan"
+              title="Enlarge to 125% for easy inspection of fine print"
             >
-              <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>Zoom & Pan</span>
+              125% Large
             </button>
           </div>
-        </div>
 
-        {/* Zoom Slider (available when zooming or fine-tuning) */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-2 py-1 rounded-xl border border-slate-300 dark:border-slate-700 shadow-xs">
+          {/* Stepper Zoom */}
+          <div className="flex items-center gap-1 bg-white dark:bg-slate-900 px-2 py-1 rounded-xl border border-slate-300 dark:border-slate-700 shadow-xs">
             <button
               type="button"
               onClick={handleZoomOut}
@@ -321,16 +319,9 @@ export function OfficialFormViewer<T>({
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
 
-            <input
-              type="range"
-              min="0.5"
-              max="2.5"
-              step="0.05"
-              value={zoom}
-              onChange={e => handleCustomZoomChange(parseFloat(e.target.value))}
-              className="w-20 sm:w-28 accent-emerald-600 cursor-pointer"
-              title={`Zoom Level: ${Math.round(zoom * 100)}%`}
-            />
+            <span className="font-mono font-black text-slate-900 dark:text-white text-xs px-1.5 min-w-[42px] text-center">
+              {fitMode === 'fit-width' ? 'Fit' : `${Math.round(zoom * 100)}%`}
+            </span>
 
             <button
               type="button"
@@ -340,52 +331,14 @@ export function OfficialFormViewer<T>({
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
-
-            <span className="px-1.5 py-0.5 rounded font-mono font-black text-slate-900 dark:text-white text-xs min-w-[44px] text-center">
-              {fitMode === 'fit-width' ? 'Auto' : fitMode === 'fit-page' ? 'Page' : `${Math.round(zoom * 100)}%`}
-            </span>
           </div>
+        </div>
 
-          {/* Quick Zoom Presets */}
-          <div className="hidden sm:flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => handleCustomZoomChange(1.0)}
-              className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors ${
-                fitMode === 'custom' && zoom === 1.0
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              100%
-            </button>
-            <button
-              type="button"
-              onClick={() => handleCustomZoomChange(1.4)}
-              className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors ${
-                fitMode === 'custom' && zoom === 1.4
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              140%
-            </button>
-            <button
-              type="button"
-              onClick={() => handleCustomZoomChange(1.8)}
-              className={`px-2 py-1 rounded-lg text-xs font-bold border transition-colors ${
-                fitMode === 'custom' && zoom === 1.8
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-transparent'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:bg-slate-200'
-              }`}
-            >
-              180% HD
-            </button>
-          </div>
-
-          {/* Viewport Height Preset Selector */}
+        {/* Height and Contrast Options */}
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-0.5 rounded-xl border border-slate-300 dark:border-slate-700">
-            {(['screen', 'large', 'full'] as const).map(h => (
+            <span className="text-[11px] font-bold text-slate-500 px-2 hidden md:inline">Height:</span>
+            {(['standard', 'large', 'tall'] as const).map(h => (
               <button
                 key={h}
                 type="button"
@@ -395,9 +348,8 @@ export function OfficialFormViewer<T>({
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
                     : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
-                title={`Set Viewport Height to ${h}`}
               >
-                {h === 'screen' ? 'Auto Screen' : h === 'large' ? '850px' : 'Full'}
+                {h === 'standard' ? '680px' : h === 'large' ? '850px' : '1050px'}
               </button>
             ))}
           </div>
@@ -415,7 +367,7 @@ export function OfficialFormViewer<T>({
           >
             <Contrast className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">
-              {displayFilter === 'normal' ? 'Normal' : displayFilter === 'high-contrast' ? 'High Contrast' : 'Inverted'}
+              {displayFilter === 'normal' ? 'Normal' : displayFilter === 'high-contrast' ? 'Deep Contrast' : 'Inverted'}
             </span>
           </button>
         </div>
@@ -502,7 +454,7 @@ export function OfficialFormViewer<T>({
           </div>
 
           <div className="flex items-center gap-3">
-            {fitMode === 'custom' && (
+            {zoom > 1.05 && (
               <span className="text-[11px] text-slate-500 font-normal hidden lg:inline flex items-center gap-1">
                 <Move className="w-3 h-3 text-slate-400" />
                 <span>Click & drag to pan</span>
@@ -523,67 +475,36 @@ export function OfficialFormViewer<T>({
         </div>
       </div>
 
-      {/* 4. RESPONSIVE AUTO-FITTING DOCUMENT VIEWPORT */}
+      {/* 4. OPTIMALLY ALLOCATED DOCUMENT VIEWPORT */}
       <div 
         ref={viewportRef}
         onMouseDown={e => {
-          if (fitMode === 'custom') handleMouseDown(e, false);
+          if (fitMode === 'custom' && zoom > 1.05) handleMouseDown(e, false);
         }}
         onMouseMove={e => {
-          if (fitMode === 'custom') handleMouseMove(e, false);
+          if (fitMode === 'custom' && zoom > 1.05) handleMouseMove(e, false);
         }}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        className={`relative overflow-auto rounded-2xl border-2 border-slate-300 dark:border-slate-700 p-3 sm:p-5 flex justify-center items-start shadow-inner select-none transition-all ${
+        className={`relative overflow-auto rounded-2xl border-2 border-slate-300 dark:border-slate-700 p-3 sm:p-6 flex justify-center items-start shadow-inner select-none transition-all ${
           heightStyles[viewportHeight]
-        } ${fitMode === 'custom' ? (isMouseDown ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'} bg-slate-900/10 dark:bg-slate-950`}
+        } ${fitMode === 'custom' && zoom > 1.05 ? (isMouseDown ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'} bg-slate-900/10 dark:bg-slate-950`}
       >
-        {/* Responsive Paper Container */}
+        {/* Form Paper Canvas: Fits cleanly into allocated card */}
         <div 
-          className={`flex justify-center transition-all duration-200 ${
-            fitMode === 'fit-width'
-              ? 'w-full max-w-full'
-              : fitMode === 'fit-page'
-              ? 'w-full h-full items-center'
-              : 'w-auto'
-          }`}
+          className="transition-all duration-150 flex justify-center mx-auto"
           style={{
+            width: fitMode === 'fit-width' ? '100%' : `${currentPaperWidth}px`,
+            maxWidth: fitMode === 'fit-width' ? '1020px' : zoom <= 1.0 ? '100%' : 'none',
             filter: filterStyles[displayFilter]
           }}
         >
-          {fitMode === 'fit-width' ? (
-            /* 100% CONTAINER WIDTH - COMPLETELY VISIBLE HORIZONTALLY */
-            <img
-              src={imageSrc}
-              alt={imageAlt}
-              draggable={false}
-              className="w-full max-w-full h-auto shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
-            />
-          ) : fitMode === 'fit-page' ? (
-            /* FIT FULL PAGE (BOTH HEIGHT & WIDTH WITHOUT SCROLLING) */
-            <img
-              src={imageSrc}
-              alt={imageAlt}
-              draggable={false}
-              className="max-h-[calc(75vh-100px)] max-w-full w-auto h-auto object-contain shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
-            />
-          ) : (
-            /* CUSTOM ZOOM LEVEL WITH DRAG-TO-PAN */
-            <div 
-              style={{ 
-                width: `${Math.round(850 * zoom)}px`,
-                transition: isMouseDown ? 'none' : 'width 0.15s ease-out'
-              }}
-              className="pointer-events-none pb-20"
-            >
-              <img
-                src={imageSrc}
-                alt={imageAlt}
-                draggable={false}
-                className="w-full max-w-none shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
-              />
-            </div>
-          )}
+          <img
+            src={imageSrc}
+            alt={imageAlt}
+            draggable={false}
+            className="w-full h-auto shadow-2xl rounded-sm border-2 border-slate-400 dark:border-slate-700 bg-white"
+          />
         </div>
 
         {/* Floating Quick Action Footer inside Viewport */}
@@ -643,26 +564,33 @@ export function OfficialFormViewer<T>({
 
             {/* Fullscreen Fit & Zoom Controls */}
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center bg-slate-800 p-0.5 rounded-xl border border-slate-700">
-                <button
-                  type="button"
-                  onClick={handleSetFitWidth}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
-                    fitMode === 'fit-width' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-slate-700'
-                  }`}
-                >
-                  Fit Width
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSetFitPage}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
-                    fitMode === 'fit-page' ? 'bg-emerald-600 text-white' : 'text-slate-300 hover:bg-slate-700'
-                  }`}
-                >
-                  Fit Page
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleSetFitWidth}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  fitMode === 'fit-width' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white hover:bg-slate-700'
+                }`}
+              >
+                Fit Width
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetCustomZoom(1.0)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  fitMode === 'custom' && zoom === 1.0 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white hover:bg-slate-700'
+                }`}
+              >
+                100% Fit
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSetCustomZoom(1.3)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  fitMode === 'custom' && zoom === 1.3 ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white hover:bg-slate-700'
+                }`}
+              >
+                130% Large
+              </button>
 
               <div className="flex items-center gap-1 bg-slate-800 px-2 py-1 rounded-xl border border-slate-700">
                 <button
@@ -675,7 +603,7 @@ export function OfficialFormViewer<T>({
                 </button>
 
                 <span className="text-xs font-mono font-bold text-emerald-400 min-w-[45px] text-center">
-                  {fitMode === 'fit-width' ? 'Width' : fitMode === 'fit-page' ? 'Page' : `${Math.round(zoom * 100)}%`}
+                  {fitMode === 'fit-width' ? 'Fit' : `${Math.round(zoom * 100)}%`}
                 </span>
 
                 <button
@@ -703,59 +631,31 @@ export function OfficialFormViewer<T>({
           <div 
             ref={fullscreenViewportRef}
             onMouseDown={e => {
-              if (fitMode === 'custom') handleMouseDown(e, true);
+              if (fitMode === 'custom' && zoom > 1.05) handleMouseDown(e, true);
             }}
             onMouseMove={e => {
-              if (fitMode === 'custom') handleMouseMove(e, true);
+              if (fitMode === 'custom' && zoom > 1.05) handleMouseMove(e, true);
             }}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             className={`flex-1 overflow-auto bg-slate-900 rounded-2xl border border-slate-800 p-6 flex justify-center items-start shadow-2xl select-none ${
-              fitMode === 'custom' ? (isMouseDown ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
+              fitMode === 'custom' && zoom > 1.05 ? (isMouseDown ? 'cursor-grabbing' : 'cursor-grab') : 'cursor-default'
             }`}
           >
             <div 
-              className={`flex justify-center transition-all duration-200 ${
-                fitMode === 'fit-width'
-                  ? 'w-full max-w-5xl'
-                  : fitMode === 'fit-page'
-                  ? 'h-full items-center'
-                  : 'w-auto'
-              }`}
+              className="flex justify-center transition-all duration-150 mx-auto pb-24"
               style={{
+                width: fitMode === 'fit-width' ? '100%' : `${Math.round(1080 * zoom)}px`,
+                maxWidth: fitMode === 'fit-width' ? '1180px' : 'none',
                 filter: filterStyles[displayFilter]
               }}
             >
-              {fitMode === 'fit-width' ? (
-                <img
-                  src={imageSrc}
-                  alt={imageAlt}
-                  draggable={false}
-                  className="w-full max-w-full h-auto shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
-                />
-              ) : fitMode === 'fit-page' ? (
-                <img
-                  src={imageSrc}
-                  alt={imageAlt}
-                  draggable={false}
-                  className="max-h-[calc(100vh-170px)] max-w-full w-auto h-auto object-contain shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
-                />
-              ) : (
-                <div 
-                  style={{ 
-                    width: `${Math.round(1100 * zoom)}px`,
-                    transition: isMouseDown ? 'none' : 'width 0.15s ease-out'
-                  }}
-                  className="pointer-events-none pb-20"
-                >
-                  <img
-                    src={imageSrc}
-                    alt={imageAlt}
-                    draggable={false}
-                    className="w-full max-w-none shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
-                  />
-                </div>
-              )}
+              <img
+                src={imageSrc}
+                alt={imageAlt}
+                draggable={false}
+                className="w-full h-auto shadow-2xl rounded-sm border-2 border-slate-700 bg-white"
+              />
             </div>
           </div>
 
