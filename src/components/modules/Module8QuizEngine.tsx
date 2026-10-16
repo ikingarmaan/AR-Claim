@@ -341,7 +341,7 @@ export const Module8QuizEngine: React.FC = () => {
 
               <div>
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-                  RCM & AR Healthcare Certification Exam
+                  RCMclaim Professional Certification Exam
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium mt-2 leading-relaxed">
                   Simulates a formal healthcare revenue cycle credentialing test. Answer 25 questions across coding, claim forms, Medicare, modifiers, and denial scenarios within 25 minutes. A passing score of 80% or higher grants an official Certificate of Completion.
@@ -591,7 +591,7 @@ export const Module8QuizEngine: React.FC = () => {
                     </div>
 
                     <div className="text-xs font-mono uppercase tracking-widest text-emerald-400">
-                      RCM & US MEDICAL AR ACADEMY • CREDENTIAL VERIFICATION
+                      RCMCLAIM • CREDENTIAL VERIFICATION & MASTERY
                     </div>
 
                     <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
