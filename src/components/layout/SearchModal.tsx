@@ -127,11 +127,11 @@ export const SearchModal: React.FC = () => {
                         <span className="font-semibold text-sm truncate text-slate-900 dark:text-white">
                           {item.title}
                         </span>
-                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
+                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium shrink-0">
                           {item.category}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                      <p className="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-1">
                         {item.subtitle}
                       </p>
                     </div>
@@ -145,7 +145,7 @@ export const SearchModal: React.FC = () => {
         </div>
 
         {/* Footer shortcuts */}
-        <div className="px-4 py-2.5 bg-slate-50 dark:bg-health-darkSubtle/30 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+        <div className="px-4 py-2.5 bg-slate-50 dark:bg-health-darkSubtle/30 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-700 dark:text-slate-300 font-medium">
           <div className="flex items-center gap-3">
             <span><kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono">↑↓</kbd> navigate</span>
             <span><kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono">Enter</kbd> jump to module</span>

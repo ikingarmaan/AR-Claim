@@ -110,7 +110,7 @@ export const ActionHub: React.FC = () => {
           <h3 className="text-lg font-bold text-slate-900 dark:text-white">
             Curriculum Modules & Interactive Labs
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
             Select any module to start learning or click checkmarks to track completed topics
           </p>
         </div>
@@ -155,7 +155,7 @@ export const ActionHub: React.FC = () => {
                   {mod.title}
                 </h4>
 
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed mb-4">
                   {mod.subtitle}
                 </p>
 

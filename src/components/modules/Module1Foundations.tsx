@@ -126,7 +126,7 @@ export const Module1Foundations: React.FC = () => {
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Interactive Claim Adjudication & Math Simulator
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Experiment with real-world financial figures to see how Allowed Amounts, CO-45 write-offs, and PR cost-sharing calculate on an ERA/EOB
             </p>
           </div>
@@ -358,7 +358,7 @@ export const Module1Foundations: React.FC = () => {
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">
               3D Flip Flashcards & Terminology Deep Dives
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Click any card to flip in 3D and uncover real-world clinical examples, calculation formulas, and compliance rules
             </p>
           </div>

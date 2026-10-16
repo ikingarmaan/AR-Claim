@@ -80,7 +80,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 Interactive AR Note Builder
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Generate compliant 6-point audit notes for PM / EHR systems
               </p>
             </div>
@@ -136,7 +136,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">1. Date of Follow-up *</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">1. Date of Follow-up *</label>
                     <input
                       type="date"
                       value={date}
@@ -145,7 +145,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">2. Insurance Rep Name *</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">2. Insurance Rep Name *</label>
                     <input
                       type="text"
                       value={repName}
@@ -157,7 +157,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">3. Call Reference # *</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">3. Call Reference # *</label>
                     <input
                       type="text"
                       value={callRef}
@@ -166,7 +166,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">4. Current Claim Status *</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">4. Current Claim Status *</label>
                     <input
                       type="text"
                       value={claimStatus}
@@ -177,7 +177,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
                 </div>
 
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">5. Action Taken & Financial Summary *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">5. Action Taken & Financial Summary *</label>
                   <textarea
                     rows={3}
                     value={actionTaken}
@@ -188,7 +188,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">6. Next Follow-up Date *</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">6. Next Follow-up Date *</label>
                     <input
                       type="date"
                       value={nextFollowUpDate}
@@ -197,7 +197,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">Billed Charge ($)</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Billed Charge ($)</label>
                     <input
                       type="text"
                       value={billedAmount}
@@ -312,7 +312,7 @@ AUDIT TRAIL: Compliant 6-Point Documentation Verified`;
                       <span className="font-semibold text-slate-800 dark:text-slate-200">Rep: </span>{item.repName} (Ref #{item.callRef}) | <span className="font-semibold">Status: </span>{item.status}
                     </div>
 
-                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 font-medium line-clamp-2">
                       {item.actionTaken}
                     </p>
 

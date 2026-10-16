@@ -29,7 +29,7 @@ export const QuickStats: React.FC = () => {
           <div className="text-2xl font-black text-slate-900 dark:text-white">
             {completionPercentage}%
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <div className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
             {progress.completedModules.length} of 8 Modules Finished
           </div>
         </div>
@@ -47,7 +47,7 @@ export const QuickStats: React.FC = () => {
           <div className="text-2xl font-black text-slate-900 dark:text-white">
             {progress.quizBestScore > 0 ? `${progress.quizBestScore}%` : 'Not Taken'}
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <div className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
             {progress.quizBestScore >= 80 ? 'Certified Master' : 'Passing Target: 80%'}
           </div>
         </div>
@@ -65,7 +65,7 @@ export const QuickStats: React.FC = () => {
           <div className="text-2xl font-black text-slate-900 dark:text-white">
             {totalBookmarks}
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <div className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
             CARCs, Modifiers & Terms
           </div>
         </div>
@@ -83,7 +83,7 @@ export const QuickStats: React.FC = () => {
           <div className="text-2xl font-black text-slate-900 dark:text-white">
             14
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <div className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
             Interactive Call Playbooks
           </div>
         </div>

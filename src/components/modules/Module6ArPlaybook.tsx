@@ -326,7 +326,7 @@ export const Module6ArPlaybook: React.FC = () => {
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 CARC & RARC Quick-Lookup Dictionary
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Claim Adjustment Reason Codes (CARC) and Remittance Advice Remark Codes (RARC)
               </p>
             </div>
@@ -398,7 +398,7 @@ export const Module6ArPlaybook: React.FC = () => {
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               The 4-Tier Healthcare Claim Appeal Hierarchy
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               When an insurance company wrongfully denies a claim, exhaust these four sequential legal and clinical levels
             </p>
           </div>

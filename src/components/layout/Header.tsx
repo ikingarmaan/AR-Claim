@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         <div className="hidden sm:flex items-center gap-2">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-medium uppercase tracking-wider">
             Interactive Learning Sandbox
           </span>
         </div>

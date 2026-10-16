@@ -197,7 +197,7 @@ export const Module7CallScripts: React.FC = () => {
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                   Live Member ID & NPI Phonetic Audio Converter
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                   Type any alphanumeric Policy Number, NPI, or Claim ICN to hear and read the standard NATO phone script
                 </p>
               </div>
@@ -282,7 +282,7 @@ export const Module7CallScripts: React.FC = () => {
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Standard Military / Aviation NATO Alphabet (A – Z)
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Never use confusing informal names like "Mary", "Nancy", or "Zebra"; use standard words to eliminate claim number errors
               </p>
             </div>
@@ -326,7 +326,7 @@ export const Module7CallScripts: React.FC = () => {
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                   Dynamic Caller & Patient Profile Variables
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                   Update mock details below to dynamically populate all dialogue bubbles in real time
                 </p>
               </div>
@@ -426,7 +426,7 @@ export const Module7CallScripts: React.FC = () => {
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
                 {activeScript.name}
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1">
                 Target Objective: {activeScript.targetObjective} • Estimated Call Time: {activeScript.duration}
               </p>
             </div>

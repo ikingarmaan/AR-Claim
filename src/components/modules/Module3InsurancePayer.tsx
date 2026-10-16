@@ -167,7 +167,7 @@ export const Module3InsurancePayer: React.FC = () => {
               <h3 className="text-base font-bold text-slate-900 dark:text-white mt-2">
                 Hospital Inpatient Insurance
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 leading-relaxed">
                 Covers acute inpatient hospital stays, skilled nursing facility (SNF) care, hospice care, and home health services. Billed on UB-04 via DRGs.
               </p>
             </div>
@@ -179,7 +179,7 @@ export const Module3InsurancePayer: React.FC = () => {
               <h3 className="text-base font-bold text-slate-900 dark:text-white mt-2">
                 Medical & Outpatient Insurance
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 leading-relaxed">
                 Covers physician visits, outpatient therapy, lab tests, X-rays, and Durable Medical Equipment (DME). 80/20 coinsurance after annual deductible.
               </p>
             </div>
@@ -191,7 +191,7 @@ export const Module3InsurancePayer: React.FC = () => {
               <h3 className="text-base font-bold text-slate-900 dark:text-white mt-2">
                 Medicare Advantage (Private)
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 leading-relaxed">
                 Replaces Original Medicare through private commercial HMOs/PPOs. Combines Parts A, B, and D with out-of-pocket maximums and dental/vision perks.
               </p>
             </div>
@@ -203,7 +203,7 @@ export const Module3InsurancePayer: React.FC = () => {
               <h3 className="text-base font-bold text-slate-900 dark:text-white mt-2">
                 Prescription Drug Benefit
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1 leading-relaxed">
                 Private insurance plans covering retail prescription drugs. Standardized multi-tier formulary with copays and coverage phases.
               </p>
             </div>
@@ -215,7 +215,7 @@ export const Module3InsurancePayer: React.FC = () => {
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 3-Way Master Comparison: Original Medicare vs. Medicare Advantage vs. Medigap
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Compare coverage freedom, provider networks, claims handling, and financial liabilities across 10 core dimensions
               </p>
             </div>
@@ -252,7 +252,7 @@ export const Module3InsurancePayer: React.FC = () => {
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   Medicare Secondary Payer (MSP) Coordination Codes
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                   Federal coordination rules determining when Medicare pays secondary to commercial, liability, or auto plans
                 </p>
               </div>
@@ -296,7 +296,7 @@ export const Module3InsurancePayer: React.FC = () => {
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 Interactive Medicaid Spenddown Visual Explainer
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Understand how excess monthly income is reduced by patient medical bills to activate Medicaid coverage
               </p>
             </div>
@@ -500,7 +500,7 @@ export const Module3InsurancePayer: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-[11px] text-slate-500 dark:text-slate-400">
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-[11px] text-slate-700 dark:text-slate-300 font-medium">
                   <span className="font-semibold text-slate-700 dark:text-slate-200">Out-of-Network: </span>
                   {mc.outOfNetworkCoverage}
                 </div>
@@ -561,7 +561,7 @@ export const Module3InsurancePayer: React.FC = () => {
                   <div className="text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
                     AR Action Checklist:
                   </div>
-                  <ul className="space-y-1 text-xs text-slate-500 dark:text-slate-400 list-disc list-inside">
+                  <ul className="space-y-1 text-xs text-slate-700 dark:text-slate-300 font-medium list-disc list-inside">
                     {rule.arChecklist.map((item, i) => (
                       <li key={i}>{item}</li>
                     ))}

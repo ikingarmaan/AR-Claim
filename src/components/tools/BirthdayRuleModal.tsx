@@ -79,7 +79,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
               <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 The Birthday Rule & COB Calculator
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Determine Primary vs. Secondary payer for a dependent child
               </p>
             </div>
@@ -115,7 +115,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
 
               <div className="space-y-3 text-xs">
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Month & Day of Birth</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Month & Day of Birth</label>
                   <div className="grid grid-cols-2 gap-2">
                     <select
                       value={parentAMonth}
@@ -139,7 +139,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">Birth Year (Ignored)</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Birth Year (Ignored)</label>
                     <input
                       type="number"
                       value={parentAYear}
@@ -148,7 +148,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">Policy Effective</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Policy Effective</label>
                     <input
                       type="date"
                       value={parentAEffective}
@@ -177,7 +177,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
 
               <div className="space-y-3 text-xs">
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Month & Day of Birth</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Month & Day of Birth</label>
                   <div className="grid grid-cols-2 gap-2">
                     <select
                       value={parentBMonth}
@@ -201,7 +201,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">Birth Year (Ignored)</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Birth Year (Ignored)</label>
                     <input
                       type="number"
                       value={parentBYear}
@@ -210,7 +210,7 @@ export const BirthdayRuleModal: React.FC<BirthdayRuleModalProps> = ({ isOpen, on
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 dark:text-slate-400 mb-1">Policy Effective</label>
+                    <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Policy Effective</label>
                     <input
                       type="date"
                       value={parentBEffective}

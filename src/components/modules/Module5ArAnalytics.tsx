@@ -192,7 +192,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 Executive AR Dashboard & KPI Simulator
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Adjust total outstanding AR and daily billings to calculate Days in AR and gauge practice financial health
               </p>
             </div>
@@ -360,7 +360,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 AR Aging Buckets & Prioritization Strategy
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Prioritize collections by High-Dollar + Near Timely Filing Limit (TFL) + Stratified Sampling
               </p>
             </div>
@@ -387,7 +387,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
 
                   <div className="md:w-1/4 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
                     <div className="text-[10px] uppercase font-bold text-rose-500">TFL Urgency:</div>
-                    <div className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">{b.tflRisk}</div>
+                    <div className="text-slate-700 dark:text-slate-300 font-medium text-[11px] mt-0.5">{b.tflRisk}</div>
                   </div>
                 </div>
               ))}
@@ -403,7 +403,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               The 8-Point Denial Reduction Operational Checklist
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Implement these 8 operational controls to drive claim denial rates below the 5% industry threshold
             </p>
           </div>
@@ -438,7 +438,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Interactive AR Note Builder Sandbox
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Practice drafting standardized 6-point AR follow-up audit notes for practice management systems
             </p>
           </div>
@@ -447,7 +447,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
             <div className="lg:col-span-6 space-y-3 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Date of Follow-up *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Date of Follow-up *</label>
                   <input
                     type="date"
                     value={nbDate}
@@ -456,7 +456,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Insurance Rep Name *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Insurance Rep Name *</label>
                   <input
                     type="text"
                     value={nbRepName}
@@ -468,7 +468,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Call Reference # *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Call Reference # *</label>
                   <input
                     type="text"
                     value={nbCallRef}
@@ -477,7 +477,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Current Claim Status *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Current Claim Status *</label>
                   <input
                     type="text"
                     value={nbStatus}
@@ -488,7 +488,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
               </div>
 
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 mb-1">Action Taken & Financial Rationale *</label>
+                <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Action Taken & Financial Rationale *</label>
                 <textarea
                   rows={3}
                   value={nbAction}
@@ -499,7 +499,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Next Follow-up Date *</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Next Follow-up Date *</label>
                   <input
                     type="date"
                     value={nbNextDate}
@@ -508,7 +508,7 @@ AUDIT COMPLIANCE: 6-Point Standard Verified`;
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 dark:text-slate-400 mb-1">Billed Charge ($)</label>
+                  <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">Billed Charge ($)</label>
                   <input
                     type="text"
                     value={nbBilled}

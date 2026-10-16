@@ -188,12 +188,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
                     {isCompleted ? (
                       <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
                     ) : item.badge ? (
-                      <span className="text-[9px] px-1.5 py-0.2 rounded-full font-semibold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-600">
                         {item.badge}
                       </span>
                     ) : null}
                   </div>
-                  <div className="text-[11px] text-slate-400 dark:text-slate-500 truncate mt-0.5 font-normal">
+                  <div className="text-xs text-slate-600 dark:text-slate-300 truncate mt-0.5 font-medium">
                     {item.description}
                   </div>
                 </div>

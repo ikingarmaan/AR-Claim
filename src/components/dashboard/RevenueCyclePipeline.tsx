@@ -177,7 +177,7 @@ export const RevenueCyclePipeline: React.FC = () => {
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
             The Complete US Healthcare Revenue Cycle Pipeline
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium mt-1">
             Watch a healthcare claim travel from Patient Registration to Clean Payment Posting or AR Denial Follow-Up
           </p>
         </div>
@@ -255,7 +255,7 @@ export const RevenueCyclePipeline: React.FC = () => {
                 <div className={`text-xs font-bold truncate ${isCurrent ? 'text-health-electric dark:text-white' : 'text-slate-800 dark:text-slate-200'}`}>
                   {stage.shortName}
                 </div>
-                <div className="text-[9px] text-slate-400 truncate mt-0.5">
+                <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 truncate mt-0.5">
                   {stage.ediCode || stage.tat}
                 </div>
               </div>

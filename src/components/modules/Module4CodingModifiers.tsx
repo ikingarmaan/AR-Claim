@@ -268,7 +268,7 @@ export const Module4CodingModifiers: React.FC = () => {
                         Financial Impact: {c.financialImpact}
                       </div>
 
-                      <div className="text-[11px] font-sans text-slate-500 dark:text-slate-400">
+                      <div className="text-[11px] font-sans text-slate-700 dark:text-slate-300 font-medium">
                         <span className="font-semibold text-slate-700 dark:text-slate-200">Rationale: </span>
                         {c.rationale}
                       </div>
@@ -352,7 +352,7 @@ export const Module4CodingModifiers: React.FC = () => {
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               Interactive CPT Range Slider & 6 Major Sections
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Drag the 5-digit CPT slider to explore the American Medical Association’s clinical code classification
             </p>
           </div>
@@ -430,7 +430,7 @@ export const Module4CodingModifiers: React.FC = () => {
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               CMS Place of Service (POS) Codes (Box 24B)
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
               Essential POS codes dictating facility vs non-facility fee schedule reimbursement rates
             </p>
           </div>
@@ -453,7 +453,7 @@ export const Module4CodingModifiers: React.FC = () => {
                     {pos.name}
                   </h3>
 
-                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  <div className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-0.5">
                     {pos.setting}
                   </div>
                 </div>

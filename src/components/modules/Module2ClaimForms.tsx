@@ -33,19 +33,116 @@ import { ClaimBoxDetail, Ub04BoxDetail } from '../../types/rcm';
 import { useAcademy } from '../../context/AcademyContext';
 import { triggerCelebrationConfetti } from '../common/Confetti';
 import { CartoonTip } from '../common/CartoonTip';
+import { OfficialFormViewer, FormSectionFilter } from './claim-forms/OfficialFormViewer';
+
+
+const CMS_SECTIONS: FormSectionFilter<ClaimBoxDetail>[] = [
+  { id: 'all', label: 'All 33 Boxes', filter: () => true },
+  { 
+    id: 'patient', 
+    label: 'Patient & Insured (1–13)', 
+    filter: (b) => {
+      const num = parseInt(b.boxNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 1 && num <= 13;
+    }
+  },
+  { 
+    id: 'clinical', 
+    label: 'Clinical & Referral (14–23)', 
+    filter: (b) => {
+      const num = parseInt(b.boxNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 14 && num <= 23;
+    }
+  },
+  { 
+    id: 'lines', 
+    label: 'Service Lines (24A–J)', 
+    filter: (b) => b.boxNumber.startsWith('24')
+  },
+  { 
+    id: 'billing', 
+    label: 'Billing & Location (25–33)', 
+    filter: (b) => {
+      const num = parseInt(b.boxNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 25 && num <= 33;
+    }
+  },
+];
+
+const UB04_SECTIONS: FormSectionFilter<Ub04BoxDetail>[] = [
+  { id: 'all', label: 'All 81 Locators', filter: () => true },
+  { 
+    id: 'facility', 
+    label: 'Facility & Patient (FL 01–17)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 1 && num <= 17;
+    }
+  },
+  { 
+    id: 'conditions', 
+    label: 'Condition & Occurrence (FL 18–38)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 18 && num <= 38;
+    }
+  },
+  { 
+    id: 'values', 
+    label: 'Value Codes & Charges (FL 39–41)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 39 && num <= 41;
+    }
+  },
+  { 
+    id: 'revenue', 
+    label: 'Revenue Codes & Lines (FL 42–49)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 42 && num <= 49;
+    }
+  },
+  { 
+    id: 'payers', 
+    label: 'Payers & Insurance (FL 50–65)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 50 && num <= 65;
+    }
+  },
+  { 
+    id: 'diagnoses', 
+    label: 'Diagnoses & Procedures (FL 66–75)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 66 && num <= 75;
+    }
+  },
+  { 
+    id: 'providers', 
+    label: 'Attending & Providers (FL 76–81)', 
+    filter: (b) => {
+      const num = parseInt(b.locatorNumber.replace(/[^0-9]/g, ''), 10);
+      return !isNaN(num) && num >= 76 && num <= 81;
+    }
+  },
+];
 
 export const Module2ClaimForms: React.FC = () => {
   const { progress, markModuleCompleted } = useAcademy();
   const [activeTab, setActiveTab] = useState<'cms1500' | 'ub04' | 'comparison' | 'auditor'>('cms1500');
 
   // CMS-1500 State
-  const [cmsViewMode, setCmsViewMode] = useState<'visual' | 'directory'>('visual');
+  const [cmsViewMode, setCmsViewMode] = useState<'original' | 'visual' | 'directory'>('original');
+  const [cmsSectionFilter, setCmsSectionFilter] = useState<string>('all');
   const [selectedCmsBox, setSelectedCmsBox] = useState<ClaimBoxDetail>(CMS_1500_BOXES.find(b => b.boxNumber === '24D') || CMS_1500_BOXES[0]);
   const [cmsSearch, setCmsSearch] = useState('');
   const [cmsCategoryFilter, setCmsCategoryFilter] = useState<'all' | 'patient' | 'clinical' | 'billing' | 'provider'>('all');
 
   // UB-04 State
-  const [ub04ViewMode, setUb04ViewMode] = useState<'visual' | 'directory'>('visual');
+  const [ub04ViewMode, setUb04ViewMode] = useState<'original' | 'visual' | 'directory'>('original');
+  const [ub04SectionFilter, setUb04SectionFilter] = useState<string>('all');
   const [selectedUb04Box, setSelectedUb04Box] = useState<Ub04BoxDetail>(UB_04_BOXES.find(b => b.locatorNumber === 'FL 04') || UB_04_BOXES[0]);
   const [ub04Search, setUb04Search] = useState('');
   const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved'>('all');
@@ -324,36 +421,48 @@ export const Module2ClaimForms: React.FC = () => {
                 <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
                   CMS-1500 (HCFA-1500, version 02/12)
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                   Used by Physicians, Solo Practices, Group Clinics, and Ambulatory Specialties
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl self-start sm:self-auto flex-wrap">
               <button
                 type="button"
-                onClick={() => setCmsViewMode('visual')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  cmsViewMode === 'visual'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                onClick={() => setCmsViewMode('original')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  cmsViewMode === 'original'
+                    ? 'bg-rose-700 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Eye className="w-3.5 h-3.5" />
-                <span>Authentic Form Sample</span>
+                <FileText className="w-3.5 h-3.5" />
+                <span>1. Original Form (Image & Navigator)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setCmsViewMode('directory')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
                   cmsViewMode === 'directory'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <ListFilter className="w-3.5 h-3.5" />
-                <span>All 33 Boxes Directory</span>
+                <span>2. All 33 Boxes Directory</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setCmsViewMode('visual')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  cmsViewMode === 'visual'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>3. Filled Sample Case</span>
               </button>
             </div>
           </div>
@@ -361,7 +470,31 @@ export const Module2ClaimForms: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Area (Col 7): The Realistic Form or Box Directory */}
             <div className="lg:col-span-7 space-y-4">
-              {cmsViewMode === 'visual' ? (
+              {cmsViewMode === 'original' && (
+                <OfficialFormViewer<ClaimBoxDetail>
+                  formType="cms1500"
+                  imageSrc="/forms/cms1500_original.png"
+                  imageAlt="Official CMS-1500 (02/12) Health Insurance Claim Form"
+                  officialTitle="CMS-1500 (HCFA-1500, version 02/12) Professional Claim Form"
+                  officialSubtitle="Approved by National Uniform Claim Committee (NUCC)"
+                  badgeText="Official Red Drop-Out OCR Form"
+                  badgeColor="rose"
+                  downloadFilename="CMS-1500-Official-Form.png"
+                  items={CMS_1500_BOXES}
+                  selectedItem={selectedCmsBox}
+                  onSelectItem={setSelectedCmsBox}
+                  getItemKey={b => b.boxNumber}
+                  getItemNumber={b => `Box ${b.boxNumber}`}
+                  getItemName={b => b.name}
+                  getItemShortName={b => b.shortName}
+                  sections={CMS_SECTIONS}
+                  activeSection={cmsSectionFilter}
+                  onSelectSection={setCmsSectionFilter}
+                  inspectorElementId="cms-inspector-panel"
+                />
+              )}
+
+              {cmsViewMode === 'visual' && (
                 /* AUTHENTIC VISUAL CMS-1500 FORM SAMPLE */
                 <div className="bg-white border-2 border-rose-300 rounded-3xl p-5 shadow-md relative overflow-hidden font-sans">
                   {/* Top Paper Header Strip */}
@@ -369,14 +502,14 @@ export const Module2ClaimForms: React.FC = () => {
                     <div className="text-[10px] font-black uppercase tracking-wider">
                       HEALTH INSURANCE CLAIM FORM • APPROVED BY NUCC (02/12)
                     </div>
-                    <div className="text-[9px] font-bold text-slate-500">
+                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Sample Case: Eleanor Johnson (BCBS Texas)
                     </div>
                   </div>
 
                   {/* Payer Header Section */}
                   <div className="border border-rose-300 rounded-xl p-3 mb-3 bg-rose-50/20">
-                    <div className="text-[9px] font-bold text-rose-700 uppercase">
+                    <div className="text-xs font-medium font-bold text-rose-700 uppercase">
                       Payer Header • Insurance Carrier
                     </div>
                     <div className="text-xs font-mono font-bold text-slate-800">
@@ -397,11 +530,11 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         1. MEDICARE / MEDICAID / TRICARE / GROUP HEALTH PLAN / OTHER
                       </div>
                       <div className="text-[10px] font-bold text-emerald-700 mt-1 flex items-center gap-1 font-mono">
-                        <span className="w-2.5 h-2.5 rounded bg-emerald-600 text-white flex items-center justify-center text-[8px]">✓</span>
+                        <span className="w-2.5 h-2.5 rounded bg-emerald-600 text-white flex items-center justify-center text-xs font-medium">✓</span>
                         Group Health Plan
                       </div>
                     </div>
@@ -414,7 +547,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         1a. INSURED'S I.D. NUMBER
                       </div>
                       <div className="text-xs font-mono font-black text-slate-900 mt-1">
@@ -433,7 +566,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         2. PATIENT'S NAME (Last, First, Middle)
                       </div>
                       <div className="text-[11px] font-mono font-bold text-slate-900 mt-0.5">
@@ -449,7 +582,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         3. PATIENT'S BIRTH DATE & SEX
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900 mt-0.5">
@@ -465,7 +598,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         4. INSURED'S NAME
                       </div>
                       <div className="text-[11px] font-mono font-bold text-slate-900 mt-0.5">
@@ -484,7 +617,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         5. PATIENT'S ADDRESS & PHONE
                       </div>
                       <div className="text-[10px] font-mono text-slate-900">
@@ -500,7 +633,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         6. RELATION TO INSURED
                       </div>
                       <div className="text-[11px] font-mono font-bold text-emerald-700 mt-0.5">
@@ -516,7 +649,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         7. INSURED'S ADDRESS
                       </div>
                       <div className="text-[10px] font-mono text-slate-600">
@@ -535,13 +668,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         9. OTHER INSURED'S NAME & POLICY
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-800">
                         {SAMPLE_CMS1500_CLAIM.secondaryPayer.name}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                         Policy: {SAMPLE_CMS1500_CLAIM.secondaryPayer.policy}
                       </div>
                     </div>
@@ -554,10 +687,10 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         10. IS CONDITION RELATED TO:
                       </div>
-                      <div className="text-[9px] font-mono text-slate-700 mt-0.5 space-y-0.5">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5 space-y-0.5">
                         <div>Employment: NO</div>
                         <div>Auto Accident: NO (TX)</div>
                         <div>Other Accident: NO</div>
@@ -572,13 +705,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         11. INSURED'S POLICY / GROUP
                       </div>
                       <div className="text-[11px] font-mono font-bold text-slate-900">
                         {SAMPLE_CMS1500_CLAIM.subscriber.policyGroup}
                       </div>
-                      <div className="text-[9px] font-mono text-emerald-700 font-bold mt-0.5">
+                      <div className="text-xs font-medium font-mono text-emerald-700 font-bold mt-0.5">
                         11d. Other Plan: YES
                       </div>
                     </div>
@@ -594,12 +727,12 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         12. PATIENT'S SIGNATURE (Release of Information - ROI)
                       </div>
                       <div className="text-[10px] font-mono font-bold text-emerald-800 mt-0.5 flex items-center justify-between">
                         <span>SIGNATURE ON FILE (SOF)</span>
-                        <span className="text-[9px] text-slate-500">Date: 01/15/2025</span>
+                        <span className="text-xs font-medium text-slate-500">Date: 01/15/2025</span>
                       </div>
                     </div>
 
@@ -611,7 +744,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         13. INSURED'S SIGNATURE (Assignment of Benefits - AOB)
                       </div>
                       <div className="text-[10px] font-mono font-bold text-emerald-800 mt-0.5">
@@ -630,7 +763,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         14. DATE OF ILLNESS / LMP
                       </div>
                       <div className="text-[10px] font-mono text-slate-800 mt-0.5">
@@ -646,13 +779,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         17. REFERRING PROVIDER & 17b NPI
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
                         DN {SAMPLE_CMS1500_CLAIM.clinical.referringProvider}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-600">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                         NPI: {SAMPLE_CMS1500_CLAIM.clinical.referringNpi}
                       </div>
                     </div>
@@ -665,10 +798,10 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         19. ADDITIONAL CLAIM INFO
                       </div>
-                      <div className="text-[9px] font-mono text-slate-700 truncate">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 truncate">
                         NOC: Radiculopathy Eval
                       </div>
                     </div>
@@ -683,7 +816,7 @@ export const Module2ClaimForms: React.FC = () => {
                         : 'border-rose-300 hover:border-emerald-400 bg-white'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-[8px] font-black text-rose-700 uppercase mb-1">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase mb-1">
                       <span>21. DIAGNOSIS OR NATURE OF ILLNESS OR INJURY (ICD-10-CM)</span>
                       <span className="text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded font-bold">ICD Ind: 0</span>
                     </div>
@@ -692,7 +825,7 @@ export const Module2ClaimForms: React.FC = () => {
                         <div key={d.letter} className="bg-slate-50 border border-slate-200 p-1.5 rounded">
                           <span className="font-bold text-rose-700">{d.letter}: </span>
                           <span className="font-black text-slate-900">{d.code}</span>
-                          <div className="text-[8px] text-slate-500 truncate">{d.desc}</div>
+                          <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate">{d.desc}</div>
                         </div>
                       ))}
                     </div>
@@ -708,7 +841,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         22. RESUBMISSION CODE & ORIGINAL REF NO.
                       </div>
                       <div className="text-[10px] font-mono text-slate-800">
@@ -724,7 +857,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         23. PRIOR AUTH / REFERRAL / CLIA NUMBER
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
@@ -735,7 +868,7 @@ export const Module2ClaimForms: React.FC = () => {
 
                   {/* Box 24 Service Lines (The Core Billing Grid) */}
                   <div className="border border-rose-300 rounded-xl overflow-hidden mb-2">
-                    <div className="bg-rose-100/60 p-2 text-[8px] font-black text-rose-800 uppercase grid grid-cols-12 text-center">
+                    <div className="bg-rose-100/60 p-2 text-xs font-medium font-black text-rose-800 uppercase grid grid-cols-12 text-center">
                       <div className="col-span-2">24A. Dates of Service</div>
                       <div className="col-span-1">24B. POS</div>
                       <div className="col-span-3">24D. CPT / HCPCS & Modifiers</div>
@@ -764,7 +897,7 @@ export const Module2ClaimForms: React.FC = () => {
                           <div className="col-span-2 font-bold text-rose-700">{line.pointer}</div>
                           <div className="col-span-2 font-bold text-slate-900">${line.charge.toFixed(2)}</div>
                           <div className="col-span-1 font-bold text-slate-700">{line.units}</div>
-                          <div className="col-span-1 text-[8px] font-bold text-slate-500 truncate">{line.renderingNpi}</div>
+                          <div className="col-span-1 text-xs font-bold text-slate-700 dark:text-slate-300 truncate">{line.renderingNpi}</div>
                         </div>
                       ))}
                     </div>
@@ -780,7 +913,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         25. FEDERAL TAX I.D.
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
@@ -796,7 +929,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         26. PATIENT'S ACCOUNT NO.
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-800">
@@ -812,7 +945,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         27. ACCEPT ASSIGN?
                       </div>
                       <div className="text-[11px] font-mono font-bold text-emerald-700">
@@ -828,7 +961,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         28. TOTAL CHARGE
                       </div>
                       <div className="text-xs font-mono font-black text-slate-900">
@@ -844,7 +977,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         29. AMT PAID
                       </div>
                       <div className="text-xs font-mono font-bold text-slate-600">
@@ -863,13 +996,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         31. PHYSICIAN SIGNATURE
                       </div>
                       <div className="text-[10px] font-mono text-slate-800">
                         DR. SARAH JENKINS MD
                       </div>
-                      <div className="text-[8px] text-slate-500 font-mono">Date: 01/16/2025</div>
+                      <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">Date: 01/16/2025</div>
                     </div>
 
                     <div 
@@ -880,13 +1013,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         32. SERVICE FACILITY LOCATION (Physical Street - No P.O. Box!)
                       </div>
-                      <div className="text-[9px] font-mono text-slate-900 leading-tight">
+                      <div className="text-xs font-medium font-mono text-slate-900 leading-tight">
                         {SAMPLE_CMS1500_CLAIM.facility.name}, {SAMPLE_CMS1500_CLAIM.facility.address}
                       </div>
-                      <div className="text-[8px] font-mono text-slate-600 mt-0.5">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 mt-0.5">
                         NPI 32a: {SAMPLE_CMS1500_CLAIM.facility.npi}
                       </div>
                     </div>
@@ -899,23 +1032,25 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-rose-300 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-rose-700 uppercase">
+                      <div className="text-[11px] font-bold text-rose-950 dark:text-rose-300 uppercase">
                         33. BILLING PROVIDER & PHONE
                       </div>
-                      <div className="text-[9px] font-mono font-bold text-slate-900 truncate">
+                      <div className="text-xs font-medium font-mono font-bold text-slate-900 truncate">
                         {SAMPLE_CMS1500_CLAIM.billing.name}
                       </div>
-                      <div className="text-[8px] font-mono text-slate-600">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                         NPI 33a: {SAMPLE_CMS1500_CLAIM.billing.npi} | {SAMPLE_CMS1500_CLAIM.billing.taxonomy}
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3 text-center text-[10px] text-slate-400 italic">
-                    💡 Click on any box above to inspect its full EDI loop, rules, sample values, and denial triggers!
+                  <div className="mt-3 text-center text-xs text-slate-700 dark:text-slate-300 font-bold italic">
+                    💡 Click on any box on the sample claim above to inspect its rules, EDI mapping, and rejection causes!
                   </div>
                 </div>
-              ) : (
+              )}
+
+              {cmsViewMode === 'directory' && (
                 /* BOX-BY-BOX MASTER DIRECTORY (ALL 33 BOXES) */
                 <div className="bg-white dark:bg-health-darkCard p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
                   {/* Header Badge */}
@@ -982,7 +1117,7 @@ export const Module2ClaimForms: React.FC = () => {
                             <span className="font-mono text-xs font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
                               Box {box.boxNumber}
                             </span>
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                               {box.category}
                             </span>
                           </div>
@@ -1001,7 +1136,7 @@ export const Module2ClaimForms: React.FC = () => {
             </div>
 
             {/* Right Area (Col 5): Deep-Dive Box Inspector Card */}
-            <div className="lg:col-span-5 sticky top-20 space-y-4">
+            <div id="cms-inspector-panel" className="lg:col-span-5 sticky top-20 space-y-4">
               <div className="bg-white dark:bg-health-darkCard p-6 rounded-3xl border-2 border-emerald-500/40 shadow-lg space-y-5">
                 {/* Header Navigation */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1046,7 +1181,7 @@ export const Module2ClaimForms: React.FC = () => {
 
                 {/* Sample Filled Value Monospace Banner */}
                 <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
-                  <div className="text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
                     <span>Authentic Claim Sample Value:</span>
                     <span className="text-emerald-400 font-bold">● Valid Syntax</span>
                   </div>
@@ -1065,7 +1200,7 @@ export const Module2ClaimForms: React.FC = () => {
 
                 {/* Rules & NUCC Guidelines */}
                 <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Key Guidelines & NUCC Rules
                   </h4>
                   <ul className="space-y-1.5">
@@ -1114,36 +1249,48 @@ export const Module2ClaimForms: React.FC = () => {
                 <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
                   UB-04 (CMS-1450) Institutional Facility Claim
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                   Used by Hospitals (Inpatient/Outpatient), SNFs, Inpatient Rehab, Hospices, and ESRD Centers
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
+            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl self-start sm:self-auto flex-wrap">
               <button
                 type="button"
-                onClick={() => setUb04ViewMode('visual')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  ub04ViewMode === 'visual'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                onClick={() => setUb04ViewMode('original')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  ub04ViewMode === 'original'
+                    ? 'bg-amber-800 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Eye className="w-3.5 h-3.5" />
-                <span>Hospital Form Sample</span>
+                <FileText className="w-3.5 h-3.5" />
+                <span>1. Original UB-04 (Image & All 81 FLs)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setUb04ViewMode('directory')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
                   ub04ViewMode === 'directory'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <ListFilter className="w-3.5 h-3.5" />
-                <span>Form Locators Directory</span>
+                <span>2. Form Locators Directory (All 81)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setUb04ViewMode('visual')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  ub04ViewMode === 'visual'
+                    ? 'bg-purple-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>3. Filled Hospital Inpatient Case</span>
               </button>
             </div>
           </div>
@@ -1151,7 +1298,31 @@ export const Module2ClaimForms: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Left Area (Col 7): The Realistic UB-04 Form or Directory */}
             <div className="lg:col-span-7 space-y-4">
-              {ub04ViewMode === 'visual' ? (
+              {ub04ViewMode === 'original' && (
+                <OfficialFormViewer<Ub04BoxDetail>
+                  formType="ub04"
+                  imageSrc="/forms/ub04_original.png"
+                  imageAlt="Official UB-04 (CMS-1450) Hospital Facility Claim Form"
+                  officialTitle="UB-04 (CMS-1450) Institutional Facility Claim Form"
+                  officialSubtitle="Approved by National Uniform Billing Committee (NUBC)"
+                  badgeText="Official Institutional Bill with NUBC Seal"
+                  badgeColor="amber"
+                  downloadFilename="UB-04-Official-Form.png"
+                  items={UB_04_BOXES}
+                  selectedItem={selectedUb04Box}
+                  onSelectItem={setSelectedUb04Box}
+                  getItemKey={b => b.locatorNumber}
+                  getItemNumber={b => b.locatorNumber}
+                  getItemName={b => b.name}
+                  getItemShortName={b => b.shortName}
+                  sections={UB04_SECTIONS}
+                  activeSection={ub04SectionFilter}
+                  onSelectSection={setUb04SectionFilter}
+                  inspectorElementId="ub04-inspector-panel"
+                />
+              )}
+
+              {ub04ViewMode === 'visual' && (
                 /* AUTHENTIC VISUAL UB-04 FORM SAMPLE */
                 <div className="bg-white border-2 border-amber-800/40 rounded-3xl p-5 shadow-md relative overflow-hidden font-sans">
                   {/* Top Paper Header Strip */}
@@ -1159,7 +1330,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <div className="text-[10px] font-black uppercase tracking-wider">
                       UNIFORM BILL (UB-04 / CMS-1450) • NATIONAL UNIFORM BILLING COMMITTEE (NUBC)
                     </div>
-                    <div className="text-[9px] font-bold text-slate-500">
+                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Sample Case: Carlos Ramirez (Inpatient Stemi Admission)
                     </div>
                   </div>
@@ -1174,13 +1345,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 01. BILLING PROVIDER NAME, ADDRESS & TELEPHONE
                       </div>
                       <div className="text-[11px] font-mono font-bold text-slate-900">
                         {SAMPLE_UB04_CLAIM.facility.name}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-600">
+                      <div className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
                         {SAMPLE_UB04_CLAIM.facility.address}, {SAMPLE_UB04_CLAIM.facility.city} {SAMPLE_UB04_CLAIM.facility.state} {SAMPLE_UB04_CLAIM.facility.zip} • {SAMPLE_UB04_CLAIM.facility.phone}
                       </div>
                     </div>
@@ -1193,13 +1364,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 04. TYPE OF BILL (TOB)
                       </div>
                       <div className="text-sm font-mono font-black text-emerald-700 mt-0.5">
                         {SAMPLE_UB04_CLAIM.billingType.tob}
                       </div>
-                      <div className="text-[8px] text-slate-500 font-mono truncate">
+                      <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono truncate">
                         {SAMPLE_UB04_CLAIM.billingType.tobMeaning}
                       </div>
                     </div>
@@ -1215,13 +1386,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 03. PATIENT CONTROL # & MRN
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
                         Acc: {SAMPLE_UB04_CLAIM.patient.controlNumber}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                         MRN: {SAMPLE_UB04_CLAIM.patient.mrn}
                       </div>
                     </div>
@@ -1234,7 +1405,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 05. FED TAX NO.
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900 mt-1">
@@ -1250,7 +1421,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 06. STATEMENT COVERS PERIOD
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-800 mt-1">
@@ -1269,13 +1440,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 08. PATIENT LEGAL NAME
                       </div>
                       <div className="text-[11px] font-mono font-bold text-slate-900">
                         {SAMPLE_UB04_CLAIM.patient.name}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                         DOB: {SAMPLE_UB04_CLAIM.patient.dob} | Sex: {SAMPLE_UB04_CLAIM.patient.sex}
                       </div>
                     </div>
@@ -1288,7 +1459,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 12. ADMISSION DATE
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900 mt-1">
@@ -1304,7 +1475,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 17. DISCHARGE STATUS
                       </div>
                       <div className="text-[10px] font-mono font-bold text-emerald-800 mt-1 truncate">
@@ -1323,7 +1494,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 18-28. CONDITION CODES
                       </div>
                       <div className="text-[10px] font-mono text-slate-800 flex gap-2">
@@ -1341,7 +1512,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 39-41. VALUE CODES & AMOUNTS
                       </div>
                       <div className="text-[10px] font-mono text-slate-800 space-y-0.5">
@@ -1357,7 +1528,7 @@ export const Module2ClaimForms: React.FC = () => {
 
                   {/* FL 42 - FL 47 REVENUE CHARGES GRID */}
                   <div className="border border-amber-800/30 rounded-xl overflow-hidden mb-2">
-                    <div className="bg-amber-100/60 p-2 text-[8px] font-black text-amber-900 uppercase grid grid-cols-12 text-center">
+                    <div className="bg-amber-100/60 p-2 text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase grid grid-cols-12 text-center">
                       <div className="col-span-2">FL 42. Rev Code</div>
                       <div className="col-span-4">FL 43. Revenue Description</div>
                       <div className="col-span-2">FL 44. HCPCS</div>
@@ -1394,7 +1565,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 50. PAYER NAME (Line A Primary)
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900 truncate">
@@ -1410,7 +1581,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 60. INSURED UNIQUE ID
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900 truncate">
@@ -1426,7 +1597,7 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 63. PRIOR AUTH
                       </div>
                       <div className="text-[10px] font-mono font-bold text-emerald-800 truncate">
@@ -1445,13 +1616,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 67. PRINCIPAL DIAGNOSIS & POA
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
                         {SAMPLE_UB04_CLAIM.diagnoses.principal.code} (POA: {SAMPLE_UB04_CLAIM.diagnoses.principal.poa})
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500 truncate">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 truncate">
                         {SAMPLE_UB04_CLAIM.diagnoses.principal.desc}
                       </div>
                     </div>
@@ -1464,13 +1635,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 74. PRINCIPAL PROCEDURE (ICD-10-PCS)
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
                         {SAMPLE_UB04_CLAIM.procedures[0].code} • Date: {SAMPLE_UB04_CLAIM.procedures[0].date}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500 truncate">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 truncate">
                         {SAMPLE_UB04_CLAIM.procedures[0].desc}
                       </div>
                     </div>
@@ -1486,13 +1657,13 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 76. ATTENDING PHYSICIAN & NPI
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
                         {SAMPLE_UB04_CLAIM.physicians.attending.name}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                         NPI: {SAMPLE_UB04_CLAIM.physicians.attending.npi}
                       </div>
                     </div>
@@ -1505,23 +1676,25 @@ export const Module2ClaimForms: React.FC = () => {
                           : 'border-amber-700/30 hover:border-emerald-400 bg-white'
                       }`}
                     >
-                      <div className="text-[8px] font-black text-amber-900 uppercase">
+                      <div className="text-[11px] font-bold text-amber-950 dark:text-amber-300 uppercase">
                         FL 77. OPERATING SURGEON & NPI
                       </div>
                       <div className="text-[10px] font-mono font-bold text-slate-900">
                         {SAMPLE_UB04_CLAIM.physicians.operating.name}
                       </div>
-                      <div className="text-[9px] font-mono text-slate-500">
+                      <div className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                         NPI: {SAMPLE_UB04_CLAIM.physicians.operating.npi}
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3 text-center text-[10px] text-slate-400 italic">
+                  <div className="mt-3 text-center text-[10px] text-slate-700 dark:text-slate-300 font-bold italic">
                     💡 Click on any Form Locator above to inspect hospital DRG impact, rules, sample values, and denial triggers!
                   </div>
                 </div>
-              ) : (
+              )}
+
+              {ub04ViewMode === 'directory' && (
                 /* UB-04 MASTER DIRECTORY (FL 01 to FL 81) */
                 <div className="bg-white dark:bg-health-darkCard p-5 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
                   {/* Header Badge */}
@@ -1588,7 +1761,7 @@ export const Module2ClaimForms: React.FC = () => {
                             <span className="font-mono text-xs font-black text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                               {box.locatorNumber}
                             </span>
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                               {box.category}
                             </span>
                           </div>
@@ -1607,7 +1780,7 @@ export const Module2ClaimForms: React.FC = () => {
             </div>
 
             {/* Right Area (Col 5): Deep-Dive Form Locator Inspector Card */}
-            <div className="lg:col-span-5 sticky top-20 space-y-4">
+            <div id="ub04-inspector-panel" className="lg:col-span-5 sticky top-20 space-y-4">
               <div className="bg-white dark:bg-health-darkCard p-6 rounded-3xl border-2 border-emerald-500/40 shadow-lg space-y-5">
                 {/* Header Navigation */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1652,7 +1825,7 @@ export const Module2ClaimForms: React.FC = () => {
 
                 {/* Sample Filled Value Monospace Banner */}
                 <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
-                  <div className="text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
                     <span>Authentic Hospital Sample Value:</span>
                     <span className="text-amber-400 font-bold">● Valid Syntax</span>
                   </div>
@@ -1669,7 +1842,7 @@ export const Module2ClaimForms: React.FC = () => {
 
                 {/* Rules & Hospital Guidelines */}
                 <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-2">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                     Hospital Guidelines & Inpatient / Outpatient Rules
                   </h4>
                   <ul className="space-y-1.5">
@@ -1713,7 +1886,7 @@ export const Module2ClaimForms: React.FC = () => {
               <h3 className="text-lg font-black text-slate-900 dark:text-white">
                 Comprehensive Professional (CMS-1500) vs. Facility (UB-04) Matrix
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 Master the fundamental legal, operational, and financial distinctions between physician and hospital billing
               </p>
             </div>
@@ -1765,14 +1938,14 @@ export const Module2ClaimForms: React.FC = () => {
                 <span className="text-xs font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
                   Pre-Submission Claim Scrubber Simulator
                 </span>
-                <span className="text-xs font-bold text-slate-400">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
                   Interactive AR Audit Game
                 </span>
               </div>
               <h3 className="text-xl font-black text-slate-900 dark:text-white">
                 Spot the 5 Fatal Claim Traps Before Clearinghouse Rejection!
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
                 This draft CMS-1500 claim was generated by the clinic front desk and coding team. 5 critical compliance traps will cause instant clearinghouse rejection or non-payment. Click on the trapped boxes below to audit!
               </p>
             </div>
@@ -1782,7 +1955,7 @@ export const Module2ClaimForms: React.FC = () => {
                 <div className="text-2xl font-black text-emerald-600 font-mono">
                   {discoveredTraps.length} / {AUDIT_TRAPS.length}
                 </div>
-                <div className="text-[10px] font-bold text-slate-400 uppercase">
+                <div className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase">
                   Traps Identified
                 </div>
               </div>
@@ -1841,7 +2014,7 @@ export const Module2ClaimForms: React.FC = () => {
                           <CheckCircle2 className="w-3.5 h-3.5" /> CAUGHT!
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold text-slate-400">
+                        <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
                           Trap #{idx + 1}
                         </span>
                       )}
@@ -1852,14 +2025,14 @@ export const Module2ClaimForms: React.FC = () => {
                     </h4>
 
                     <div className="p-2.5 rounded-xl bg-red-100/70 border border-red-200 text-red-950 font-mono text-[11px] mb-3">
-                      <span className="font-bold text-red-700 block text-[9px] uppercase">Draft Claim Value:</span>
+                      <span className="font-bold text-red-700 block text-xs font-medium uppercase">Draft Claim Value:</span>
                       {trap.flawedValue}
                     </div>
 
                     {isFound && (
                       <div className="space-y-2 mt-2 pt-2 border-t border-emerald-200 text-xs">
                         <div className="text-emerald-900 font-mono text-[11px] bg-emerald-100/60 p-2 rounded-lg border border-emerald-200">
-                          <span className="font-bold text-emerald-700 block text-[9px] uppercase">Compliant Corrected Value:</span>
+                          <span className="font-bold text-emerald-700 block text-xs font-medium uppercase">Compliant Corrected Value:</span>
                           {trap.correctValue}
                         </div>
                         <div className="text-[10px] font-bold text-red-600">
