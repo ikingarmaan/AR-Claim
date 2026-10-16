@@ -146,6 +146,7 @@ export const Module2ClaimForms: React.FC = () => {
   const [selectedUb04Box, setSelectedUb04Box] = useState<Ub04BoxDetail>(UB_04_BOXES.find(b => b.locatorNumber === 'FL 04') || UB_04_BOXES[0]);
   const [ub04Search, setUb04Search] = useState('');
   const [ub04CategoryFilter, setUb04CategoryFilter] = useState<'all' | 'provider' | 'patient' | 'codes' | 'charges' | 'payer' | 'clinical' | 'reserved'>('all');
+  const [isWideLayout, setIsWideLayout] = useState<boolean>(false);
 
   // Auditor Sandbox State
   const [discoveredTraps, setDiscoveredTraps] = useState<string[]>([]);
@@ -468,8 +469,8 @@ export const Module2ClaimForms: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Area (Col 7): The Realistic Form or Box Directory */}
-            <div className="lg:col-span-7 space-y-4">
+            {/* Left Area: Form or Box Directory */}
+            <div className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-7'} space-y-4`}>
               {cmsViewMode === 'original' && (
                 <OfficialFormViewer<ClaimBoxDetail>
                   formType="cms1500"
@@ -491,6 +492,8 @@ export const Module2ClaimForms: React.FC = () => {
                   activeSection={cmsSectionFilter}
                   onSelectSection={setCmsSectionFilter}
                   inspectorElementId="cms-inspector-panel"
+                  isWideLayout={isWideLayout}
+                  onToggleWideLayout={() => setIsWideLayout(w => !w)}
                 />
               )}
 
@@ -1136,7 +1139,7 @@ export const Module2ClaimForms: React.FC = () => {
             </div>
 
             {/* Right Area (Col 5): Deep-Dive Box Inspector Card */}
-            <div id="cms-inspector-panel" className="lg:col-span-5 sticky top-20 space-y-4">
+            <div id="cms-inspector-panel" className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-5 sticky top-20'} space-y-4`}>
               <div className="bg-white dark:bg-health-darkCard p-6 rounded-3xl border-2 border-emerald-500/40 shadow-lg space-y-5">
                 {/* Header Navigation */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -1296,8 +1299,8 @@ export const Module2ClaimForms: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Area (Col 7): The Realistic UB-04 Form or Directory */}
-            <div className="lg:col-span-7 space-y-4">
+            {/* Left Area: UB-04 Form or Directory */}
+            <div className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-7'} space-y-4`}>
               {ub04ViewMode === 'original' && (
                 <OfficialFormViewer<Ub04BoxDetail>
                   formType="ub04"
@@ -1319,6 +1322,8 @@ export const Module2ClaimForms: React.FC = () => {
                   activeSection={ub04SectionFilter}
                   onSelectSection={setUb04SectionFilter}
                   inspectorElementId="ub04-inspector-panel"
+                  isWideLayout={isWideLayout}
+                  onToggleWideLayout={() => setIsWideLayout(w => !w)}
                 />
               )}
 
@@ -1780,7 +1785,7 @@ export const Module2ClaimForms: React.FC = () => {
             </div>
 
             {/* Right Area (Col 5): Deep-Dive Form Locator Inspector Card */}
-            <div id="ub04-inspector-panel" className="lg:col-span-5 sticky top-20 space-y-4">
+            <div id="ub04-inspector-panel" className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-5 sticky top-20'} space-y-4`}>
               <div className="bg-white dark:bg-health-darkCard p-6 rounded-3xl border-2 border-emerald-500/40 shadow-lg space-y-5">
                 {/* Header Navigation */}
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
