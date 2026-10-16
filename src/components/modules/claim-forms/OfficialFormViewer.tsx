@@ -464,12 +464,17 @@ export function OfficialFormViewer<T>({
               type="button"
               onClick={() => {
                 const el = document.getElementById(inspectorElementId);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (el) {
+                  el.classList.add('ring-4', 'ring-emerald-400');
+                  setTimeout(() => el.classList.remove('ring-4', 'ring-emerald-400'), 1200);
+                  if (window.innerWidth < 1024) el.scrollIntoView({ behavior: 'smooth' });
+                }
               }}
-              className="flex items-center gap-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline shrink-0"
+              className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 transition-colors shrink-0"
+              title="Box description is shown beside the form"
             >
-              <span>Jump to Explanation</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Description Beside Form →</span>
             </button>
           </div>
         </div>
@@ -535,11 +540,16 @@ export function OfficialFormViewer<T>({
               type="button"
               onClick={() => {
                 const el = document.getElementById(inspectorElementId);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (el) {
+                  el.classList.add('ring-4', 'ring-emerald-400');
+                  setTimeout(() => el.classList.remove('ring-4', 'ring-emerald-400'), 1200);
+                  if (window.innerWidth < 1024) el.scrollIntoView({ behavior: 'smooth' });
+                }
               }}
-              className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition-colors shadow-sm flex items-center gap-1"
+              className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition-colors shadow-sm flex items-center gap-1.5"
+              title="Inspect description beside the form"
             >
-              <span>Explain Box</span>
+              <span>Description Beside</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

@@ -469,8 +469,8 @@ export const Module2ClaimForms: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Area: Form or Box Directory */}
-            <div className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-7'} space-y-4`}>
+            {/* Left Area (Col 7): Official Form Viewer */}
+            <div className="lg:col-span-7 space-y-4">
               {cmsViewMode === 'original' && (
                 <OfficialFormViewer<ClaimBoxDetail>
                   formType="cms1500"
@@ -492,8 +492,6 @@ export const Module2ClaimForms: React.FC = () => {
                   activeSection={cmsSectionFilter}
                   onSelectSection={setCmsSectionFilter}
                   inspectorElementId="cms-inspector-panel"
-                  isWideLayout={isWideLayout}
-                  onToggleWideLayout={() => setIsWideLayout(w => !w)}
                 />
               )}
 
@@ -1138,16 +1136,16 @@ export const Module2ClaimForms: React.FC = () => {
               )}
             </div>
 
-            {/* Right Area (Col 5): Deep-Dive Box Inspector Card */}
-            <div id="cms-inspector-panel" className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-5 sticky top-20'} space-y-4`}>
-              <div className="bg-white dark:bg-health-darkCard p-6 rounded-3xl border-2 border-emerald-500/40 shadow-lg space-y-5">
-                {/* Header Navigation */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+            {/* Right Area (Col 5): Deep-Dive Box Description Beside the Form */}
+            <div id="cms-inspector-panel" className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+              <div className="bg-white dark:bg-health-darkCard p-5 sm:p-6 rounded-3xl border-2 border-emerald-500/50 shadow-xl space-y-4 lg:max-h-[calc(100vh-110px)] lg:overflow-y-auto">
+                {/* Header Navigation with Active Beside Indicator */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-black px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono">
+                    <span className="text-sm font-black px-3 py-1 rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 font-mono">
                       Box {selectedCmsBox.boxNumber}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                       {selectedCmsBox.category}
                     </span>
                   </div>
@@ -1156,7 +1154,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setSelectedCmsBox(prevCmsBox)}
-                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
+                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
                       title="Previous Box"
                     >
                       <ChevronLeft className="w-4 h-4" />
@@ -1164,7 +1162,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setSelectedCmsBox(nextCmsBox)}
-                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
+                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
                       title="Next Box"
                     >
                       <ChevronRight className="w-4 h-4" />
@@ -1172,8 +1170,12 @@ export const Module2ClaimForms: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Box Title */}
+                {/* Box Title & Active Status */}
                 <div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mb-1">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Description Live Beside Form</span>
+                  </div>
                   <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">
                     {selectedCmsBox.name}
                   </h3>
@@ -1182,60 +1184,54 @@ export const Module2ClaimForms: React.FC = () => {
                   </p>
                 </div>
 
-                <div className={`grid grid-cols-1 ${isWideLayout ? 'lg:grid-cols-2' : ''} gap-5`}>
-                  <div className="space-y-4">
-                    {/* Sample Filled Value Monospace Banner */}
-                    <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
-                      <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
-                        <span>Authentic Claim Sample Value:</span>
-                        <span className="text-emerald-400 font-bold">● Valid Syntax</span>
-                      </div>
-                      <div className="font-bold">{selectedCmsBox.sampleValue}</div>
-                    </div>
-
-                    {/* EDI 837P Mapping */}
-                    {selectedCmsBox.ediMapping && (
-                      <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-xs text-blue-900 dark:text-blue-200 font-mono">
-                        <div className="font-bold text-[10px] uppercase text-blue-600 mb-0.5">
-                          HIPAA EDI 837P Loop & Segment:
-                        </div>
-                        {selectedCmsBox.ediMapping}
-                      </div>
-                    )}
+                {/* Sample Filled Value Monospace Banner */}
+                <div className="p-3.5 rounded-2xl bg-slate-900 text-emerald-400 font-mono text-xs border border-slate-800 shadow-inner">
+                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+                    <span>Authentic Claim Sample Value:</span>
+                    <span className="text-emerald-400 font-bold">● Valid Syntax</span>
                   </div>
+                  <div className="font-bold">{selectedCmsBox.sampleValue}</div>
+                </div>
 
-                  <div className="space-y-4">
-                    {/* Rules & NUCC Guidelines */}
-                    <div>
-                      <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                        Key Guidelines & NUCC Rules
-                      </h4>
-                      <ul className="space-y-1.5">
-                        {selectedCmsBox.rules.map((r, i) => (
-                          <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                            <span>{r}</span>
-                          </li>
-                        ))}
-                      </ul>
+                {/* EDI 837P Mapping */}
+                {selectedCmsBox.ediMapping && (
+                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 text-xs text-blue-900 dark:text-blue-200 font-mono">
+                    <div className="font-bold text-[10px] uppercase text-blue-600 mb-0.5">
+                      HIPAA EDI 837P Loop & Segment:
                     </div>
-
-                    {/* Rejection Causes & Denial Codes */}
-                    <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
-                        <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
-                        <span>Top AR Denial Triggers & Traps</span>
-                      </div>
-                      <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
-                        {selectedCmsBox.rejectionCauses.map((c, i) => (
-                          <li key={i} className="flex items-start gap-1.5 font-medium">
-                            <span className="text-red-500 font-bold">•</span>
-                            <span>{c}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {selectedCmsBox.ediMapping}
                   </div>
+                )}
+
+                {/* Rules & NUCC Guidelines */}
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Key Guidelines & NUCC Rules
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {selectedCmsBox.rules.map((r, i) => (
+                      <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Rejection Causes & Denial Codes */}
+                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
+                    <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
+                    <span>Top AR Denial Triggers & Traps</span>
+                  </div>
+                  <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
+                    {selectedCmsBox.rejectionCauses.map((c, i) => (
+                      <li key={i} className="flex items-start gap-1.5 font-medium">
+                        <span className="text-red-500 font-bold">•</span>
+                        <span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
@@ -1305,8 +1301,8 @@ export const Module2ClaimForms: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Area: UB-04 Form or Directory */}
-            <div className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-7'} space-y-4`}>
+            {/* Left Area (Col 7): Official UB-04 Form Viewer */}
+            <div className="lg:col-span-7 space-y-4">
               {ub04ViewMode === 'original' && (
                 <OfficialFormViewer<Ub04BoxDetail>
                   formType="ub04"
@@ -1328,8 +1324,6 @@ export const Module2ClaimForms: React.FC = () => {
                   activeSection={ub04SectionFilter}
                   onSelectSection={setUb04SectionFilter}
                   inspectorElementId="ub04-inspector-panel"
-                  isWideLayout={isWideLayout}
-                  onToggleWideLayout={() => setIsWideLayout(w => !w)}
                 />
               )}
 
@@ -1790,16 +1784,16 @@ export const Module2ClaimForms: React.FC = () => {
               )}
             </div>
 
-            {/* Right Area (Col 5): Deep-Dive Form Locator Inspector Card */}
-            <div id="ub04-inspector-panel" className={`${isWideLayout ? 'lg:col-span-12' : 'lg:col-span-5 sticky top-20'} space-y-4`}>
-              <div className="bg-white dark:bg-health-darkCard p-6 rounded-3xl border-2 border-emerald-500/40 shadow-lg space-y-5">
-                {/* Header Navigation */}
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+            {/* Right Area (Col 5): Deep-Dive Form Locator Description Beside the Form */}
+            <div id="ub04-inspector-panel" className="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+              <div className="bg-white dark:bg-health-darkCard p-5 sm:p-6 rounded-3xl border-2 border-emerald-500/50 shadow-xl space-y-4 lg:max-h-[calc(100vh-110px)] lg:overflow-y-auto">
+                {/* Header Navigation with Active Beside Indicator */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-black px-3 py-1 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 font-mono">
+                    <span className="text-sm font-black px-3 py-1 rounded-xl bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700 font-mono">
                       {selectedUb04Box.locatorNumber}
                     </span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                       {selectedUb04Box.category}
                     </span>
                   </div>
@@ -1808,7 +1802,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setSelectedUb04Box(prevUb04Box)}
-                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
+                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
                       title="Previous Locator"
                     >
                       <ChevronLeft className="w-4 h-4" />
@@ -1816,7 +1810,7 @@ export const Module2ClaimForms: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setSelectedUb04Box(nextUb04Box)}
-                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
+                      className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors"
                       title="Next Locator"
                     >
                       <ChevronRight className="w-4 h-4" />
@@ -1824,8 +1818,12 @@ export const Module2ClaimForms: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Form Locator Title */}
+                {/* Form Locator Title & Active Status */}
                 <div>
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-amber-400 mb-1">
+                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                    <span>Description Live Beside Form</span>
+                  </div>
                   <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">
                     {selectedUb04Box.name}
                   </h3>
@@ -1834,58 +1832,52 @@ export const Module2ClaimForms: React.FC = () => {
                   </p>
                 </div>
 
-                <div className={`grid grid-cols-1 ${isWideLayout ? 'lg:grid-cols-2' : ''} gap-5`}>
-                  <div className="space-y-4">
-                    {/* Sample Filled Value Monospace Banner */}
-                    <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
-                      <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
-                        <span>Authentic Hospital Sample Value:</span>
-                        <span className="text-amber-400 font-bold">● Valid Syntax</span>
-                      </div>
-                      <div className="font-bold">{selectedUb04Box.sampleValue}</div>
-                    </div>
-
-                    {/* EDI 837I Mapping */}
-                    <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 font-mono">
-                      <div className="font-bold text-[10px] uppercase text-purple-600 mb-0.5">
-                        HIPAA EDI 837I Loop & Segment:
-                      </div>
-                      {selectedUb04Box.ediMapping}
-                    </div>
+                {/* Sample Filled Value Monospace Banner */}
+                <div className="p-3.5 rounded-2xl bg-slate-900 text-amber-400 font-mono text-xs border border-slate-800 shadow-inner">
+                  <div className="text-xs font-medium uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center justify-between">
+                    <span>Authentic Hospital Sample Value:</span>
+                    <span className="text-amber-400 font-bold">● Valid Syntax</span>
                   </div>
+                  <div className="font-bold">{selectedUb04Box.sampleValue}</div>
+                </div>
 
-                  <div className="space-y-4">
-                    {/* Rules & Hospital Guidelines */}
-                    <div>
-                      <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                        Hospital Guidelines & Inpatient / Outpatient Rules
-                      </h4>
-                      <ul className="space-y-1.5">
-                        {selectedUb04Box.rules.map((r, i) => (
-                          <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                            <span>{r}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Rejection Causes & Denial Codes */}
-                    <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
-                        <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
-                        <span>Hospital Rejection & DRG Audit Risks</span>
-                      </div>
-                      <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
-                        {selectedUb04Box.rejectionCauses.map((c, i) => (
-                          <li key={i} className="flex items-start gap-1.5 font-medium">
-                            <span className="text-red-500 font-bold">•</span>
-                            <span>{c}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                {/* EDI 837I Mapping */}
+                <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-900 dark:text-purple-200 font-mono">
+                  <div className="font-bold text-[10px] uppercase text-purple-600 mb-0.5">
+                    HIPAA EDI 837I Loop & Segment:
                   </div>
+                  {selectedUb04Box.ediMapping}
+                </div>
+
+                {/* Rules & Hospital Guidelines */}
+                <div>
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                    Hospital Guidelines & Inpatient / Outpatient Rules
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {selectedUb04Box.rules.map((r, i) => (
+                      <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>{r}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Rejection Causes & Denial Codes */}
+                <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-red-700 font-black text-xs uppercase tracking-wider">
+                    <AlertOctagon className="w-4 h-4 shrink-0 text-red-600" />
+                    <span>Hospital Rejection & DRG Audit Risks</span>
+                  </div>
+                  <ul className="space-y-1 text-xs text-red-900 dark:text-red-200">
+                    {selectedUb04Box.rejectionCauses.map((c, i) => (
+                      <li key={i} className="flex items-start gap-1.5 font-medium">
+                        <span className="text-red-500 font-bold">•</span>
+                        <span>{c}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             </div>
