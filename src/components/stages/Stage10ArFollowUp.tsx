@@ -392,7 +392,7 @@ export const Stage10ArFollowUp: React.FC = () => {
         <div className="mt-6 flex items-center justify-between pt-4 border-t border-stone-300 dark:border-stone-700">
           <button
             onClick={() => setActiveModule('payment-posting')}
-            className="text-xs font-serif font-bold text-stone-600 hover:text-stone-900 flex items-center gap-1"
+            className="text-xs font-serif font-bold text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 flex items-center gap-1"
           >
             ← Previous: Stage 9 Payment Posting
           </button>

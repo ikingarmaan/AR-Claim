@@ -119,28 +119,28 @@ export const RcmPipelineFlow: React.FC = () => {
       {/* Golden Rule Post-it Memo */}
       <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
         <div className="skeuo-postit p-3 rounded shadow text-xs">
-          <div className="font-bold text-stone-900 mb-1 flex items-center gap-1">
+          <div className="font-bold text-stone-900 dark:text-amber-200 mb-1 flex items-center gap-1">
             📌 Front-End Axiom (Stages 1–3)
           </div>
-          <p className="text-stone-800 leading-relaxed">
+          <p className="text-stone-800 dark:text-amber-100/90 leading-relaxed">
             Over <strong>70% of claim denials</strong> trace back to errors in appointment scheduling or eligibility verification. Validating coverage prior to the visit prevents CO-27 (coverage terminated) and CO-29.
           </p>
         </div>
 
         <div className="skeuo-postit-blue p-3 rounded shadow text-xs">
-          <div className="font-bold text-blue-950 mb-1 flex items-center gap-1">
+          <div className="font-bold text-blue-950 dark:text-sky-200 mb-1 flex items-center gap-1">
             📌 Mid-Cycle Axiom (Stages 4–7)
           </div>
-          <p className="text-blue-900 leading-relaxed">
+          <p className="text-blue-900 dark:text-sky-100/90 leading-relaxed">
             If it is not documented, it cannot be billed. <strong>Medical necessity</strong> (linking correct ICD-10 to CPT) is the single legal bridge that obligates the payer to reimburse the provider.
           </p>
         </div>
 
         <div className="skeuo-postit-green p-3 rounded shadow text-xs">
-          <div className="font-bold text-emerald-950 mb-1 flex items-center gap-1">
+          <div className="font-bold text-emerald-950 dark:text-emerald-200 mb-1 flex items-center gap-1">
             📌 Back-End Axiom (Stages 8–10)
           </div>
-          <p className="text-emerald-900 leading-relaxed">
+          <p className="text-emerald-900 dark:text-emerald-100/90 leading-relaxed">
             Clean claim rate benchmark is <strong>&gt; 95%</strong>. Denials are not final rejections; aggressive AR follow-up and timely appeal submissions recover up to 65% of disputed revenue.
           </p>
         </div>

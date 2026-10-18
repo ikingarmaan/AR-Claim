@@ -6,6 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RCMclaim — Complete US Healthcare Revenue Cycle Training</title>
     <meta name="description" content="RCMclaim: Master the 10-stage US Healthcare Revenue Cycle from Appointment Scheduling through AR Follow-Up. Interactive CMS-1500 & UB-04 claim forms, coding, denials, and certification exams." />
+    <!-- Theme Bootstrap: Prevents flash of unstyled content & keeps dark mode in perfect sync -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('rcmclaim_theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || (!stored && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

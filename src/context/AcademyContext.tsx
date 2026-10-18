@@ -72,9 +72,14 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   const [isDark, setIsDark] = useState<boolean>(() => {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved !== null) return saved === 'dark';
-    return false; // Default to clean modern white theme
+    try {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved !== null) return saved === 'dark';
+      if (typeof window !== 'undefined' && window.matchMedia) {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+    } catch (e) {}
+    return false;
   });
 
   const [progress, setProgress] = useState<UserProgress>(() => {

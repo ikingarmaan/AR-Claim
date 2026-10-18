@@ -221,19 +221,19 @@ export const Stage6MedicalCoding: React.FC = () => {
                 <div className="flex items-center gap-1.5 p-1 bg-stone-100 dark:bg-stone-800 rounded border border-stone-300 dark:border-stone-600 text-xs">
                   <button
                     onClick={() => setModifierFilter('all')}
-                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'all' ? 'bg-amber-600 text-white font-bold' : 'text-stone-600 hover:text-stone-900'}`}
+                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'all' ? 'bg-amber-600 text-white font-bold' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'}`}
                   >
                     All ({MODIFIER_MASTERCLASS.length})
                   </button>
                   <button
                     onClick={() => setModifierFilter('e&m')}
-                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'e&m' ? 'bg-amber-600 text-white font-bold' : 'text-stone-600 hover:text-stone-900'}`}
+                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'e&m' ? 'bg-amber-600 text-white font-bold' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'}`}
                   >
                     E&M Modifiers
                   </button>
                   <button
                     onClick={() => setModifierFilter('surgical')}
-                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'surgical' ? 'bg-amber-600 text-white font-bold' : 'text-stone-600 hover:text-stone-900'}`}
+                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'surgical' ? 'bg-amber-600 text-white font-bold' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'}`}
                   >
                     Surgical Modifiers
                   </button>
@@ -360,7 +360,7 @@ export const Stage6MedicalCoding: React.FC = () => {
         <div className="mt-6 flex items-center justify-between pt-4 border-t border-stone-300 dark:border-stone-700">
           <button
             onClick={() => setActiveModule('transcription')}
-            className="text-xs font-serif font-bold text-stone-600 hover:text-stone-900 flex items-center gap-1"
+            className="text-xs font-serif font-bold text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100 flex items-center gap-1"
           >
             ← Previous: Stage 5 Transcription
           </button>

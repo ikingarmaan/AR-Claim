@@ -109,13 +109,13 @@ export const EobEraGuide: React.FC = () => {
         {/* Payer Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-400/60 dark:border-stone-600/60">
           <div>
-            <div className="text-xs font-mono font-bold text-stone-700 uppercase">PAYER REMITTANCE ADVICE (835)</div>
-            <div className="text-base font-serif font-bold text-stone-900">BLUE CROSS BLUE SHIELD HEALTHCARE</div>
-            <div className="text-xs font-mono text-stone-600">CLAIM ICN: 2026-088194-01 | CHECK TRACE: #ACH-98214</div>
+            <div className="text-xs font-mono font-bold text-stone-700 dark:text-stone-300 uppercase">PAYER REMITTANCE ADVICE (835)</div>
+            <div className="text-base font-serif font-bold text-stone-900 dark:text-stone-100">BLUE CROSS BLUE SHIELD HEALTHCARE</div>
+            <div className="text-xs font-mono text-stone-600 dark:text-stone-400">CLAIM ICN: 2026-088194-01 | CHECK TRACE: #ACH-98214</div>
           </div>
           <div className="text-right mt-2 sm:mt-0">
-            <div className="text-xs font-mono text-stone-600">DATE ISSUED: OCT 18, 2026</div>
-            <div className="text-lg font-mono font-bold text-emerald-800">
+            <div className="text-xs font-mono text-stone-600 dark:text-stone-400">DATE ISSUED: OCT 18, 2026</div>
+            <div className="text-lg font-mono font-bold text-emerald-800 dark:text-emerald-400">
               NET EFT PAID: ${payerPaid.toFixed(2)}
             </div>
           </div>
@@ -125,25 +125,25 @@ export const EobEraGuide: React.FC = () => {
         <div className="overflow-x-auto mt-4">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="border-b border-stone-400 text-stone-800 text-left">
+              <tr className="border-b border-stone-400 dark:border-stone-600 text-stone-800 dark:text-stone-200 text-left">
                 <th className="py-2">SERVICE / CPT</th>
                 <th className="py-2 text-right">BILLED</th>
                 <th className="py-2 text-right">ALLOWED</th>
                 <th className="py-2 text-right">CO-45 WRITE-OFF</th>
                 <th className="py-2 text-right">PR-1 DEDUCTIBLE</th>
                 <th className="py-2 text-right">PR-2 COINS ({coinsurancePct}%)</th>
-                <th className="py-2 text-right font-bold text-emerald-900">PAYER PAID</th>
+                <th className="py-2 text-right font-bold text-emerald-900 dark:text-emerald-400">PAYER PAID</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-stone-300">
-                <td className="py-3 font-serif font-bold text-stone-900">99214 — Office Visit L4</td>
-                <td className="py-3 text-right text-stone-900">${billed.toFixed(2)}</td>
-                <td className="py-3 text-right text-blue-900 font-bold">${allowed.toFixed(2)}</td>
-                <td className="py-3 text-right text-red-800 font-bold">-${co45.toFixed(2)}</td>
-                <td className="py-3 text-right text-amber-900 font-bold">${deductible.toFixed(2)}</td>
-                <td className="py-3 text-right text-amber-900 font-bold">${coinsuranceAmt.toFixed(2)}</td>
-                <td className="py-3 text-right font-bold text-emerald-800 text-sm">${payerPaid.toFixed(2)}</td>
+              <tr className="border-b border-stone-300 dark:border-stone-700">
+                <td className="py-3 font-serif font-bold text-stone-900 dark:text-stone-100">99214 — Office Visit L4</td>
+                <td className="py-3 text-right text-stone-900 dark:text-stone-100">${billed.toFixed(2)}</td>
+                <td className="py-3 text-right text-blue-900 dark:text-blue-400 font-bold">${allowed.toFixed(2)}</td>
+                <td className="py-3 text-right text-red-800 dark:text-red-400 font-bold">-${co45.toFixed(2)}</td>
+                <td className="py-3 text-right text-amber-900 dark:text-amber-400 font-bold">${deductible.toFixed(2)}</td>
+                <td className="py-3 text-right text-amber-900 dark:text-amber-400 font-bold">${coinsuranceAmt.toFixed(2)}</td>
+                <td className="py-3 text-right font-bold text-emerald-800 dark:text-emerald-400 text-sm">${payerPaid.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
@@ -157,12 +157,12 @@ export const EobEraGuide: React.FC = () => {
           <div className="flex flex-wrap items-center gap-1.5 text-stone-700 dark:text-stone-300">
             <span>Billed (${billed})</span>
             <span>=</span>
-            <span className="text-red-700 font-bold">Contractual Adj (${co45})</span>
+            <span className="text-red-700 dark:text-red-400 font-bold">Contractual Adj (${co45})</span>
             <span>+</span>
-            <span className="text-amber-700 font-bold">Patient Resp (${totalPatientResponsibility})</span>
+            <span className="text-amber-700 dark:text-amber-400 font-bold">Patient Resp (${totalPatientResponsibility})</span>
             <span>+</span>
-            <span className="text-emerald-700 font-bold">Payer Paid (${payerPaid})</span>
-            <span className="ml-auto text-emerald-700 font-bold">✓ BALANCE = $0.00</span>
+            <span className="text-emerald-700 dark:text-emerald-400 font-bold">Payer Paid (${payerPaid})</span>
+            <span className="ml-auto text-emerald-700 dark:text-emerald-400 font-bold">✓ BALANCE = $0.00</span>
           </div>
         </div>
       </div>
