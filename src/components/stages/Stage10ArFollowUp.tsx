@@ -19,12 +19,14 @@ import {
 import { AR_SCENARIOS } from '../../data/arScenarios';
 import { NATO_ALPHABET } from '../../data/natoAndScripts';
 import { JobNotesStudyDesk } from '../dashboard/JobNotesStudyDesk';
+import { ArCallScenariosDesk } from '../dashboard/ArCallScenariosDesk';
+import { ArCallScenario } from '../../data/jobNotesData';
 
 export const Stage10ArFollowUp: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress, toggleBookmarkDenial, saveArNote } = useAcademy();
   const isCompleted = progress.completedModules.includes('ar-followup') || progress.completedModules.includes('ar-playbook');
 
-  const [activeTab, setActiveTab] = useState<'aging' | 'denials' | 'scripts' | 'simulator' | 'jobs-notes'>('aging');
+  const [activeTab, setActiveTab] = useState<'scenarios' | 'aging' | 'denials' | 'scripts' | 'simulator' | 'jobs-notes'>('scenarios');
 
   // Phone Call Simulator State
   const [repName, setRepName] = useState('Jennifer Brooks');
@@ -53,6 +55,15 @@ export const Stage10ArFollowUp: React.FC = () => {
     });
     setNoteSaved(true);
     setTimeout(() => setNoteSaved(false), 3000);
+  };
+
+  const handleLoadScenarioIntoSimulator = (scenario: ArCallScenario) => {
+    setStatus(scenario.simulatedData.status);
+    setActionTaken(scenario.simulatedData.actionTaken);
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + (scenario.simulatedData.nextFollowUpDays || 14));
+    setFollowUpDate(futureDate.toISOString().split('T')[0]);
+    setActiveTab('simulator');
   };
 
   return (
@@ -104,6 +115,17 @@ export const Stage10ArFollowUp: React.FC = () => {
 
         {/* Tabs */}
         <div className="flex flex-wrap gap-2 pt-6 pb-2 border-b border-stone-300 dark:border-stone-700">
+          <button
+            onClick={() => setActiveTab('scenarios')}
+            className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+              activeTab === 'scenarios'
+                ? 'bg-rose-800 text-white border-rose-900 -mb-[1px] shadow-sm'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900'
+            }`}
+          >
+            <span>📞 14 Master AR Call Scenarios</span>
+            <span className="text-[10px] bg-rose-600 text-white px-1.5 py-0.2 rounded font-mono font-bold">14</span>
+          </button>
           <button
             onClick={() => setActiveTab('aging')}
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
@@ -158,6 +180,12 @@ export const Stage10ArFollowUp: React.FC = () => {
 
         {/* Tab Body */}
         <div className="py-6 bg-white dark:bg-stone-900 p-6 rounded-b-xl border-x border-b border-stone-400 dark:border-stone-600">
+          {activeTab === 'scenarios' && (
+            <div>
+              <ArCallScenariosDesk onLoadIntoSimulator={handleLoadScenarioIntoSimulator} />
+            </div>
+          )}
+
           {activeTab === 'aging' && (
             <div>
               <ArAgingBuckets />
@@ -383,7 +411,7 @@ export const Stage10ArFollowUp: React.FC = () => {
 
           {activeTab === 'jobs-notes' && (
             <div>
-              <JobNotesStudyDesk />
+              <JobNotesStudyDesk onLoadIntoSimulator={handleLoadScenarioIntoSimulator} />
             </div>
           )}
         </div>

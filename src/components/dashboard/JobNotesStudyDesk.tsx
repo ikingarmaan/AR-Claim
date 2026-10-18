@@ -14,7 +14,8 @@ import {
   BookOpen, 
   ShieldAlert,
   ArrowRight,
-  Filter
+  Filter,
+  PhoneCall
 } from 'lucide-react';
 import { 
   JOB_INTERVIEW_QUESTIONS, 
@@ -22,11 +23,17 @@ import {
   PAYER_TIMELY_FILING_RULES, 
   POS_MASTER_DIRECTORY, 
   CLINICAL_MODIFIER_CASES,
-  JobInterviewQuestion 
+  JobInterviewQuestion,
+  ArCallScenario
 } from '../../data/jobNotesData';
+import { ArCallScenariosDesk } from './ArCallScenariosDesk';
 
-export const JobNotesStudyDesk: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'qa' | 'plans' | 'tfl' | 'pos' | 'cases' | 'calculator'>('qa');
+interface JobNotesStudyDeskProps {
+  onLoadIntoSimulator?: (scenario: ArCallScenario) => void;
+}
+
+export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadIntoSimulator }) => {
+  const [activeTab, setActiveTab] = useState<'qa' | 'scenarios' | 'plans' | 'tfl' | 'pos' | 'cases' | 'calculator'>('qa');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -95,6 +102,19 @@ export const JobNotesStudyDesk: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('scenarios')}
+          className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+            activeTab === 'scenarios'
+              ? 'bg-rose-800 text-white border-rose-900 shadow-sm'
+              : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'
+          }`}
+        >
+          <PhoneCall className={`w-4 h-4 ${activeTab === 'scenarios' ? 'text-white' : 'text-rose-700 dark:text-rose-400'}`} />
+          <span>14 AR Call Scenarios</span>
+          <span className="text-[10px] bg-rose-600 text-white px-1.5 py-0.2 rounded font-mono font-bold">14</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('plans')}
           className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
             activeTab === 'plans'
@@ -154,6 +174,13 @@ export const JobNotesStudyDesk: React.FC = () => {
           <span>Denial Rate & Duplicate Scenarios</span>
         </button>
       </div>
+
+      {/* Tab: 14 AR Call Scenarios */}
+      {activeTab === 'scenarios' && (
+        <div className="space-y-4">
+          <ArCallScenariosDesk onLoadIntoSimulator={onLoadIntoSimulator} />
+        </div>
+      )}
 
       {/* Tab 1: 44+ Interview Questions */}
       {activeTab === 'qa' && (
