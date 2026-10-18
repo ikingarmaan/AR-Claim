@@ -337,3 +337,4 @@ export const ArCallScenariosDesk: React.FC<ArCallScenariosDeskProps> = ({ onLoad
     </div>
   );
 };
+

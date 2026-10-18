@@ -11,14 +11,16 @@ import {
   Receipt,
   FileCheck,
   Scale,
-  AlertTriangle
+  AlertTriangle,
+  ShieldAlert
 } from 'lucide-react';
+import { CarcRarcDictionaryDesk } from '../dashboard/CarcRarcDictionaryDesk';
 
 export const Stage9PaymentPosting: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress } = useAcademy();
   const isCompleted = progress.completedModules.includes('payment-posting');
 
-  const [activeTab, setActiveTab] = useState<'calculator' | 'era835' | 'crossover' | 'creditBalances'>('calculator');
+  const [activeTab, setActiveTab] = useState<'calculator' | 'era835' | 'crossover' | 'creditBalances' | 'carcRarc'>('calculator');
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -108,6 +110,18 @@ export const Stage9PaymentPosting: React.FC = () => {
             }`}
           >
             ⚠️ Credit Balances & 60-Day Refund Rule
+          </button>
+          <button
+            onClick={() => setActiveTab('carcRarc')}
+            className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+              activeTab === 'carcRarc'
+                ? 'bg-rose-900 text-white border-rose-950 -mb-[1px] shadow-sm'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+            }`}
+          >
+            <ShieldAlert className="w-4 h-4" />
+            <span>CARC & RARC Codebook</span>
+            <span className="text-[10px] bg-rose-700 text-white px-1.5 py-0.2 rounded font-mono font-bold">49+</span>
           </button>
         </div>
 
@@ -201,6 +215,12 @@ export const Stage9PaymentPosting: React.FC = () => {
                   Failing to refund an identified overpayment within 60 days transforms the credit into an intentional "reverse false claim," subjecting the practice to treble damages ($11,000+ per claim) under the federal False Claims Act!
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'carcRarc' && (
+            <div>
+              <CarcRarcDictionaryDesk />
             </div>
           )}
         </div>

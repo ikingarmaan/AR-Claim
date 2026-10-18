@@ -27,13 +27,14 @@ import {
   ArCallScenario
 } from '../../data/jobNotesData';
 import { ArCallScenariosDesk } from './ArCallScenariosDesk';
+import { CarcRarcDictionaryDesk } from './CarcRarcDictionaryDesk';
 
 interface JobNotesStudyDeskProps {
   onLoadIntoSimulator?: (scenario: ArCallScenario) => void;
 }
 
 export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadIntoSimulator }) => {
-  const [activeTab, setActiveTab] = useState<'qa' | 'scenarios' | 'plans' | 'tfl' | 'pos' | 'cases' | 'calculator'>('qa');
+  const [activeTab, setActiveTab] = useState<'qa' | 'scenarios' | 'carc-rarc' | 'plans' | 'tfl' | 'pos' | 'cases' | 'calculator'>('qa');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -115,6 +116,19 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
         </button>
 
         <button
+          onClick={() => setActiveTab('carc-rarc')}
+          className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+            activeTab === 'carc-rarc'
+              ? 'bg-rose-900 text-white border-rose-950 shadow-sm'
+              : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'
+          }`}
+        >
+          <ShieldAlert className={`w-4 h-4 ${activeTab === 'carc-rarc' ? 'text-white' : 'text-rose-700 dark:text-rose-400'}`} />
+          <span>CARC & RARC Codes</span>
+          <span className="text-[10px] bg-rose-700 text-white px-1.5 py-0.2 rounded font-mono font-bold">49+</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('plans')}
           className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
             activeTab === 'plans'
@@ -179,6 +193,13 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
       {activeTab === 'scenarios' && (
         <div className="space-y-4">
           <ArCallScenariosDesk onLoadIntoSimulator={onLoadIntoSimulator} />
+        </div>
+      )}
+
+      {/* Tab: CARC & RARC Denial Codes */}
+      {activeTab === 'carc-rarc' && (
+        <div className="space-y-4">
+          <CarcRarcDictionaryDesk />
         </div>
       )}
 

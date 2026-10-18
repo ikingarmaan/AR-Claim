@@ -20,13 +20,14 @@ import { AR_SCENARIOS } from '../../data/arScenarios';
 import { NATO_ALPHABET } from '../../data/natoAndScripts';
 import { JobNotesStudyDesk } from '../dashboard/JobNotesStudyDesk';
 import { ArCallScenariosDesk } from '../dashboard/ArCallScenariosDesk';
+import { CarcRarcDictionaryDesk } from '../dashboard/CarcRarcDictionaryDesk';
 import { ArCallScenario } from '../../data/jobNotesData';
 
 export const Stage10ArFollowUp: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress, toggleBookmarkDenial, saveArNote } = useAcademy();
   const isCompleted = progress.completedModules.includes('ar-followup') || progress.completedModules.includes('ar-playbook');
 
-  const [activeTab, setActiveTab] = useState<'scenarios' | 'aging' | 'denials' | 'scripts' | 'simulator' | 'jobs-notes'>('scenarios');
+  const [activeTab, setActiveTab] = useState<'scenarios' | 'carc-rarc' | 'aging' | 'denials' | 'scripts' | 'simulator' | 'jobs-notes'>('scenarios');
 
   // Phone Call Simulator State
   const [repName, setRepName] = useState('Jennifer Brooks');
@@ -127,6 +128,17 @@ export const Stage10ArFollowUp: React.FC = () => {
             <span className="text-[10px] bg-rose-600 text-white px-1.5 py-0.2 rounded font-mono font-bold">14</span>
           </button>
           <button
+            onClick={() => setActiveTab('carc-rarc')}
+            className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+              activeTab === 'carc-rarc'
+                ? 'bg-rose-900 text-white border-rose-950 -mb-[1px] shadow-sm'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900'
+            }`}
+          >
+            <span>🛡️ CARC & RARC Denial Codes</span>
+            <span className="text-[10px] bg-rose-700 text-white px-1.5 py-0.2 rounded font-mono font-bold">49+</span>
+          </button>
+          <button
             onClick={() => setActiveTab('aging')}
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'aging'
@@ -183,6 +195,12 @@ export const Stage10ArFollowUp: React.FC = () => {
           {activeTab === 'scenarios' && (
             <div>
               <ArCallScenariosDesk onLoadIntoSimulator={handleLoadScenarioIntoSimulator} />
+            </div>
+          )}
+
+          {activeTab === 'carc-rarc' && (
+            <div>
+              <CarcRarcDictionaryDesk />
             </div>
           )}
 

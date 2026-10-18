@@ -65,6 +65,8 @@ export interface ArCallScenario {
   };
 }
 
+export * from './carcRarcData';
+
 // ==============================================================
 // 1. ALL 44+ OFFICIAL INTERVIEW QUESTIONS FROM USER'S NOTES
 // ==============================================================
