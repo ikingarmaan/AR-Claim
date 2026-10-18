@@ -45,6 +45,12 @@ export default {
           denied: '#9a2222',
           pending: '#8a6d20',
         },
+        health: {
+          dark: '#141210',
+          darkCard: '#1e1a16',
+          darkSubtle: '#2a231c',
+          electric: '#3b82f6',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

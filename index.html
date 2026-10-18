@@ -1,22 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RCMclaim — Complete US Healthcare Revenue Cycle Training</title>
     <meta name="description" content="RCMclaim: Master the 10-stage US Healthcare Revenue Cycle from Appointment Scheduling through AR Follow-Up. Interactive CMS-1500 & UB-04 claim forms, coding, denials, and certification exams." />
-    <!-- Theme Bootstrap: Prevents flash of unstyled content & keeps dark mode in perfect sync -->
+    <!-- Permanent Dark Mode Bootstrap: Always dark theme -->
     <script>
       (function() {
         try {
-          var stored = localStorage.getItem('rcmclaim_theme');
-          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (stored === 'dark' || (!stored && prefersDark)) {
-            document.documentElement.classList.add('dark');
-          } else {
-            document.documentElement.classList.remove('dark');
-          }
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('rcmclaim_theme', 'dark');
         } catch (e) {}
       })();
     </script>

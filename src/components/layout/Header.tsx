@@ -1,8 +1,6 @@
 import React from 'react';
 import { 
   Search, 
-  Sun, 
-  Moon, 
   Menu, 
   Bookmark, 
   Award,
@@ -25,8 +23,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenQuickTools
 }) => {
   const { 
-    isDark, 
-    toggleTheme, 
     setIsSearchOpen, 
     completionPercentage, 
     progress,
@@ -154,15 +150,6 @@ export const Header: React.FC<HeaderProps> = ({
               {totalBookmarks}
             </span>
           )}
-        </button>
-
-        {/* Theme Toggle (Day / Night Study) */}
-        <button
-          onClick={toggleTheme}
-          className="p-2 rounded-lg bg-black/30 border border-amber-900/70 text-amber-200 hover:text-white hover:bg-black/50 transition-all"
-          title={isDark ? 'Switch to Parchment Day Mode' : 'Switch to Dark Leather Night Mode'}
-        >
-          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-amber-200" />}
         </button>
       </div>
     </header>

@@ -71,16 +71,8 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [targetScrollId, setTargetScrollId] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY);
-      if (saved !== null) return saved === 'dark';
-      if (typeof window !== 'undefined' && window.matchMedia) {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches;
-      }
-    } catch (e) {}
-    return false;
-  });
+  // Permanent Dark Mode: Academy runs in full dark leather study mode
+  const [isDark] = useState<boolean>(true);
 
   const [progress, setProgress] = useState<UserProgress>(() => {
     try {
@@ -92,17 +84,14 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return DEFAULT_PROGRESS;
   });
 
-  // Sync theme to document element
+  // Ensure documentElement has dark class on load
   useEffect(() => {
     const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
+    root.classList.add('dark');
+    try {
       localStorage.setItem(THEME_STORAGE_KEY, 'dark');
-    } else {
-      root.classList.remove('dark');
-      localStorage.setItem(THEME_STORAGE_KEY, 'light');
-    }
-  }, [isDark]);
+    } catch (e) {}
+  }, []);
 
   // Sync progress to localStorage
   useEffect(() => {
@@ -125,7 +114,8 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const toggleTheme = () => setIsDark(prev => !prev);
+  // Dark mode is permanent - toggleTheme is a no-op
+  const toggleTheme = () => {};
 
   const setActiveModule = (module: ModuleId, targetId?: string) => {
     const target = (LEGACY_TO_STAGE[module] || module) as ModuleId;
