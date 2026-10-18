@@ -659,3 +659,4 @@ export const RCM_MIND_MAP_DATA: MindMapNode = {
     }
   ]
 };
+

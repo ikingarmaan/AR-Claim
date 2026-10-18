@@ -476,3 +476,4 @@ export const INPATIENT_ER_AUTH_WORKFLOW_STEPS = [
     clinicalDocsNeeded: ['Daily Physician Progress Notes', 'Updated Lab / Medication Flowsheets', 'Discharge Planning / Social Work Notes']
   }
 ];
+
