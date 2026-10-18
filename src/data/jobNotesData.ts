@@ -66,6 +66,7 @@ export interface ArCallScenario {
 }
 
 export * from './carcRarcData';
+export * from './modifiersMasteryData';
 
 // ==============================================================
 // 1. ALL 44+ OFFICIAL INTERVIEW QUESTIONS FROM USER'S NOTES

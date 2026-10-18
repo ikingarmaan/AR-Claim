@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { CPT_SECTIONS, MODIFIER_MASTERCLASS } from '../../data/codingAndModifiers';
 import { CLINICAL_MODIFIER_CASES } from '../../data/jobNotesData';
+import { ModifiersMasteryDesk } from '../dashboard/ModifiersMasteryDesk';
 
 export const Stage6MedicalCoding: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress, toggleBookmarkModifier } = useAcademy();
@@ -213,139 +214,8 @@ export const Stage6MedicalCoding: React.FC = () => {
           )}
 
           {activeTab === 'modifiers' && (
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">
-                  Professional Modifiers Library (Box 24D on CMS-1500)
-                </h4>
-                <div className="flex items-center gap-1.5 p-1 bg-stone-100 dark:bg-stone-800 rounded border border-stone-300 dark:border-stone-600 text-xs">
-                  <button
-                    onClick={() => setModifierFilter('all')}
-                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'all' ? 'bg-amber-600 text-white font-bold' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'}`}
-                  >
-                    All ({MODIFIER_MASTERCLASS.length})
-                  </button>
-                  <button
-                    onClick={() => setModifierFilter('e&m')}
-                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'e&m' ? 'bg-amber-600 text-white font-bold' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'}`}
-                  >
-                    E&M Modifiers
-                  </button>
-                  <button
-                    onClick={() => setModifierFilter('surgical')}
-                    className={`px-2.5 py-1 rounded font-mono ${modifierFilter === 'surgical' ? 'bg-amber-600 text-white font-bold' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'}`}
-                  >
-                    Surgical Modifiers
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-2.5">
-                {filteredModifiers.map(mod => {
-                  const isBookmarked = progress.bookmarkedModifiers.includes(mod.code);
-                  return (
-                    <div 
-                      key={mod.code}
-                      className="p-3 sm:p-4 rounded-lg bg-stone-50 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3"
-                    >
-                      <div className="md:w-1/3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-base text-amber-900 dark:text-amber-300 px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700">
-                            Mod {mod.code}
-                          </span>
-                          <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300">
-                            {mod.category}
-                          </span>
-                        </div>
-                        <div className="font-serif font-bold text-stone-900 dark:text-stone-100 text-sm mt-1">
-                          {mod.title}
-                        </div>
-                      </div>
-
-                      <div className="md:w-1/2 text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-                        <p>{mod.primaryUse}</p>
-                        <p className="mt-1 font-mono text-[11px] text-amber-700 dark:text-amber-400">
-                          <strong>Financial Impact:</strong> {mod.dollarImpact}
-                        </p>
-                      </div>
-
-                      <div className="flex md:flex-col items-center justify-end">
-                        <button
-                          onClick={() => toggleBookmarkModifier(mod.code)}
-                          className={`p-1.5 rounded transition-colors ${
-                            isBookmarked
-                              ? 'text-amber-600 bg-amber-50 dark:bg-amber-950/50'
-                              : 'text-stone-400 hover:text-stone-600'
-                          }`}
-                          title="Bookmark Modifier"
-                        >
-                          <Bookmark className="w-4 h-4 fill-current" />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Real World Clinical Modifier Case Studies from Jobs Notes */}
-              <div className="mt-8 pt-6 border-t-2 border-stone-300 dark:border-stone-700 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base flex items-center gap-2">
-                      <span>💼 Real-World Modifier Case Studies (From Jobs Notes)</span>
-                    </h4>
-                    <p className="text-xs text-stone-700 dark:text-stone-300">
-                      Actual clinical vignettes and denial prevention rationales extracted from field interview notes.
-                    </p>
-                  </div>
-                  <span className="skeuo-stamp-approved text-xs px-2.5 py-0.5 font-mono uppercase">
-                    5 CASE VIGNETTES
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 gap-3">
-                  {CLINICAL_MODIFIER_CASES.map((cs) => (
-                    <div 
-                      key={cs.id}
-                      className="p-4 rounded-xl bg-stone-50 dark:bg-stone-950/60 border border-stone-300 dark:border-stone-700 space-y-2"
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-stone-200 dark:border-stone-800 pb-1.5">
-                        <div className="flex items-center gap-2">
-                          <span className="skeuo-badge bg-amber-800 text-white font-mono text-xs px-2 py-0.5 rounded">
-                            {cs.modifier}
-                          </span>
-                          <span className="font-serif font-bold text-sm text-stone-900 dark:text-stone-100">
-                            {cs.title}
-                          </span>
-                        </div>
-                        <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                          {cs.reimbursementImpact}
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed font-sans">
-                        <strong className="text-stone-900 dark:text-stone-100 font-serif">Scenario: </strong>
-                        {cs.scenario}
-                      </p>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
-                        <div className="p-2 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800">
-                          <strong className="text-stone-900 dark:text-stone-100 font-mono">Billed As: </strong>
-                          <code className="text-amber-800 dark:text-amber-300">{cs.billingCodes}</code>
-                        </div>
-                        <div className="p-2 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800">
-                          <strong className="text-stone-900 dark:text-stone-100 font-mono">Why Needed: </strong>
-                          <span className="text-stone-700 dark:text-stone-300">{cs.whyUsed}</span>
-                        </div>
-                      </div>
-
-                      <div className="p-2 bg-rose-50/60 dark:bg-rose-950/20 rounded border border-rose-200 dark:border-rose-900/40 text-[11px] text-rose-950 dark:text-rose-200 font-mono">
-                        <strong>Denial Risk Without Modifier: </strong> {cs.denialPrevention}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div>
+              <ModifiersMasteryDesk />
             </div>
           )}
 

@@ -663,3 +663,4 @@ export const RARC_REMARK_CODES: RarcRemarkCodeItem[] = [
     practicalGuidance: 'Verify electronic Payer ID, clearinghouse routing code, or regional claims processing center address.'
   }
 ];
+

@@ -15,7 +15,8 @@ import {
   ShieldAlert,
   ArrowRight,
   Filter,
-  PhoneCall
+  PhoneCall,
+  Tag
 } from 'lucide-react';
 import { 
   JOB_INTERVIEW_QUESTIONS, 
@@ -28,6 +29,7 @@ import {
 } from '../../data/jobNotesData';
 import { ArCallScenariosDesk } from './ArCallScenariosDesk';
 import { CarcRarcDictionaryDesk } from './CarcRarcDictionaryDesk';
+import { ModifiersMasteryDesk } from './ModifiersMasteryDesk';
 
 interface JobNotesStudyDeskProps {
   onLoadIntoSimulator?: (scenario: ArCallScenario) => void;
@@ -168,12 +170,13 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
           onClick={() => setActiveTab('cases')}
           className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
             activeTab === 'cases'
-              ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 shadow-sm'
+              ? 'bg-rose-900 text-white border-rose-950 shadow-sm'
               : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'
           }`}
         >
-          <BookOpen className="w-4 h-4 text-rose-700 dark:text-rose-400" />
-          <span>Modifier Vignettes</span>
+          <Tag className={`w-4 h-4 ${activeTab === 'cases' ? 'text-white' : 'text-rose-700 dark:text-rose-400'}`} />
+          <span>Modifiers Masterclass</span>
+          <span className="text-[10px] bg-rose-700 text-white px-1.5 py-0.2 rounded font-mono font-bold">12+</span>
         </button>
 
         <button
@@ -465,52 +468,10 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
         </div>
       )}
 
-      {/* Tab 5: Clinical Modifier Vignettes */}
+      {/* Tab 5: Modifiers Masterclass */}
       {activeTab === 'cases' && (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            {CLINICAL_MODIFIER_CASES.map((c) => (
-              <div 
-                key={c.id}
-                className="skeuo-paper p-5 rounded-xl border border-stone-300 dark:border-stone-700 space-y-3"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 dark:border-stone-700 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="skeuo-badge bg-rose-800 text-white font-mono text-xs px-2.5 py-0.5 rounded">
-                      {c.modifier}
-                    </span>
-                    <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100">
-                      {c.title}
-                    </h4>
-                  </div>
-                  <div className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                    {c.reimbursementImpact}
-                  </div>
-                </div>
-
-                <div className="p-3 bg-stone-50 dark:bg-stone-950/50 rounded-lg text-xs leading-relaxed text-stone-800 dark:text-stone-200">
-                  <strong className="text-stone-900 dark:text-stone-100 font-serif">Clinical Vignette: </strong>
-                  {c.scenario}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800">
-                    <strong className="text-amber-800 dark:text-amber-400 font-mono block mb-1">Billing Codes:</strong>
-                    <code className="text-stone-800 dark:text-stone-200">{c.billingCodes}</code>
-                  </div>
-                  <div className="p-3 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800">
-                    <strong className="text-emerald-800 dark:text-emerald-400 font-mono block mb-1">Why Modifier Used:</strong>
-                    <span className="text-stone-800 dark:text-stone-200">{c.whyUsed}</span>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-rose-50/50 dark:bg-rose-950/20 rounded border border-rose-200 dark:border-rose-900/40 text-xs">
-                  <strong className="text-rose-900 dark:text-rose-300 font-mono block mb-0.5">Denial Prevention Note:</strong>
-                  <span className="text-stone-800 dark:text-stone-200">{c.denialPrevention}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ModifiersMasteryDesk />
         </div>
       )}
 
