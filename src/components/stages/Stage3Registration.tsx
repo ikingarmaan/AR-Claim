@@ -292,3 +292,4 @@ export const Stage3Registration: React.FC = () => {
     </div>
   );
 };
+

@@ -271,7 +271,7 @@ export const Stage2Eligibility: React.FC = () => {
                 <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-sm">
                   Live NAIC Birthday Rule Determination Engine
                 </h4>
-                <span className="text-xs font-mono text-stone-500">COB SIMULATOR</span>
+                <span className="text-xs font-mono text-stone-700 dark:text-stone-300 font-bold">COB SIMULATOR</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -285,7 +285,7 @@ export const Stage2Eligibility: React.FC = () => {
                     onChange={(e) => setParent1Dob(e.target.value)}
                     className="p-2 text-xs rounded border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 w-full"
                   />
-                  <span className="text-[10px] text-stone-500 mt-1 block">
+                  <span className="text-[10px] text-stone-700 dark:text-stone-300 font-medium mt-1 block">
                     Month/Day: {parent1Dob.slice(5)}
                   </span>
                 </div>
@@ -300,7 +300,7 @@ export const Stage2Eligibility: React.FC = () => {
                     onChange={(e) => setParent2Dob(e.target.value)}
                     className="p-2 text-xs rounded border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 w-full"
                   />
-                  <span className="text-[10px] text-stone-500 mt-1 block">
+                  <span className="text-[10px] text-stone-700 dark:text-stone-300 font-medium mt-1 block">
                     Month/Day: {parent2Dob.slice(5)}
                   </span>
                 </div>
@@ -341,3 +341,4 @@ export const Stage2Eligibility: React.FC = () => {
     </div>
   );
 };
+

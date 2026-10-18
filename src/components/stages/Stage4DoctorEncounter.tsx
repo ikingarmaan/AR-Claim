@@ -272,3 +272,4 @@ export const Stage4DoctorEncounter: React.FC = () => {
     </div>
   );
 };
+

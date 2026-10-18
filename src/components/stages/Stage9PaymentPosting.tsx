@@ -130,24 +130,24 @@ export const Stage9PaymentPosting: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs mt-3">
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border font-mono">
-                  <span className="font-bold text-amber-700">1. TRN Segment (Check Trace #):</span>
-                  <p className="mt-1 text-stone-600 dark:text-stone-400 font-sans">
+                  <span className="font-bold text-amber-700 dark:text-amber-400">1. TRN Segment (Check Trace #):</span>
+                  <p className="mt-1 text-stone-800 dark:text-stone-200 font-sans">
                     <code>TRN*1*ACH98214002*1948210344~</code><br />
                     Ties the 835 remittance file to the electronic deposit appearing on the practice bank account statement. Payment poster verifies cash in bank before unlocking batch.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border font-mono">
-                  <span className="font-bold text-amber-700">2. CLP Segment (Claim Payment Data):</span>
-                  <p className="mt-1 text-stone-600 dark:text-stone-400 font-sans">
+                  <span className="font-bold text-amber-700 dark:text-amber-400">2. CLP Segment (Claim Payment Data):</span>
+                  <p className="mt-1 text-stone-800 dark:text-stone-200 font-sans">
                     <code>CLP*PATIENT-ACCT*1*450.00*144.00*36.00*MC~</code><br />
                     Contains Patient Account #, Claim Status Code (1 = Primary, 2 = Secondary, 4 = Denied), Total Billed ($450), Payer Payment ($144), Patient Responsibility ($36).
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border font-mono">
-                  <span className="font-bold text-amber-700">3. CAS Segment (Adjustment Codes):</span>
-                  <p className="mt-1 text-stone-600 dark:text-stone-400 font-sans">
+                  <span className="font-bold text-amber-700 dark:text-amber-400">3. CAS Segment (Adjustment Codes):</span>
+                  <p className="mt-1 text-stone-800 dark:text-stone-200 font-sans">
                     <code>CAS*CO*45*170.00~</code> (Contractual write-off)<br />
                     <code>CAS*PR*1*100.00~</code> (Patient deductible)<br />
                     Breaks down exactly where every unpaid dollar went using CARC reason codes.
@@ -155,8 +155,8 @@ export const Stage9PaymentPosting: React.FC = () => {
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border font-mono">
-                  <span className="font-bold text-amber-700">4. PLB Segment (Provider-Level Adjustments):</span>
-                  <p className="mt-1 text-stone-600 dark:text-stone-400 font-sans">
+                  <span className="font-bold text-amber-700 dark:text-amber-400">4. PLB Segment (Provider-Level Adjustments):</span>
+                  <p className="mt-1 text-stone-800 dark:text-stone-200 font-sans">
                     <code>PLB*1234567890*20261231*WO:-250.00~</code><br />
                     Payer clawbacks, previous overpayment recoupments, or interest payments applied at the provider tax ID level rather than individual claims.
                   </p>
@@ -226,3 +226,4 @@ export const Stage9PaymentPosting: React.FC = () => {
     </div>
   );
 };
+

@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
                 Skeuomorphic Edition
               </span>
             </div>
-            <span className="text-[9px] font-mono tracking-wider text-amber-300/70 hidden sm:inline-block -mt-1">
+            <span className="text-[10px] font-mono tracking-wider text-amber-200 font-medium hidden sm:inline-block -mt-1">
               US Healthcare Revenue Cycle Academy
             </span>
           </div>

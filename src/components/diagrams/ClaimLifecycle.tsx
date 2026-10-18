@@ -229,3 +229,4 @@ export const ClaimLifecycle: React.FC = () => {
     </div>
   );
 };
+

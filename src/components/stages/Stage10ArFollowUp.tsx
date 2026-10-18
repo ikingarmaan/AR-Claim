@@ -18,12 +18,13 @@ import {
 } from 'lucide-react';
 import { AR_SCENARIOS } from '../../data/arScenarios';
 import { NATO_ALPHABET } from '../../data/natoAndScripts';
+import { JobNotesStudyDesk } from '../dashboard/JobNotesStudyDesk';
 
 export const Stage10ArFollowUp: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress, toggleBookmarkDenial, saveArNote } = useAcademy();
   const isCompleted = progress.completedModules.includes('ar-followup') || progress.completedModules.includes('ar-playbook');
 
-  const [activeTab, setActiveTab] = useState<'aging' | 'denials' | 'scripts' | 'simulator'>('aging');
+  const [activeTab, setActiveTab] = useState<'aging' | 'denials' | 'scripts' | 'simulator' | 'jobs-notes'>('aging');
 
   // Phone Call Simulator State
   const [repName, setRepName] = useState('Jennifer Brooks');
@@ -143,6 +144,16 @@ export const Stage10ArFollowUp: React.FC = () => {
           >
             📝 Live Call Documentation Simulator
           </button>
+          <button
+            onClick={() => setActiveTab('jobs-notes')}
+            className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+              activeTab === 'jobs-notes'
+                ? 'bg-amber-900 text-white border-amber-950 -mb-[1px] shadow-sm'
+                : 'bg-amber-100/70 dark:bg-amber-950/40 border-transparent text-amber-950 dark:text-amber-200 hover:text-amber-900'
+            }`}
+          >
+            <span>💼 Jobs Notes & Interview Q&A (44+)</span>
+          </button>
         </div>
 
         {/* Tab Body */}
@@ -255,7 +266,7 @@ export const Stage10ArFollowUp: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100">
                     Live AR Note Documentation Engine
                   </h4>
-                  <p className="text-xs text-stone-500">
+                  <p className="text-xs text-stone-700 dark:text-stone-300 font-medium">
                     Document every payer interaction. Saved notes appear in your persistent Bookmarks & Notes drawer.
                   </p>
                 </div>
@@ -367,6 +378,12 @@ export const Stage10ArFollowUp: React.FC = () => {
                   <span>Commit Note to Patient Ledger</span>
                 </button>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'jobs-notes' && (
+            <div>
+              <JobNotesStudyDesk />
             </div>
           )}
         </div>

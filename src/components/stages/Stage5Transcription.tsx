@@ -116,52 +116,52 @@ export const Stage5Transcription: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="skeuo-paper p-4 rounded-lg border border-stone-300 dark:border-stone-700">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono font-bold text-xs text-blue-700">DOCUMENT 1</span>
-                    <span className="text-[10px] font-mono text-stone-500">CMS 482.24(c)(4)(viii)</span>
+                    <span className="font-mono font-bold text-xs text-blue-700 dark:text-blue-400">DOCUMENT 1</span>
+                    <span className="text-[10px] font-mono text-stone-700 dark:text-stone-300 font-bold">CMS 482.24(c)(4)(viii)</span>
                   </div>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">
                     History & Physical (H&P) Exam
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1 leading-relaxed">
                     Must be completed within <strong>24 hours of inpatient hospital admission</strong> or within 30 days prior to elective surgery. Establishes baseline medical necessity for admission.
                   </p>
                 </div>
 
                 <div className="skeuo-paper p-4 rounded-lg border border-stone-300 dark:border-stone-700">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono font-bold text-xs text-red-700">DOCUMENT 2</span>
-                    <span className="text-[10px] font-mono text-stone-500">MANDATORY POST-OP</span>
+                    <span className="font-mono font-bold text-xs text-red-700 dark:text-red-400">DOCUMENT 2</span>
+                    <span className="text-[10px] font-mono text-stone-700 dark:text-stone-300 font-bold">MANDATORY POST-OP</span>
                   </div>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">
                     Operative / Procedure Report
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1 leading-relaxed">
                     Dictated immediately after surgery before patient is transferred from PACU. Contains: pre/post-op diagnoses, primary surgeon, assistants, anesthesia type, surgical approach, hardware implanted, blood loss, and tissue specimens sent to pathology.
                   </p>
                 </div>
 
                 <div className="skeuo-paper p-4 rounded-lg border border-stone-300 dark:border-stone-700">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono font-bold text-xs text-emerald-700">DOCUMENT 3</span>
-                    <span className="text-[10px] font-mono text-stone-500">INPATIENT CULMINATION</span>
+                    <span className="font-mono font-bold text-xs text-emerald-700 dark:text-emerald-400">DOCUMENT 3</span>
+                    <span className="text-[10px] font-mono text-stone-700 dark:text-stone-300 font-bold">INPATIENT CULMINATION</span>
                   </div>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">
                     Discharge Summary
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1 leading-relaxed">
                     Comprehensive synopsis of hospital stay: admitting diagnosis, discharge diagnosis, procedures performed, hospital course, discharge medications, and follow-up plan. Dictated within 30 days of discharge.
                   </p>
                 </div>
 
                 <div className="skeuo-paper p-4 rounded-lg border border-stone-300 dark:border-stone-700">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono font-bold text-xs text-purple-700">DOCUMENT 4</span>
-                    <span className="text-[10px] font-mono text-stone-500">REFERRAL COMMUNICATION</span>
+                    <span className="font-mono font-bold text-xs text-purple-700 dark:text-purple-400">DOCUMENT 4</span>
+                    <span className="text-[10px] font-mono text-stone-700 dark:text-stone-300 font-bold">REFERRAL COMMUNICATION</span>
                   </div>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">
                     Consultation Report
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1 leading-relaxed">
                     Written opinion returned from specialist (e.g., Cardiology, Endocrinology) to requesting primary care physician. Required to validate HMO referral loops.
                   </p>
                 </div>
@@ -287,3 +287,4 @@ export const Stage5Transcription: React.FC = () => {
     </div>
   );
 };
+

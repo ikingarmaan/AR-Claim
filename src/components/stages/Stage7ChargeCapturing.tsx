@@ -124,13 +124,13 @@ export const Stage7ChargeCapturing: React.FC = () => {
           {activeTab === 'superbill' && (
             <div className="space-y-6">
               <div className="skeuo-paper p-5 rounded-lg border border-stone-300 dark:border-stone-700">
-                <span className="text-xs font-mono font-bold text-stone-500 uppercase">
+                <span className="text-xs font-mono font-bold text-stone-700 dark:text-stone-300 uppercase">
                   PRACTICE MANAGEMENT INSTRUMENT
                 </span>
                 <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
                   What is a Superbill / Fee Ticket?
                 </h4>
-                <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                <p className="text-xs sm:text-sm text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                   A Superbill is an itemized encounter form used by medical practices reflecting the patient demographics, date of service, provider NPI, and pre-printed checkboxes of the clinic's most frequent CPT procedure codes and ICD-10 diagnosis codes.
                 </p>
 
@@ -230,7 +230,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                     <label className="font-mono font-bold block mb-1">
                       Work RVU (wRVU): {wrvu.toFixed(2)}
                     </label>
-                    <span className="text-[10px] text-stone-500 block mb-1">Physician time, technical skill & mental effort</span>
+                    <span className="text-[10px] text-stone-700 dark:text-stone-300 font-medium block mb-1">Physician time, technical skill & mental effort</span>
                     <input
                       type="range"
                       min="0.5"
@@ -246,7 +246,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                     <label className="font-mono font-bold block mb-1">
                       Practice Expense RVU (peRVU): {pervu.toFixed(2)}
                     </label>
-                    <span className="text-[10px] text-stone-500 block mb-1">Staff salaries, rent, clinical supplies & equipment</span>
+                    <span className="text-[10px] text-stone-700 dark:text-stone-300 font-medium block mb-1">Staff salaries, rent, clinical supplies & equipment</span>
                     <input
                       type="range"
                       min="0.2"
@@ -262,7 +262,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                     <label className="font-mono font-bold block mb-1">
                       Malpractice RVU (mpRVU): {mprvu.toFixed(2)}
                     </label>
-                    <span className="text-[10px] text-stone-500 block mb-1">Professional liability insurance overhead</span>
+                    <span className="text-[10px] text-stone-700 dark:text-stone-300 font-medium block mb-1">Professional liability insurance overhead</span>
                     <input
                       type="range"
                       min="0.05"
@@ -280,13 +280,13 @@ export const Stage7ChargeCapturing: React.FC = () => {
                     <span className="text-xs font-mono font-bold text-amber-900 dark:text-amber-200 uppercase">
                       Calculated Total RVU: {totalRvu.toFixed(2)} RVUs
                     </span>
-                    <div className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                    <div className="text-xs text-stone-800 dark:text-stone-200 mt-1 font-medium">
                       Formula: Total RVU × Conversion Factor (${cf.toFixed(4)})
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <span className="text-xs font-mono text-stone-500 block">ESTIMATED MEDICARE ALLOWED:</span>
+                    <span className="text-xs font-mono text-stone-700 dark:text-stone-300 font-bold block">ESTIMATED MEDICARE ALLOWED:</span>
                     <span className="text-2xl font-mono font-bold text-emerald-800 dark:text-emerald-400">
                       ${estimatedMedicareReimbursement.toFixed(2)}
                     </span>
@@ -361,3 +361,4 @@ export const Stage7ChargeCapturing: React.FC = () => {
     </div>
   );
 };
+

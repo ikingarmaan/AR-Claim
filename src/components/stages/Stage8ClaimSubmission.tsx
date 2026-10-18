@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAcademy } from '../../context/AcademyContext';
 import { RcmPipelineFlow } from '../diagrams/RcmPipelineFlow';
 import { ClaimLifecycle } from '../diagrams/ClaimLifecycle';
-import { Module2ClaimForms } from '../modules/Module2ClaimForms';
+import { ModernSkeuoClaimStudio } from './claim-forms/ModernSkeuoClaimStudio';
 import { 
   FileCheck2, 
   Send, 
@@ -106,8 +106,8 @@ export const Stage8ClaimSubmission: React.FC = () => {
         <div className="py-6 bg-white dark:bg-stone-900 p-3 sm:p-6 rounded-b-xl border-x border-b border-stone-400 dark:border-stone-600">
           {activeSection === 'forms' && (
             <div>
-              {/* The Complete Rich Form Studio */}
-              <Module2ClaimForms />
+              {/* Brand New Modern Side-by-Side Claim Studio */}
+              <ModernSkeuoClaimStudio />
             </div>
           )}
 
@@ -204,3 +204,4 @@ export const Stage8ClaimSubmission: React.FC = () => {
     </div>
   );
 };
+

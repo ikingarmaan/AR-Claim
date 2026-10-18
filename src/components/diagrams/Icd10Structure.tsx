@@ -187,3 +187,4 @@ export const Icd10Structure: React.FC = () => {
     </div>
   );
 };
+

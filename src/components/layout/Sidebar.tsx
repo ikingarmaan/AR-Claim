@@ -72,14 +72,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
             className={`w-full text-left p-2.5 rounded-lg transition-all flex items-center justify-between group border ${
               activeModule === 'dashboard'
                 ? 'bg-amber-900/60 border-amber-500/80 text-amber-100 shadow-inner'
-                : 'border-transparent text-amber-200/80 hover:bg-black/30 hover:text-amber-100'
+                : 'border-transparent text-amber-200 hover:bg-black/30 hover:text-white'
             }`}
           >
             <div className="flex items-center gap-2.5">
               <span className="text-base">🏛️</span>
               <div>
-                <div className="text-xs font-serif font-bold">Executive Dashboard</div>
-                <div className="text-[10px] text-amber-300/60 font-mono">Curriculum Overview</div>
+                <div className="text-xs font-serif font-bold text-amber-100">Executive Dashboard</div>
+                <div className="text-[10px] text-amber-200 font-mono">Curriculum Overview</div>
               </div>
             </div>
             {activeModule === 'dashboard' && (
@@ -89,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
 
           {/* Section Divider: 10 RCM Pipeline Stages */}
           <div className="pt-3 pb-1 px-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400/60 font-bold">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-amber-300 font-bold">
               10-Stage Pipeline Gates
             </span>
           </div>
@@ -106,17 +106,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
                 className={`w-full text-left p-2 rounded-lg transition-all flex items-center justify-between group border ${
                   isActive
                     ? 'bg-amber-900/70 border-amber-500 text-white shadow-inner font-bold'
-                    : 'border-transparent text-amber-200/75 hover:bg-black/30 hover:text-amber-100'
+                    : 'border-transparent text-amber-100 hover:bg-black/30 hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="text-sm shrink-0">{stage.icon}</span>
                   <div className="min-w-0">
-                    <div className="text-[11px] font-serif truncate">
-                      <span className="font-mono text-[9px] text-amber-400 mr-1">#{stage.number}</span>
+                    <div className="text-[11px] font-serif truncate text-amber-100 font-medium">
+                      <span className="font-mono text-[9px] text-amber-400 font-bold mr-1">#{stage.number}</span>
                       {stage.title}
                     </div>
-                    <div className="text-[9px] text-amber-300/60 truncate font-sans">
+                    <div className="text-[9px] text-amber-200 truncate font-sans">
                       {stage.subtitle}
                     </div>
                   </div>
@@ -135,12 +135,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
             );
           })}
 
-          {/* Section Divider: Certification */}
+          {/* Section Divider: Certification & Master Notes */}
           <div className="pt-3 pb-1 px-2">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400/60 font-bold">
-              Assessment & Degree
+            <span className="text-[10px] font-mono uppercase tracking-widest text-amber-300 font-bold">
+              Assessment & Master Notes
             </span>
           </div>
+
+          {/* Jobs & Interview Notes Tab */}
+          <button
+            onClick={() => {
+              setActiveModule('dashboard', 'jobs-notes-desk');
+              onCloseMobile();
+            }}
+            className="w-full text-left p-2.5 rounded-lg transition-all flex items-center justify-between group border border-amber-500/50 bg-amber-950/60 hover:bg-amber-900/70 text-amber-100"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="text-base">💼</span>
+              <div>
+                <div className="text-xs font-serif font-bold text-amber-200">Jobs Notes & Interview Q&A</div>
+                <div className="text-[10px] text-amber-300 font-mono">
+                  43+ Questions • Rules • Scenarios
+                </div>
+              </div>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-amber-400" />
+          </button>
 
           {/* Certification Exam Tab */}
           <button
@@ -148,14 +168,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
             className={`w-full text-left p-2.5 rounded-lg transition-all flex items-center justify-between group border ${
               activeModule === 'quiz-engine'
                 ? 'bg-amber-900/60 border-amber-500/80 text-amber-100 shadow-inner'
-                : 'border-transparent text-amber-200/80 hover:bg-black/30 hover:text-amber-100'
+                : 'border-transparent text-amber-200 hover:bg-black/30 hover:text-white'
             }`}
           >
             <div className="flex items-center gap-2.5">
               <span className="text-base">🎓</span>
               <div>
-                <div className="text-xs font-serif font-bold">Certification Exam</div>
-                <div className="text-[10px] text-amber-300/60 font-mono">
+                <div className="text-xs font-serif font-bold text-amber-100">Certification Exam</div>
+                <div className="text-[10px] text-amber-200 font-mono">
                   Best Score: {progress.quizBestScore}%
                 </div>
               </div>

@@ -280,7 +280,7 @@ export const Stage1Appointment: React.FC = () => {
 
         {/* Bottom Navigation */}
         <div className="mt-6 flex items-center justify-between pt-4 border-t border-stone-300 dark:border-stone-700">
-          <div className="text-xs font-mono text-stone-500">
+          <div className="text-xs font-mono text-stone-700 dark:text-stone-300 font-bold">
             COMPLETED: 1 / 10 STAGES
           </div>
 
@@ -296,3 +296,4 @@ export const Stage1Appointment: React.FC = () => {
     </div>
   );
 };
+

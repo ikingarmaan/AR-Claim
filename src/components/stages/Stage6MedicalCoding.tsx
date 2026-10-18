@@ -15,6 +15,7 @@ import {
   Layers
 } from 'lucide-react';
 import { CPT_SECTIONS, MODIFIER_MASTERCLASS } from '../../data/codingAndModifiers';
+import { CLINICAL_MODIFIER_CASES } from '../../data/jobNotesData';
 
 export const Stage6MedicalCoding: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress, toggleBookmarkModifier } = useAcademy();
@@ -284,6 +285,66 @@ export const Stage6MedicalCoding: React.FC = () => {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Real World Clinical Modifier Case Studies from Jobs Notes */}
+              <div className="mt-8 pt-6 border-t-2 border-stone-300 dark:border-stone-700 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base flex items-center gap-2">
+                      <span>💼 Real-World Modifier Case Studies (From Jobs Notes)</span>
+                    </h4>
+                    <p className="text-xs text-stone-700 dark:text-stone-300">
+                      Actual clinical vignettes and denial prevention rationales extracted from field interview notes.
+                    </p>
+                  </div>
+                  <span className="skeuo-stamp-approved text-xs px-2.5 py-0.5 font-mono uppercase">
+                    5 CASE VIGNETTES
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3">
+                  {CLINICAL_MODIFIER_CASES.map((cs) => (
+                    <div 
+                      key={cs.id}
+                      className="p-4 rounded-xl bg-stone-50 dark:bg-stone-950/60 border border-stone-300 dark:border-stone-700 space-y-2"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-stone-200 dark:border-stone-800 pb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="skeuo-badge bg-amber-800 text-white font-mono text-xs px-2 py-0.5 rounded">
+                            {cs.modifier}
+                          </span>
+                          <span className="font-serif font-bold text-sm text-stone-900 dark:text-stone-100">
+                            {cs.title}
+                          </span>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                          {cs.reimbursementImpact}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed font-sans">
+                        <strong className="text-stone-900 dark:text-stone-100 font-serif">Scenario: </strong>
+                        {cs.scenario}
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+                        <div className="p-2 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800">
+                          <strong className="text-stone-900 dark:text-stone-100 font-mono">Billed As: </strong>
+                          <code className="text-amber-800 dark:text-amber-300">{cs.billingCodes}</code>
+                        </div>
+                        <div className="p-2 bg-white dark:bg-stone-900 rounded border border-stone-200 dark:border-stone-800">
+                          <strong className="text-stone-900 dark:text-stone-100 font-mono">Why Needed: </strong>
+                          <span className="text-stone-700 dark:text-stone-300">{cs.whyUsed}</span>
+                        </div>
+                      </div>
+
+                      <div className="p-2 bg-rose-50/60 dark:bg-rose-950/20 rounded border border-rose-200 dark:border-rose-900/40 text-[11px] text-rose-950 dark:text-rose-200 font-mono">
+                        <strong>Denial Risk Without Modifier: </strong> {cs.denialPrevention}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
