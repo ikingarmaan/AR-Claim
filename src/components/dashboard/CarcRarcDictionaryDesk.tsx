@@ -233,7 +233,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
         <div className="space-y-5">
           {/* Category Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-serif">
-            <Filter className="w-3.5 h-3.5 text-stone-600 dark:text-stone-400 shrink-0" />
+            <Filter className="w-3.5 h-3.5 text-stone-800 dark:text-stone-200 shrink-0" />
             {coCategories.map(cat => (
               <button
                 key={cat.id}
@@ -398,7 +398,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
                               <p className="text-stone-700 dark:text-stone-300 leading-relaxed">
                                 <strong>Scope:</strong> {co.ncdLcdGuide.ncdAppliesTo}
                               </p>
-                              <p className="text-stone-600 dark:text-stone-400 text-[11px] leading-relaxed">
+                              <p className="text-stone-800 dark:text-stone-200 text-[11px] leading-relaxed">
                                 {co.ncdLcdGuide.ncdPurpose}
                               </p>
                             </div>
@@ -413,7 +413,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
                               <p className="text-stone-700 dark:text-stone-300 leading-relaxed">
                                 <strong>Scope:</strong> {co.ncdLcdGuide.lcdAppliesTo}
                               </p>
-                              <p className="text-stone-600 dark:text-stone-400 text-[11px] leading-relaxed">
+                              <p className="text-stone-800 dark:text-stone-200 text-[11px] leading-relaxed">
                                 {co.ncdLcdGuide.lcdPurpose}
                               </p>
                             </div>
@@ -473,7 +473,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
         <div className="space-y-5">
           {/* Category Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-serif">
-            <Filter className="w-3.5 h-3.5 text-stone-600 dark:text-stone-400 shrink-0" />
+            <Filter className="w-3.5 h-3.5 text-stone-800 dark:text-stone-200 shrink-0" />
             {prCategories.map(cat => (
               <button
                 key={cat.id}
@@ -515,7 +515,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
 
                       <td className="p-3 sm:p-4 font-serif font-semibold text-stone-900 dark:text-stone-100 whitespace-nowrap align-top">
                         {pr.name}
-                        <span className="block text-[11px] font-mono font-normal text-stone-600 dark:text-stone-400 mt-0.5">
+                        <span className="block text-[11px] font-mono font-normal text-stone-800 dark:text-stone-200 mt-0.5">
                           {pr.categoryLabel}
                         </span>
                       </td>
@@ -575,7 +575,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
 
           {/* Series Filter */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-serif">
-            <Filter className="w-3.5 h-3.5 text-stone-600 dark:text-stone-400 shrink-0" />
+            <Filter className="w-3.5 h-3.5 text-stone-800 dark:text-stone-200 shrink-0" />
             <button
               onClick={() => setSelectedRarcSeries('all')}
               className={`px-2.5 py-1 rounded-md text-xs font-mono ${
@@ -629,7 +629,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
                   <span className="font-mono font-bold text-sm px-2.5 py-1 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
                     {rarc.code}
                   </span>
-                  <span className="text-[11px] font-mono text-stone-600 dark:text-stone-400">
+                  <span className="text-[11px] font-mono text-stone-800 dark:text-stone-200">
                     {rarc.series}
                   </span>
                 </div>
@@ -639,7 +639,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
                 </h4>
 
                 <div className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
-                  <span className="font-mono text-stone-500 dark:text-stone-400 text-[11px]">Paired with:</span>
+                  <span className="font-mono text-stone-700 dark:text-stone-300 text-[11px]">Paired with:</span>
                   {rarc.relatedCarcs.map(rc => (
                     <button
                       key={rc}

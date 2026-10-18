@@ -73,7 +73,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'soap'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🩺 The Anatomy of a SOAP Note
@@ -83,7 +83,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'emTree'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📊 E/M Level Decision Tree & MDM Matrix
@@ -93,7 +93,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'incidentTo'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ⚖️ Incident-To Billing Rules (NP / PA 100% vs 85%)
@@ -103,7 +103,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'audit'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ⚠️ OIG Audit Defense & Medical Necessity
@@ -121,7 +121,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
                     <span className="w-6 h-6 rounded bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">S</span>
                     <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100">Subjective (Patient's Words)</h4>
                   </div>
-                  <ul className="text-xs text-stone-600 dark:text-stone-400 space-y-1.5 list-disc pl-4">
+                  <ul className="text-xs text-stone-800 dark:text-stone-200 space-y-1.5 list-disc pl-4">
                     <li><strong>Chief Complaint (CC):</strong> The concise statement describing symptom, problem, condition, diagnosis or reason for encounter.</li>
                     <li><strong>HPI (8 Elements):</strong> Location, Quality, Severity, Duration, Timing, Context, Modifying factors, Associated signs & symptoms.</li>
                     <li><strong>Review of Systems (ROS):</strong> Systematic inventory of 14 organ systems.</li>
@@ -134,7 +134,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
                     <span className="w-6 h-6 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">O</span>
                     <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100">Objective (Measurable Data)</h4>
                   </div>
-                  <ul className="text-xs text-stone-600 dark:text-stone-400 space-y-1.5 list-disc pl-4">
+                  <ul className="text-xs text-stone-800 dark:text-stone-200 space-y-1.5 list-disc pl-4">
                     <li><strong>Vital Signs:</strong> Blood pressure, heart rate, respiratory rate, temperature, SpO2, BMI.</li>
                     <li><strong>Physical Examination:</strong> Organ system evaluations (Cardiovascular, Respiratory, Abdominal, Musculoskeletal, Neurological).</li>
                     <li><strong>Diagnostic Results:</strong> In-house lab tests, EKG strip interpretation, X-ray findings.</li>
@@ -147,7 +147,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
                     <span className="w-6 h-6 rounded bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-xs">A</span>
                     <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100">Assessment (Clinical Diagnoses)</h4>
                   </div>
-                  <ul className="text-xs text-stone-600 dark:text-stone-400 space-y-1.5 list-disc pl-4">
+                  <ul className="text-xs text-stone-800 dark:text-stone-200 space-y-1.5 list-disc pl-4">
                     <li><strong>Primary Diagnosis:</strong> Condition established after study to be chiefly responsible for occasioning the visit (maps to Box 21A on CMS-1500).</li>
                     <li><strong>Secondary Co-Morbidities:</strong> Chronic diseases affecting treatment (Hypertension, Type 2 Diabetes, CKD Stage 3).</li>
                     <li><strong>Acuity / Progression:</strong> Stable, improving, or acutely worsening.</li>
@@ -160,7 +160,7 @@ export const Stage4DoctorEncounter: React.FC = () => {
                     <span className="w-6 h-6 rounded bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">P</span>
                     <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100">Plan (Treatment & Orders)</h4>
                   </div>
-                  <ul className="text-xs text-stone-600 dark:text-stone-400 space-y-1.5 list-disc pl-4">
+                  <ul className="text-xs text-stone-800 dark:text-stone-200 space-y-1.5 list-disc pl-4">
                     <li><strong>Prescription Drug Management:</strong> Starting, titrating, continuing, or stopping Rx medication.</li>
                     <li><strong>Diagnostic Orders:</strong> MRI, blood chemistry panels, referral to specialist.</li>
                     <li><strong>Patient Education & Follow-Up:</strong> Warning signs for ER visit, follow-up timeline (e.g., return in 3 weeks).</li>
@@ -228,21 +228,21 @@ export const Stage4DoctorEncounter: React.FC = () => {
               <div className="space-y-3 mt-3 text-xs">
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-amber-900 dark:text-amber-300 font-serif">1. Avoid "Copy-and-Paste" / Note Bloat:</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     EHR cloning (cloning identical physical exam paragraphs from past visits) is the #1 red flag triggering RAC (Recovery Audit Contractor) clawbacks. Notes must show date-specific progress.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-amber-900 dark:text-amber-300 font-serif">2. Chief Complaint Cannot Be "Follow-Up":</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     A chief complaint of simply "Follow-up" or "Recheck" lacks medical necessity. It must specify the condition: "Follow-up of Stage 2 Hypertension and worsening headaches."
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-amber-900 dark:text-amber-300 font-serif">3. Time-Based Billing Requirements:</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     If billing E/M codes by time rather than MDM, the note must explicitly document: (1) Total exact minutes spent on date of encounter, and (2) itemized activities performed (e.g., 35 minutes spent reviewing outside MRI, counseling patient on chemotherapy risks, coordinating home health care).
                   </p>
                 </div>

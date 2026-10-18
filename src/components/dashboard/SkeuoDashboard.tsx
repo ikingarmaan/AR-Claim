@@ -74,7 +74,7 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
             <div>
               <span className="text-xs font-mono text-stone-700 dark:text-stone-300 font-bold uppercase">Stages Mastered</span>
               <div className="text-2xl font-mono font-bold text-stone-900 dark:text-stone-100 mt-1">
-                {progress.completedModules.length} <span className="text-sm font-normal text-stone-600 dark:text-stone-400">/ 10</span>
+                {progress.completedModules.length} <span className="text-sm font-normal text-stone-800 dark:text-stone-200">/ 10</span>
               </div>
               <div className="text-[11px] font-serif text-stone-800 dark:text-stone-200 mt-0.5 font-medium">
                 {progress.completedModules.length === 10 ? 'All Gates Completed!' : 'Pipeline in progress'}
@@ -116,6 +116,37 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
               📋
             </div>
           </div>
+        </div>
+
+        {/* Dynamic RCM Mind Map Hero Callout Banner */}
+        <div className="mt-8 p-4 sm:p-5 rounded-xl bg-gradient-to-r from-amber-100/90 via-stone-100 to-amber-50/80 dark:from-stone-900 dark:via-stone-900/90 dark:to-stone-900 border-2 border-amber-600/50 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <span className="text-3xl shrink-0">🧠</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="skeuo-badge bg-emerald-800 text-white font-mono text-[10px] px-2 py-0.5 rounded">
+                  NEW INTERACTIVE SECTION
+                </span>
+                <span className="text-xs font-mono font-bold text-stone-700 dark:text-stone-300">
+                  VISUAL RCM ECOSYSTEM
+                </span>
+              </div>
+              <h3 className="font-serif font-bold text-base sm:text-lg text-stone-900 dark:text-stone-100 mt-1">
+                Dynamic RCM Mind Map & Lifecycle Architecture
+              </h3>
+              <p className="text-xs text-stone-700 dark:text-stone-300 max-w-2xl mt-0.5">
+                Navigate the entire 4-phase, 10-gate healthcare revenue cycle. Zoom, pan, search, and click any node to open the Inspector Drawer with EDI transactions, KPIs, and denial recovery playbooks.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setActiveModule('mind-map')}
+            className="skeuo-btn-primary px-5 py-2.5 rounded-lg text-xs font-serif font-bold flex items-center gap-2 shadow whitespace-nowrap self-start sm:self-center hover:scale-105 transition-transform"
+          >
+            <span>Explore Mind Map</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
 
         {/* 10-Stage Conveyor Direct Launcher Grid */}
@@ -177,14 +208,33 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
         </div>
 
         {/* Quick Tools & Case File */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-6 border-t border-stone-300 dark:border-stone-700">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-6 border-t border-stone-300 dark:border-stone-700">
+          {/* Quick Tool: Dynamic RCM Mind Map */}
+          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700 flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-mono font-bold text-emerald-700 uppercase">Architecture Engine</span>
+              <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Dynamic RCM Mind Map</h4>
+              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
+                Explore all 4 macro phases and 10 sequential gates with real-time EDI & KPI inspectors.
+              </p>
+            </div>
+            <button
+              onClick={() => setActiveModule('mind-map')}
+              className="mt-3 text-xs font-serif font-bold text-emerald-800 dark:text-emerald-400 hover:underline flex items-center gap-1"
+            >
+              <span>Open Mind Map</span> →
+            </button>
+          </div>
+
           {/* Quick Tool: Birthday Rule */}
-          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700">
-            <span className="text-xs font-mono font-bold text-indigo-700 uppercase">Interactive Instrument</span>
-            <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Birthday Rule Calculator</h4>
-            <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
-              Determine primary vs secondary payer for dependent children when parents have dual coverage.
-            </p>
+          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700 flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-mono font-bold text-indigo-700 uppercase">Interactive Instrument</span>
+              <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Birthday Rule Calculator</h4>
+              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
+                Determine primary vs secondary payer for dependent children when parents have dual coverage.
+              </p>
+            </div>
             <button
               onClick={onOpenBirthdayModal}
               className="mt-3 text-xs font-serif font-bold text-amber-800 dark:text-amber-400 hover:underline flex items-center gap-1"
@@ -194,12 +244,14 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
           </div>
 
           {/* Quick Tool: Official Forms Studio */}
-          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700">
-            <span className="text-xs font-mono font-bold text-emerald-700 uppercase">Core Documentation</span>
-            <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Official Claim Forms Studio</h4>
-            <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
-              CMS-1500 (33 boxes) & UB-04 (81 locators) with real PDF view & side-by-side box explanations.
-            </p>
+          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700 flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-mono font-bold text-emerald-700 uppercase">Core Documentation</span>
+              <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Official Claim Forms Studio</h4>
+              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
+                CMS-1500 (33 boxes) & UB-04 (81 locators) with real PDF view & side-by-side box explanations.
+              </p>
+            </div>
             <button
               onClick={() => setActiveModule('claim-submission')}
               className="mt-3 text-xs font-serif font-bold text-emerald-800 dark:text-emerald-400 hover:underline flex items-center gap-1"
@@ -209,12 +261,14 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
           </div>
 
           {/* Quick Tool: Certification Exam */}
-          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700">
-            <span className="text-xs font-mono font-bold text-amber-800 uppercase">Knowledge Verification</span>
-            <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Certification Exam Engine</h4>
-            <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
-              Timed 50-question comprehensive exam covering all 10 stages with real-time explanations.
-            </p>
+          <div className="skeuo-paper p-4 rounded-xl border border-stone-300 dark:border-stone-700 flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-mono font-bold text-amber-800 uppercase">Knowledge Verification</span>
+              <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">Certification Exam Engine</h4>
+              <p className="text-xs text-stone-700 dark:text-stone-300 mt-1">
+                Timed 50-question comprehensive exam covering all 10 stages with real-time explanations.
+              </p>
+            </div>
             <button
               onClick={() => setActiveModule('quiz-engine')}
               className="mt-3 text-xs font-serif font-bold text-amber-800 dark:text-amber-400 hover:underline flex items-center gap-1"
@@ -229,7 +283,7 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
           <span>RCMclaim v3.0 • Skeuomorphic Healthcare Revenue Cycle Education</span>
           <button
             onClick={resetAllProgress}
-            className="text-stone-600 dark:text-stone-400 hover:text-red-700 flex items-center gap-1 font-mono"
+            className="text-stone-800 dark:text-stone-200 hover:text-red-700 flex items-center gap-1 font-mono"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Progress</span>

@@ -26,7 +26,7 @@ export const RcmPipelineFlow: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             Complete End-to-End US Revenue Cycle Pipeline
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Click any station to open that stage file. Every medical dollar passes sequentially through these 10 gates.
           </p>
         </div>
@@ -98,7 +98,7 @@ export const RcmPipelineFlow: React.FC = () => {
                       <div className="text-[11px] font-serif font-bold text-stone-900 dark:text-stone-100 leading-tight line-clamp-2">
                         {stage.title}
                       </div>
-                      <div className="text-[9px] text-stone-500 dark:text-stone-400 line-clamp-2 mt-0.5 leading-snug">
+                      <div className="text-[9px] text-stone-700 dark:text-stone-300 line-clamp-2 mt-0.5 leading-snug">
                         {stage.subtitle}
                       </div>
                     </div>

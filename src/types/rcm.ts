@@ -16,6 +16,7 @@ export type StageId =
   | 'claim-submission'   // Stage 8: Claim Submission (CMS-1500 & UB-04)
   | 'payment-posting'    // Stage 9: Payment Posting
   | 'ar-followup'        // Stage 10: AR Follow-Up
+  | 'mind-map'           // Dynamic RCM Mind Map
   | 'quiz-engine';       // Certification Exam
 
 /** Legacy module IDs for backward compatibility */

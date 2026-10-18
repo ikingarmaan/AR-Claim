@@ -17,10 +17,10 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { AR_SCENARIOS } from '../../data/arScenarios';
-import { NATO_ALPHABET } from '../../data/natoAndScripts';
 import { JobNotesStudyDesk } from '../dashboard/JobNotesStudyDesk';
 import { ArCallScenariosDesk } from '../dashboard/ArCallScenariosDesk';
 import { CarcRarcDictionaryDesk } from '../dashboard/CarcRarcDictionaryDesk';
+import { CallScriptsMasteryDesk } from '../dashboard/CallScriptsMasteryDesk';
 import { ArCallScenario } from '../../data/jobNotesData';
 
 export const Stage10ArFollowUp: React.FC = () => {
@@ -143,7 +143,7 @@ export const Stage10ArFollowUp: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'aging'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📊 A/R Aging Buckets & KPIs
@@ -153,7 +153,7 @@ export const Stage10ArFollowUp: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'denials'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🛡️ Denial Management & Appeal Ladder
@@ -163,7 +163,7 @@ export const Stage10ArFollowUp: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'scripts'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📞 NATO Phonetic & Representative Scripts
@@ -173,7 +173,7 @@ export const Stage10ArFollowUp: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'simulator'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📝 Live Call Documentation Simulator
@@ -247,7 +247,7 @@ export const Stage10ArFollowUp: React.FC = () => {
                           </button>
                         </div>
 
-                        <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+                        <p className="text-xs text-stone-800 dark:text-stone-200 mt-2">
                           <strong>Root Cause:</strong> {scen.definition}
                         </p>
 
@@ -266,42 +266,8 @@ export const Stage10ArFollowUp: React.FC = () => {
           )}
 
           {activeTab === 'scripts' && (
-            <div className="space-y-6 text-xs sm:text-sm text-stone-700 dark:text-stone-300">
-              {/* NATO Phonetic Alphabet */}
-              <div className="skeuo-paper p-5 rounded-lg border border-stone-300 dark:border-stone-700">
-                <span className="text-xs font-mono font-bold text-amber-800 dark:text-amber-400 uppercase">
-                  MANDATORY CALL CENTER PHONETICS
-                </span>
-                <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
-                  NATO Phonetic Alphabet for ICN & Member IDs
-                </h4>
-                <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
-                  Never say "B as in Boy" or "P as in Peter". Payer phone audio lines are compressed; professional collectors use standard ICAO/NATO phonetics to avoid costly digit transcription errors.
-                </p>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-4 text-xs font-mono">
-                  {NATO_ALPHABET.map(item => (
-                    <div key={item.letter} className="p-2 bg-stone-50 dark:bg-stone-800 rounded border flex items-center justify-between">
-                      <span className="font-bold text-amber-700">{item.letter}</span>
-                      <span className="text-stone-700 dark:text-stone-300">{item.word}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Call Steps */}
-              <div className="skeuo-inset p-5 rounded-lg bg-stone-50 dark:bg-stone-950/50 border border-stone-300 dark:border-stone-700 space-y-3">
-                <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100">
-                  The 5 Mandatory Questions for Every Payer Phone Call:
-                </h4>
-                <ol className="space-y-2 list-decimal pl-5 text-xs text-stone-700 dark:text-stone-300">
-                  <li><strong>Representative Identity:</strong> <em>"May I please have your full name and direct Call Reference Number for this call?"</em></li>
-                  <li><strong>Claim Intake Verification:</strong> <em>"Can you confirm receipt of claim ICN [Number] for Date of Service [Date] in the billed amount of $[Amount]?"</em></li>
-                  <li><strong>Adjudication Outcome:</strong> <em>"What was the check number or EFT trace number, payment date, and CAS reason codes assigned to line items?"</em></li>
-                  <li><strong>Denial Specifics:</strong> <em>"If denied for records, what specific clinical documents are required, and what is your dedicated appeal fax number?"</em></li>
-                  <li><strong>Timely Filing Window:</strong> <em>"What is the exact timely filing deadline from the initial remittance date to submit a formal Level 1 Redetermination?"</em></li>
-                </ol>
-              </div>
+            <div>
+              <CallScriptsMasteryDesk />
             </div>
           )}
 

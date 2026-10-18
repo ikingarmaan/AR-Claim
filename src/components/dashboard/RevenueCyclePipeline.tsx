@@ -327,7 +327,7 @@ export const RevenueCyclePipeline: React.FC = () => {
                   <div className="text-[10px] uppercase font-bold text-rose-500 flex items-center gap-1">
                     <Info className="w-3 h-3" /> Critical Pitfalls to Avoid:
                   </div>
-                  <ul className="mt-1 space-y-1 text-xs text-slate-600 dark:text-slate-400 list-disc list-inside">
+                  <ul className="mt-1 space-y-1 text-xs text-slate-800 dark:text-slate-200 list-disc list-inside">
                     {currentStage.pitfalls.map((p, i) => (
                       <li key={i}>{p}</li>
                     ))}

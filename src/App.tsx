@@ -21,6 +21,7 @@ import { Stage7ChargeCapturing } from './components/stages/Stage7ChargeCapturing
 import { Stage8ClaimSubmission } from './components/stages/Stage8ClaimSubmission';
 import { Stage9PaymentPosting } from './components/stages/Stage9PaymentPosting';
 import { Stage10ArFollowUp } from './components/stages/Stage10ArFollowUp';
+import { RcmDynamicMindMap } from './components/diagrams/RcmDynamicMindMap';
 
 // Quiz / Certification Exam
 import { Module8QuizEngine } from './components/modules/Module8QuizEngine';
@@ -33,7 +34,8 @@ import {
   FileCheck2, 
   PhoneCall, 
   GraduationCap,
-  Layers
+  Layers,
+  Network
 } from 'lucide-react';
 import { StageId } from './types/rcm';
 
@@ -75,6 +77,8 @@ const MainLayout: React.FC = () => {
         return <Stage9PaymentPosting />;
       case 'ar-followup':
         return <Stage10ArFollowUp />;
+      case 'mind-map':
+        return <RcmDynamicMindMap />;
       case 'quiz-engine':
         return <Module8QuizEngine />;
       default:
@@ -161,6 +165,16 @@ const MainLayout: React.FC = () => {
             >
               <PhoneCall className="w-4 h-4" />
               <span>AR</span>
+            </button>
+
+            <button
+              onClick={() => setActiveModule('mind-map')}
+              className={`flex flex-col items-center gap-1 p-1 rounded transition-colors ${
+                activeModule === 'mind-map' ? 'text-amber-400 font-bold' : 'text-stone-400 hover:text-stone-200'
+              }`}
+            >
+              <Network className="w-4 h-4" />
+              <span>Map</span>
             </button>
 
             <button

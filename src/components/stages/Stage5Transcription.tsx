@@ -72,7 +72,7 @@ export const Stage5Transcription: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'records'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📑 The 4 Primary Medical Record Documents
@@ -82,7 +82,7 @@ export const Stage5Transcription: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'cdi'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📈 CDI Programs & Specificity Impact (HCC / DRG)
@@ -92,7 +92,7 @@ export const Stage5Transcription: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'queries'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ❓ Physician Query Compliance (AHIMA / ACDIS)
@@ -102,7 +102,7 @@ export const Stage5Transcription: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'speechAi'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🎙️ Ambient AI Scribes & Dictation Guidelines
@@ -181,7 +181,7 @@ export const Stage5Transcription: React.FC = () => {
                     <span className="font-bold text-stone-900 dark:text-stone-100">Scenario A: Vague Documentation</span>
                     <span className="text-xs font-mono px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold">LOW REIMBURSEMENT</span>
                   </div>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1">
                     Physician documents: <em>"Congestive heart failure, patient stable."</em><br />
                     • Coded as: <code>I50.9</code> (Heart failure, unspecified)<br />
                     • Reimbursement Impact: Lowest tier MS-DRG weight. Excluded from Hierarchical Condition Categories (HCC) risk adjustment.
@@ -243,21 +243,21 @@ export const Stage5Transcription: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs mt-3">
                 <div className="p-2.5 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <span className="font-mono font-bold text-red-700">Ablation vs Avulsion</span>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     Heart catheter tissue burning vs traumatic tearing of a ligament.
                   </p>
                 </div>
 
                 <div className="p-2.5 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <span className="font-mono font-bold text-red-700">Dysphagia vs Dysphasia</span>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     Difficulty swallowing (digestive) vs difficulty speaking (neurological).
                   </p>
                 </div>
 
                 <div className="p-2.5 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <span className="font-mono font-bold text-red-700">Ileum vs Ilium</span>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     Small intestine (digestive) vs pelvic bone (skeletal anatomy).
                   </p>
                 </div>

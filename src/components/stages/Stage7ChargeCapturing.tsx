@@ -82,7 +82,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'superbill'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🧾 The Physical Superbill / Routing Slip
@@ -92,7 +92,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'cdm'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🏛️ Hospital Chargemaster (CDM) Architecture
@@ -102,7 +102,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'rbrvs'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🧮 Medicare RBRVS & RVU Pricing Engine
@@ -112,7 +112,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'scrubbing'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🔍 Pre-Bill Scrubbers & Missing Charge Audits
@@ -137,21 +137,21 @@ export const Stage7ChargeCapturing: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 text-xs">
                   <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border">
                     <span className="font-bold text-amber-800 font-mono">1. Header Block</span>
-                    <p className="text-stone-600 dark:text-stone-400 mt-1">
+                    <p className="text-stone-800 dark:text-stone-200 mt-1">
                       Patient legal name, DOB, insurance policy ID, account number, attending physician name & NPI, POS code (e.g. 11 = Office).
                     </p>
                   </div>
 
                   <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border">
                     <span className="font-bold text-amber-800 font-mono">2. Diagnosis Checklist</span>
-                    <p className="text-stone-600 dark:text-stone-400 mt-1">
+                    <p className="text-stone-800 dark:text-stone-200 mt-1">
                       Common ICD-10 codes checked by the provider during encounter. Coder crosswalks these into Box 21 pointers (A, B, C...).
                     </p>
                   </div>
 
                   <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border">
                     <span className="font-bold text-amber-800 font-mono">3. Procedure Checklist</span>
-                    <p className="text-stone-600 dark:text-stone-400 mt-1">
+                    <p className="text-stone-800 dark:text-stone-200 mt-1">
                       CPT codes with default units and clinic standard gross charge amounts. Coder appends modifiers and diagnostic pointer links.
                     </p>
                   </div>
@@ -221,7 +221,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                 <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
                   Medicare Resource-Based Relative Value Scale (RBRVS)
                 </h4>
-                <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+                <p className="text-xs text-stone-800 dark:text-stone-200 mt-1 leading-relaxed">
                   Every CPT code is assigned 3 distinct Relative Value Units (RVUs) reflecting the resources required to deliver the service. Adjust the sliders below to calculate the Medicare Physician Fee Schedule (MPFS) reimbursement.
                 </p>
 
@@ -309,7 +309,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border flex items-center justify-between">
                   <div>
                     <strong className="text-stone-900 dark:text-stone-100">Scrubber Check 1: ICD-10 to CPT Medical Necessity Link</strong>
-                    <p className="text-stone-600 dark:text-stone-400 mt-0.5">
+                    <p className="text-stone-800 dark:text-stone-200 mt-0.5">
                       Verifies that each service line has a valid diagnosis pointer in Box 24E matching local coverage determinations (LCD).
                     </p>
                   </div>
@@ -319,7 +319,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border flex items-center justify-between">
                   <div>
                     <strong className="text-stone-900 dark:text-stone-100">Scrubber Check 2: Gender vs Procedure Validation</strong>
-                    <p className="text-stone-600 dark:text-stone-400 mt-0.5">
+                    <p className="text-stone-800 dark:text-stone-200 mt-0.5">
                       Blocks claims billing prostate biopsies for female patients or cervical pap smears for male patients.
                     </p>
                   </div>
@@ -329,7 +329,7 @@ export const Stage7ChargeCapturing: React.FC = () => {
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border flex items-center justify-between">
                   <div>
                     <strong className="text-stone-900 dark:text-stone-100">Scrubber Check 3: NDC Drug Units Alignment</strong>
-                    <p className="text-stone-600 dark:text-stone-400 mt-0.5">
+                    <p className="text-stone-800 dark:text-stone-200 mt-0.5">
                       Checks that J-codes carry 11-digit National Drug Code (NDC) numbers and corresponding metric unit quantities (UN, ML, GR).
                     </p>
                   </div>

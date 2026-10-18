@@ -51,7 +51,7 @@ export const DenialResolution: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             Claim Adjustment Group Codes & Denial Appeal Ladder
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Never accept a denial blindly. Learn how Group Codes govern legal responsibility and how to navigate the 5-level Medicare appeal ladder.
           </p>
         </div>
@@ -118,7 +118,7 @@ export const DenialResolution: React.FC = () => {
               <span className="font-mono font-bold text-sm text-stone-900 dark:text-stone-100 px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-700 border border-stone-300 dark:border-stone-600">
                 {item.code}
               </span>
-              <p className="text-xs text-stone-600 dark:text-stone-400 mt-1.5">
+              <p className="text-xs text-stone-800 dark:text-stone-200 mt-1.5">
                 {item.reason}
               </p>
             </div>
@@ -149,7 +149,7 @@ export const DenialResolution: React.FC = () => {
             <div className="font-mono font-bold text-stone-500 mb-1">LEVEL 1</div>
             <div className="font-serif font-bold text-stone-900 dark:text-stone-100">Redetermination</div>
             <div className="text-[10px] text-amber-700 font-mono mt-1">120 Days from EOB</div>
-            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-[11px] text-stone-800 dark:text-stone-200 mt-1">
               Handled by Medicare Administrative Contractor (MAC). Decision within 60 days.
             </p>
           </div>
@@ -158,7 +158,7 @@ export const DenialResolution: React.FC = () => {
             <div className="font-mono font-bold text-stone-500 mb-1">LEVEL 2</div>
             <div className="font-serif font-bold text-stone-900 dark:text-stone-100">Reconsideration</div>
             <div className="text-[10px] text-amber-700 font-mono mt-1">180 Days from L1</div>
-            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-[11px] text-stone-800 dark:text-stone-200 mt-1">
               Handled by Qualified Independent Contractor (QIC). Independent panel review.
             </p>
           </div>
@@ -167,7 +167,7 @@ export const DenialResolution: React.FC = () => {
             <div className="font-mono font-bold text-stone-500 mb-1">LEVEL 3</div>
             <div className="font-serif font-bold text-stone-900 dark:text-stone-100">ALJ Hearing</div>
             <div className="text-[10px] text-amber-700 font-mono mt-1">60 Days from L2</div>
-            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-[11px] text-stone-800 dark:text-stone-200 mt-1">
               Administrative Law Judge hearing. Formal video/telephonic legal proceeding.
             </p>
           </div>
@@ -176,7 +176,7 @@ export const DenialResolution: React.FC = () => {
             <div className="font-mono font-bold text-stone-500 mb-1">LEVEL 4</div>
             <div className="font-serif font-bold text-stone-900 dark:text-stone-100">Appeals Council</div>
             <div className="text-[10px] text-amber-700 font-mono mt-1">60 Days from L3</div>
-            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-[11px] text-stone-800 dark:text-stone-200 mt-1">
               Medicare Appeals Council (MAC) review. Legal error assessment.
             </p>
           </div>
@@ -185,7 +185,7 @@ export const DenialResolution: React.FC = () => {
             <div className="font-mono font-bold text-stone-500 mb-1">LEVEL 5</div>
             <div className="font-serif font-bold text-stone-900 dark:text-stone-100">Federal Court</div>
             <div className="text-[10px] text-amber-700 font-mono mt-1">60 Days from L4</div>
-            <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-[11px] text-stone-800 dark:text-stone-200 mt-1">
               U.S. District Court lawsuit. Requires minimum jurisdictional amount.
             </p>
           </div>

@@ -76,7 +76,7 @@ export const Icd10Structure: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             ICD-10-CM 7-Character Code Architecture
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Click any character box below to dissect how clinical specificity, laterality, and episode of care are encoded.
           </p>
         </div>
@@ -116,7 +116,7 @@ export const Icd10Structure: React.FC = () => {
                 }`}
               >
                 {/* Character number pill */}
-                <span className="text-[9px] font-mono font-normal text-stone-500 dark:text-stone-400 mb-1">
+                <span className="text-[9px] font-mono font-normal text-stone-700 dark:text-stone-300 mb-1">
                   POS {item.idx + 1}
                 </span>
 
@@ -126,7 +126,7 @@ export const Icd10Structure: React.FC = () => {
                 </span>
 
                 {/* Subtag */}
-                <span className="text-[8px] uppercase tracking-tighter text-stone-600 dark:text-stone-400 mt-1 line-clamp-1 px-1 text-center">
+                <span className="text-[8px] uppercase tracking-tighter text-stone-800 dark:text-stone-200 mt-1 line-clamp-1 px-1 text-center">
                   {item.tag.split(' ')[0]}
                 </span>
               </button>
@@ -159,21 +159,21 @@ export const Icd10Structure: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-4 border-t border-dashed border-stone-300 dark:border-stone-700 text-xs">
           <div className="p-2.5 bg-blue-50 dark:bg-blue-950/40 rounded border border-blue-200 dark:border-blue-800">
             <span className="font-bold text-blue-900 dark:text-blue-300">7th Character "A" (Initial):</span>
-            <p className="text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-stone-800 dark:text-stone-200 mt-1">
               Used when the patient is receiving <em>active treatment</em> for the condition: surgical evaluation, emergency care, casting by a new physician.
             </p>
           </div>
 
           <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded border border-emerald-200 dark:border-emerald-800">
             <span className="font-bold text-emerald-900 dark:text-emerald-300">7th Character "D" (Subsequent):</span>
-            <p className="text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-stone-800 dark:text-stone-200 mt-1">
               Used for encounters after the patient has received active treatment and is now receiving <em>routine healing/aftercare</em>: suture removal, cast changes, rehab.
             </p>
           </div>
 
           <div className="p-2.5 bg-purple-50 dark:bg-purple-950/40 rounded border border-purple-200 dark:border-purple-800">
             <span className="font-bold text-purple-900 dark:text-purple-300">7th Character "S" (Sequela):</span>
-            <p className="text-stone-600 dark:text-stone-400 mt-1">
+            <p className="text-stone-800 dark:text-stone-200 mt-1">
               Used for complications or conditions that arise as a <em>direct result of a healed condition</em> (e.g., scar tissue formation after a burn, chronic arthritis after fracture).
             </p>
           </div>

@@ -86,6 +86,13 @@ export const Header: React.FC<HeaderProps> = ({
               {currentStage.title}
             </span>
           </div>
+        ) : activeModule === 'mind-map' ? (
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/40 border border-amber-900/60 shadow-inner">
+            <span className="text-sm">🧠</span>
+            <span className="text-xs font-serif font-bold text-amber-100">
+              Dynamic RCM Mind Map
+            </span>
+          </div>
         ) : activeModule === 'quiz-engine' ? (
           <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/40 border border-amber-900/60 shadow-inner">
             <span className="text-sm">🎓</span>

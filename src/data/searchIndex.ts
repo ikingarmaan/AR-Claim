@@ -410,5 +410,37 @@ export const SEARCH_INDEX: SearchEntry[] = [
     moduleId: 'quiz-engine',
     targetId: 'quiz-engine-top',
     keywords: ['quiz', 'exam', 'test', 'mcq', 'certification', 'score', 'certificate']
+  },
+  {
+    id: 'search-mind-map',
+    title: 'Dynamic RCM Mind Map & Lifecycle Architecture',
+    subtitle: 'Interactive hierarchical graph of all 4 macro phases and 10 pipeline gates with real-time EDI & KPI inspectors.',
+    category: 'Interactive Tool',
+    moduleId: 'mind-map',
+    keywords: ['mind map', 'mindmap', 'diagram', 'lifecycle', 'workflow', 'ecosystem', 'architecture', 'phases', 'edi']
+  },
+  {
+    id: 'search-gpd-script',
+    title: 'GPD Eligibility & Benefits Verification Script (Smriti)',
+    subtitle: 'Full recorded phone verification dialogue, cost-sharing check, and callback 251-260-8237.',
+    category: 'Interactive Tool',
+    moduleId: 'eligibility',
+    keywords: ['gpd', 'smriti', 'eligibility script', 'benefits verification', 'call script', '251-260-8237', 'recorded line']
+  },
+  {
+    id: 'search-inpatient-er-auth',
+    title: 'Inpatient Authorization via ER (Haywood Regional - SAM_P)',
+    subtitle: 'Emergency inpatient pre-certification, MCG/InterQual criteria, and 24-48 hr hospital admission notification.',
+    category: 'Interactive Tool',
+    moduleId: 'eligibility',
+    keywords: ['haywood regional', 'sam_p', 'inpatient auth', 'er auth', 'emergency admission', 'interqual', 'mcg', 'auth script']
+  },
+  {
+    id: 'search-modifiers-masterclass',
+    title: 'Professional Modifiers Masterclass (25, 59, 50, 76, 77, 91)',
+    subtitle: 'Exhaustive clinical case vignettes, billing codes, and dollar impact matrix for the 10 core AR denial modifiers.',
+    category: 'Modifier',
+    moduleId: 'coding',
+    keywords: ['modifiers masterclass', 'modifier 25', 'modifier 59', 'modifier 50', 'modifier 76', 'modifier 77', 'modifier 91', 'xs', 'e1-e4']
   }
 ];

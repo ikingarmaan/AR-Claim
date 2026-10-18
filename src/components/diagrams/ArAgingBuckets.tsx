@@ -72,7 +72,7 @@ export const ArAgingBuckets: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             Accounts Receivable (A/R) Aging Buckets & Collector Matrix
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Claims age like fresh fruit. The longer an unadjudicated claim sits in aging, the higher the mathematical probability of unrecoverable write-off.
           </p>
         </div>

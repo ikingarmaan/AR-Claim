@@ -75,7 +75,7 @@ export const Stage8ClaimSubmission: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeSection === 'forms'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📑 Interactive Claim Forms Studio (CMS-1500 & UB-04)
@@ -85,7 +85,7 @@ export const Stage8ClaimSubmission: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeSection === 'edi'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🔄 Claim Lifecycle & Clearinghouse Gates
@@ -95,7 +95,7 @@ export const Stage8ClaimSubmission: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeSection === 'clearinghouse'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📡 EDI 837P vs 837I Loop Architecture
@@ -127,7 +127,7 @@ export const Stage8ClaimSubmission: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
                     CMS-1500 Electronic Equivalent
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                     Used by physicians, non-physician practitioners, group practices, ambulatory surgical centers (ASCs), and independent diagnostic testing facilities (IDTFs).
                   </p>
                   <ul className="mt-3 space-y-1.5 font-mono text-xs">
@@ -146,7 +146,7 @@ export const Stage8ClaimSubmission: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
                     UB-04 (CMS-1450) Electronic Equivalent
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                     Used by hospitals, skilled nursing facilities (SNFs), home health agencies, hospices, and end-stage renal disease (ESRD) facilities.
                   </p>
                   <ul className="mt-3 space-y-1.5 font-mono text-xs">
@@ -167,13 +167,13 @@ export const Stage8ClaimSubmission: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="p-3 bg-white dark:bg-stone-800 rounded border">
                     <strong className="text-amber-800 font-mono">1. EDI 999 Implementation Acknowledgment</strong>
-                    <p className="mt-1 text-stone-600 dark:text-stone-400">
+                    <p className="mt-1 text-stone-800 dark:text-stone-200">
                       Returned within 15–30 minutes of batch transmission. Confirms that the ANSI X12 syntax is valid, segment counts match, and mandatory envelopes (ISA/GS) are intact.
                     </p>
                   </div>
                   <div className="p-3 bg-white dark:bg-stone-800 rounded border">
                     <strong className="text-amber-800 font-mono">2. EDI 277CA Claim Acknowledgment</strong>
-                    <p className="mt-1 text-stone-600 dark:text-stone-400">
+                    <p className="mt-1 text-stone-800 dark:text-stone-200">
                       Returned within 2–24 hours. Evaluates claim-level acceptance. Identifies if the payer accepted the claim into their processing system (STC*A1) or rejected it (STC*A3).
                     </p>
                   </div>

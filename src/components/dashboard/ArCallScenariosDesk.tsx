@@ -156,7 +156,7 @@ export const ArCallScenariosDesk: React.FC<ArCallScenariosDeskProps> = ({ onLoad
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* LEFT COLUMN: 14 Scenarios Index (40% width on desktop) */}
         <div className={`lg:col-span-5 space-y-2.5 ${mobileView === 'list' ? 'block' : 'hidden lg:block'}`}>
-          <div className="flex items-center justify-between px-1 text-xs font-mono font-bold text-stone-600 dark:text-stone-400">
+          <div className="flex items-center justify-between px-1 text-xs font-mono font-bold text-stone-800 dark:text-stone-200">
             <span>SELECT A CALL SCENARIO:</span>
             <span>{filteredScenarios.length} SCENARIOS</span>
           </div>
@@ -191,11 +191,11 @@ export const ArCallScenariosDesk: React.FC<ArCallScenariosDeskProps> = ({ onLoad
                     {scen.title}
                   </div>
 
-                  <p className="text-xs text-stone-600 dark:text-stone-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 line-clamp-2 leading-relaxed">
                     {scen.definition}
                   </p>
 
-                  <div className="flex items-center justify-between text-[11px] font-mono text-stone-600 dark:text-stone-400 mt-1 pt-1.5 border-t border-stone-200 dark:border-stone-800">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-stone-800 dark:text-stone-200 mt-1 pt-1.5 border-t border-stone-200 dark:border-stone-800">
                     <span className="text-amber-800 dark:text-amber-400 font-semibold">
                       {scen.repQuestions.length} Questions for Rep
                     </span>
@@ -287,7 +287,7 @@ export const ArCallScenariosDesk: React.FC<ArCallScenariosDeskProps> = ({ onLoad
                   <PhoneCall className="w-4 h-4 text-rose-700 dark:text-rose-400" />
                   <span>Questions to the Insurance Representative (Call Script Checklist):</span>
                 </span>
-                <span className="text-[10px] font-mono text-stone-600 dark:text-stone-400 hidden sm:inline">
+                <span className="text-[10px] font-mono text-stone-800 dark:text-stone-200 hidden sm:inline">
                   Click icon to copy
                 </span>
               </div>

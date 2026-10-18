@@ -87,6 +87,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
             )}
           </button>
 
+          {/* Dynamic RCM Mind Map Tab */}
+          <button
+            onClick={() => handleStageSelect('mind-map')}
+            className={`w-full text-left p-2.5 rounded-lg transition-all flex items-center justify-between group border ${
+              activeModule === 'mind-map'
+                ? 'bg-amber-900/70 border-amber-500 text-white shadow-inner font-bold'
+                : 'border-transparent text-amber-200 hover:bg-black/30 hover:text-white'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="text-base">🧠</span>
+              <div>
+                <div className="text-xs font-serif font-bold text-amber-100 flex items-center gap-1.5">
+                  <span>Dynamic RCM Mind Map</span>
+                  <span className="text-[9px] bg-emerald-600 text-white px-1.5 py-0.2 rounded font-mono font-bold">
+                    NEW
+                  </span>
+                </div>
+                <div className="text-[10px] text-amber-200 font-mono">Interactive Lifecycle Graph</div>
+              </div>
+            </div>
+            {activeModule === 'mind-map' && (
+              <ChevronRight className="w-3.5 h-3.5 text-amber-400" />
+            )}
+          </button>
+
           {/* Section Divider: 10 RCM Pipeline Stages */}
           <div className="pt-3 pb-1 px-2">
             <span className="text-[10px] font-mono uppercase tracking-widest text-amber-300 font-bold">

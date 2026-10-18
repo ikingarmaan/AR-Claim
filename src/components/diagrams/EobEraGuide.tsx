@@ -27,7 +27,7 @@ export const EobEraGuide: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             EOB / ERA (835) Adjudication Anatomy & Math Ledger
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Every remittance advice must balance to zero. Experiment with the sliders below to see how charges split between adjustments, patient responsibility, and payment.
           </p>
         </div>
@@ -111,10 +111,10 @@ export const EobEraGuide: React.FC = () => {
           <div>
             <div className="text-xs font-mono font-bold text-stone-700 dark:text-stone-300 uppercase">PAYER REMITTANCE ADVICE (835)</div>
             <div className="text-base font-serif font-bold text-stone-900 dark:text-stone-100">BLUE CROSS BLUE SHIELD HEALTHCARE</div>
-            <div className="text-xs font-mono text-stone-600 dark:text-stone-400">CLAIM ICN: 2026-088194-01 | CHECK TRACE: #ACH-98214</div>
+            <div className="text-xs font-mono text-stone-800 dark:text-stone-200">CLAIM ICN: 2026-088194-01 | CHECK TRACE: #ACH-98214</div>
           </div>
           <div className="text-right mt-2 sm:mt-0">
-            <div className="text-xs font-mono text-stone-600 dark:text-stone-400">DATE ISSUED: OCT 18, 2026</div>
+            <div className="text-xs font-mono text-stone-800 dark:text-stone-200">DATE ISSUED: OCT 18, 2026</div>
             <div className="text-lg font-mono font-bold text-emerald-800 dark:text-emerald-400">
               NET EFT PAID: ${payerPaid.toFixed(2)}
             </div>

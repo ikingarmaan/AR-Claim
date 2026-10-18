@@ -79,7 +79,7 @@ export const Stage1Appointment: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'overview'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📋 Core Principles & Intake Protocol
@@ -89,7 +89,7 @@ export const Stage1Appointment: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'workflow'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🔄 Step-by-Step Scheduling Flow
@@ -99,7 +99,7 @@ export const Stage1Appointment: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'checklist'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ✅ Mandatory Front-Desk Checklist
@@ -109,7 +109,7 @@ export const Stage1Appointment: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'traps'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ⚠️ High-Risk Denial Traps Originating Here
@@ -128,7 +128,7 @@ export const Stage1Appointment: React.FC = () => {
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mb-1">
                     Patient Identification
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed">
                     Capture legal name exactly as shown on the government-issued photo ID and current insurance card. Nicknames (e.g., "Bob" instead of "Robert") cause 100% clearinghouse rejections.
                   </p>
                 </div>
@@ -140,7 +140,7 @@ export const Stage1Appointment: React.FC = () => {
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mb-1">
                     Insurance Demographics
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed">
                     Record Payer ID, Policy/Member ID, Group Number, Subscriber DOB, and relationship to subscriber (Self, Spouse, Child, Other).
                   </p>
                 </div>
@@ -152,7 +152,7 @@ export const Stage1Appointment: React.FC = () => {
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 mb-1">
                     Chief Complaint & Urgency
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 leading-relaxed">
                     Determine reason for visit: Preventive Wellness, Acute Illness, Chronic Disease follow-up, Workers' Comp, or Auto Accident. Crucial for Box 10 on CMS-1500.
                   </p>
                 </div>
@@ -191,7 +191,7 @@ export const Stage1Appointment: React.FC = () => {
                 <div>
                   <span className="font-mono font-bold text-amber-800 dark:text-amber-400">STEP 1: INTAKE REQUEST</span>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">Capture Identity & Chief Complaint</h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1">
                     Collect patient's legal name, date of birth, social security number (or Medicare MBI), contact address, phone number, and brief description of medical symptoms.
                   </p>
                 </div>
@@ -199,7 +199,7 @@ export const Stage1Appointment: React.FC = () => {
                 <div>
                   <span className="font-mono font-bold text-amber-800 dark:text-amber-400">STEP 2: PROVIDER MATCHING & TIME SLOT</span>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">Template Scheduling & Appointment Duration</h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1">
                     Match patient with credentialed provider. New patient visits typically require 30–45 minute template slots (CPT 99203/99204), while established patients receive 15–20 minutes (CPT 99213/99214).
                   </p>
                 </div>
@@ -207,7 +207,7 @@ export const Stage1Appointment: React.FC = () => {
                 <div>
                   <span className="font-mono font-bold text-amber-800 dark:text-amber-400">STEP 3: PRE-REGISTRATION PACKET TRANSMISSION</span>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">Digital Portal Onboarding</h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1">
                     Send HIPAA Notice of Privacy Practices, Medical History questionnaire, and Photo ID/Card upload link via SMS/Email 48 hours prior to encounter.
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export const Stage1Appointment: React.FC = () => {
                 <div>
                   <span className="font-mono font-bold text-amber-800 dark:text-amber-400">STEP 4: HANDOFF TO STAGE 2</span>
                   <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">Automated 270 Eligibility Queue Trigger</h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-1">
                     The PMS automatically transmits an EDI 270 Inquiry transaction to the payer's gateway 48 hours before the scheduled appointment.
                   </p>
                 </div>

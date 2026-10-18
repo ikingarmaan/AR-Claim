@@ -46,7 +46,7 @@ export const ClaimLifecycle: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             US Medical Claim Lifecycle & EDI Clearinghouse Gates
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Understand how an encounter transforms from Superbill into EDI 837, passes two levels of acknowledgments, and terminates in an 835 Remittance.
           </p>
         </div>
@@ -213,7 +213,7 @@ export const ClaimLifecycle: React.FC = () => {
         </p>
 
         <div className="mt-3">
-          <div className="text-xs font-bold font-mono text-stone-600 dark:text-stone-400 uppercase tracking-wider mb-1.5">
+          <div className="text-xs font-bold font-mono text-stone-800 dark:text-stone-200 uppercase tracking-wider mb-1.5">
             Common Traps Caught at this Gate:
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

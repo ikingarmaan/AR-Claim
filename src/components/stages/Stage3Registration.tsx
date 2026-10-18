@@ -72,7 +72,7 @@ export const Stage3Registration: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'consents'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📜 The Big 3 Legal Consents (AOB & ROI)
@@ -82,7 +82,7 @@ export const Stage3Registration: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'abn'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ⚠️ Advance Beneficiary Notice (ABN / CMS-R-131)
@@ -92,7 +92,7 @@ export const Stage3Registration: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'pos'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             💳 Point-of-Service (POS) Collections
@@ -102,7 +102,7 @@ export const Stage3Registration: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'redflags'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🛡️ FTC Red Flags Rule & Identity Check
@@ -127,7 +127,7 @@ export const Stage3Registration: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-2">
                     Assignment of Benefits (AOB)
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                     Legally directs the health insurance company to pay insurance reimbursement directly to the healthcare provider rather than sending the check to the patient.
                   </p>
                   <div className="mt-3 p-3 bg-red-50 dark:bg-red-950/40 rounded border border-red-200 dark:border-red-800 text-xs text-red-900 dark:text-red-200">
@@ -148,7 +148,7 @@ export const Stage3Registration: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-2">
                     Release of Information (ROI / HIPAA)
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                     Authorizes the provider to disclose necessary medical history, clinical notes, and diagnostic test results to the payer or clearinghouse to adjudicate the claim.
                   </p>
                   <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/40 rounded border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-200">
@@ -217,21 +217,21 @@ export const Stage3Registration: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mt-3">
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <span className="font-bold text-stone-900 dark:text-stone-100 font-serif">1. Mandatory Copayments</span>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     Collect 100% of the copayment (from EDI 271) before the patient is escorted to the exam room.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <span className="font-bold text-stone-900 dark:text-stone-100 font-serif">2. Outstanding Prior Balances</span>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     Prompt the check-in coordinator if patient owes a prior balance from a previous service date.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <span className="font-bold text-stone-900 dark:text-stone-100 font-serif">3. Deductible Pre-Estimates</span>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     If EDI 271 indicates unmet deductible, collect an estimated deposit ($75–$150) toward the encounter.
                   </p>
                 </div>

@@ -213,7 +213,7 @@ export const ModifiersMasteryDesk: React.FC = () => {
         <div className="space-y-5">
           {/* Category Filter Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-serif">
-            <Filter className="w-3.5 h-3.5 text-stone-600 dark:text-stone-400 shrink-0" />
+            <Filter className="w-3.5 h-3.5 text-stone-800 dark:text-stone-200 shrink-0" />
             {categories.map(cat => (
               <button
                 key={cat.id}
@@ -546,7 +546,7 @@ export const ModifiersMasteryDesk: React.FC = () => {
                     <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100">
                       Practice {bp.number}: {bp.practice}
                     </h4>
-                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                    <p className="text-xs text-stone-800 dark:text-stone-200">
                       {bp.description}
                     </p>
                   </div>
@@ -634,3 +634,4 @@ export const ModifiersMasteryDesk: React.FC = () => {
     </div>
   );
 };
+

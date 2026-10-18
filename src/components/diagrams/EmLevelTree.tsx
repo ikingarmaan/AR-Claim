@@ -99,7 +99,7 @@ export const EmLevelTree: React.FC = () => {
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
             Evaluation & Management (E/M) Level Decision Tree
           </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400">
+          <p className="text-sm text-stone-800 dark:text-stone-200">
             Determine level of service based on Medical Decision Making (MDM: 2 of 3 elements) OR Total Time on date of encounter.
           </p>
         </div>
@@ -111,7 +111,7 @@ export const EmLevelTree: React.FC = () => {
             className={`px-3 py-1.5 rounded text-xs font-serif font-bold transition-all ${
               patientType === 'established'
                 ? 'bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 shadow-sm border border-amber-400'
-                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             Established (99211–99215)
@@ -121,7 +121,7 @@ export const EmLevelTree: React.FC = () => {
             className={`px-3 py-1.5 rounded text-xs font-serif font-bold transition-all ${
               patientType === 'new'
                 ? 'bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 shadow-sm border border-amber-400'
-                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             New Patient (99202–99205)
@@ -154,7 +154,7 @@ export const EmLevelTree: React.FC = () => {
               <div className="text-lg font-mono font-bold text-stone-900 dark:text-stone-100 mt-1">
                 CPT {item.cpt}
               </div>
-              <div className="text-xs font-serif text-stone-600 dark:text-stone-400 mt-0.5">
+              <div className="text-xs font-serif text-stone-800 dark:text-stone-200 mt-0.5">
                 {item.mdm}
               </div>
             </button>

@@ -10,14 +10,16 @@ import {
   CheckCircle2, 
   AlertCircle,
   FileSearch,
-  DollarSign
+  DollarSign,
+  PhoneCall
 } from 'lucide-react';
+import { CallScriptsMasteryDesk } from '../dashboard/CallScriptsMasteryDesk';
 
 export const Stage2Eligibility: React.FC = () => {
   const { setActiveModule, markModuleCompleted, progress } = useAcademy();
   const isCompleted = progress.completedModules.includes('eligibility');
 
-  const [activeTab, setActiveTab] = useState<'edi270' | 'cob' | 'msp' | 'calculator'>('edi270');
+  const [activeTab, setActiveTab] = useState<'edi270' | 'scripts' | 'cob' | 'msp' | 'calculator'>('edi270');
 
   // Birthday Rule interactive state
   const [parent1Dob, setParent1Dob] = useState('1984-04-12');
@@ -94,17 +96,29 @@ export const Stage2Eligibility: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'edi270'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📡 EDI 270 / 271 Electronic Inquiry
+          </button>
+          <button
+            onClick={() => setActiveTab('scripts')}
+            className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+              activeTab === 'scripts'
+                ? 'bg-rose-900 text-white border-rose-950 -mb-[1px] shadow-sm'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900'
+            }`}
+          >
+            <PhoneCall className={`w-3.5 h-3.5 ${activeTab === 'scripts' ? 'text-white' : 'text-rose-600 dark:text-rose-400'}`} />
+            <span>Phone Verification Scripts (GPD & Auth)</span>
+            <span className="text-[10px] bg-rose-700 text-white px-1.5 py-0.2 rounded font-mono font-bold">5</span>
           </button>
           <button
             onClick={() => setActiveTab('cob')}
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'cob'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ⚖️ Coordination of Benefits (COB) & Birthday Rule
@@ -114,7 +128,7 @@ export const Stage2Eligibility: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'msp'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🏛️ Medicare Secondary Payer (MSP) Rules
@@ -124,7 +138,7 @@ export const Stage2Eligibility: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'calculator'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🎂 Interactive Birthday Rule Simulator
@@ -133,6 +147,12 @@ export const Stage2Eligibility: React.FC = () => {
 
         {/* Tab Body */}
         <div className="py-6 bg-white dark:bg-stone-900 p-6 rounded-b-xl border-x border-b border-stone-400 dark:border-stone-600">
+          {activeTab === 'scripts' && (
+            <div className="space-y-4">
+              <CallScriptsMasteryDesk />
+            </div>
+          )}
+
           {activeTab === 'edi270' && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -143,7 +163,7 @@ export const Stage2Eligibility: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
                     What the Provider Sends to Payer
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                     Sent automatically by PMS or clearinghouse. Key segments:
                   </p>
                   <ul className="text-xs text-stone-700 dark:text-stone-300 mt-2 space-y-1 font-mono">
@@ -162,7 +182,7 @@ export const Stage2Eligibility: React.FC = () => {
                   <h4 className="font-serif font-bold text-base text-stone-900 dark:text-stone-100 mt-1">
                     What the Payer Returns in Milliseconds
                   </h4>
-                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-stone-800 dark:text-stone-200 mt-2 leading-relaxed">
                     Parses live eligibility data into the PMS ledger. Key fields:
                   </p>
                   <ul className="text-xs text-stone-700 dark:text-stone-300 mt-2 space-y-1 font-mono">
@@ -198,28 +218,28 @@ export const Stage2Eligibility: React.FC = () => {
               <div className="space-y-3">
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-stone-900 dark:text-stone-100 font-serif">1. Subscriber / Employee vs Dependent:</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     The plan covering the patient as an active employee/subscriber is always <strong>PRIMARY</strong> to a plan covering them as a spouse or dependent.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-stone-900 dark:text-stone-100 font-serif">2. The Birthday Rule for Dependent Children:</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     When a child is covered under both parents' health insurance policies, the plan of the parent whose birthday (month and day) falls <strong>earlier in the calendar year</strong> is PRIMARY. The year of birth is completely irrelevant.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-stone-900 dark:text-stone-100 font-serif">3. Divorced / Separated Parents:</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     If no court decree assigns financial responsibility, the order is: (1) Parent with primary legal custody, (2) Spouse of parent with custody (stepparent), (3) Parent without custody, (4) Spouse of non-custodial parent.
                   </p>
                 </div>
 
                 <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded border border-stone-200 dark:border-stone-700">
                   <strong className="text-stone-900 dark:text-stone-100 font-serif">4. Active Employment vs COBRA / Retiree Coverage:</strong>
-                  <p className="text-stone-600 dark:text-stone-400 mt-1">
+                  <p className="text-stone-800 dark:text-stone-200 mt-1">
                     An active group health plan (EGHP) is always PRIMARY to a COBRA continuation plan or a retiree medical policy.
                   </p>
                 </div>
@@ -312,7 +332,7 @@ export const Stage2Eligibility: React.FC = () => {
                   Primary Payer: <span className="underline">{birthdayResult.winner}'s Health Insurance Plan</span>
                 </div>
                 <p className="mt-1">{birthdayResult.reason}</p>
-                <p className="mt-2 text-[11px] text-stone-600 dark:text-stone-400">
+                <p className="mt-2 text-[11px] text-stone-800 dark:text-stone-200">
                   <strong>CMS-1500 Filing Note:</strong> {birthdayResult.winner}'s policy is entered in Boxes 1–11. The other parent's policy is entered as Secondary Payer in Boxes 9, 9a, 9b, 9d.
                 </p>
               </div>

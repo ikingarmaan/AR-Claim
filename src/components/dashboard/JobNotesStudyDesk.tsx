@@ -30,13 +30,14 @@ import {
 import { ArCallScenariosDesk } from './ArCallScenariosDesk';
 import { CarcRarcDictionaryDesk } from './CarcRarcDictionaryDesk';
 import { ModifiersMasteryDesk } from './ModifiersMasteryDesk';
+import { CallScriptsMasteryDesk } from './CallScriptsMasteryDesk';
 
 interface JobNotesStudyDeskProps {
   onLoadIntoSimulator?: (scenario: ArCallScenario) => void;
 }
 
 export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadIntoSimulator }) => {
-  const [activeTab, setActiveTab] = useState<'qa' | 'scenarios' | 'carc-rarc' | 'plans' | 'tfl' | 'pos' | 'cases' | 'calculator'>('qa');
+  const [activeTab, setActiveTab] = useState<'qa' | 'scenarios' | 'carc-rarc' | 'scripts' | 'plans' | 'tfl' | 'pos' | 'cases' | 'calculator'>('qa');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -131,6 +132,19 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
         </button>
 
         <button
+          onClick={() => setActiveTab('scripts')}
+          className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
+            activeTab === 'scripts'
+              ? 'bg-rose-900 text-white border-rose-950 shadow-sm'
+              : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'
+          }`}
+        >
+          <PhoneCall className={`w-4 h-4 ${activeTab === 'scripts' ? 'text-white' : 'text-rose-700 dark:text-rose-400'}`} />
+          <span>Call Scripts & NATO</span>
+          <span className="text-[10px] bg-rose-700 text-white px-1.5 py-0.2 rounded font-mono font-bold">5</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('plans')}
           className={`px-3.5 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all flex items-center gap-1.5 ${
             activeTab === 'plans'
@@ -206,6 +220,13 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
         </div>
       )}
 
+      {/* Tab: Call Scripts & NATO Phonetics */}
+      {activeTab === 'scripts' && (
+        <div className="space-y-4">
+          <CallScriptsMasteryDesk />
+        </div>
+      )}
+
       {/* Tab 1: 44+ Interview Questions */}
       {activeTab === 'qa' && (
         <div className="space-y-4">
@@ -223,7 +244,7 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
             </div>
 
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 text-xs font-serif">
-              <Filter className="w-3.5 h-3.5 text-stone-600 dark:text-stone-400 shrink-0" />
+              <Filter className="w-3.5 h-3.5 text-stone-800 dark:text-stone-200 shrink-0" />
               {[
                 { id: 'all', label: 'All (44)' },
                 { id: 'eligibility-cob', label: 'Eligibility & COB' },
@@ -340,14 +361,14 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
                 <tr>
                   <td className="p-2.5 font-bold">Primary Care Physician (PCP)?</td>
                   <td className="p-2.5 text-emerald-700 dark:text-emerald-400 font-bold">YES (Mandatory)</td>
-                  <td className="p-2.5 text-stone-600 dark:text-stone-400">NO</td>
+                  <td className="p-2.5 text-stone-800 dark:text-stone-200">NO</td>
                   <td className="p-2.5">Sometimes</td>
                 </tr>
                 <tr>
                   <td className="p-2.5 font-bold">Specialist Referral Required?</td>
                   <td className="p-2.5 text-emerald-700 dark:text-emerald-400 font-bold">YES (Mandatory)</td>
-                  <td className="p-2.5 text-stone-600 dark:text-stone-400">NO</td>
-                  <td className="p-2.5 text-stone-600 dark:text-stone-400">NO</td>
+                  <td className="p-2.5 text-stone-800 dark:text-stone-200">NO</td>
+                  <td className="p-2.5 text-stone-800 dark:text-stone-200">NO</td>
                 </tr>
                 <tr>
                   <td className="p-2.5 font-bold">In-Network Benefits?</td>
@@ -458,7 +479,7 @@ export const JobNotesStudyDesk: React.FC<JobNotesStudyDeskProps> = ({ onLoadInto
                       {item.description}
                     </p>
                   </div>
-                  <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-800 text-[10px] text-stone-600 dark:text-stone-400">
+                  <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-800 text-[10px] text-stone-800 dark:text-stone-200">
                     Typical: {item.commonSpecialties}
                   </div>
                 </div>

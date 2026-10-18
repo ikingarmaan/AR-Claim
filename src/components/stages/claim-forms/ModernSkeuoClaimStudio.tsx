@@ -439,7 +439,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                     <span>HEALTH INSURANCE CLAIM FORM</span>
                     <span>APPROVED BY NATIONAL UNIFORM CLAIM COMMITTEE (NUCC) 02/12</span>
                   </div>
-                  <div className="text-[10px] font-sans text-stone-600 dark:text-stone-400 mt-0.5">
+                  <div className="text-[10px] font-sans text-stone-800 dark:text-stone-200 mt-0.5">
                     Click any box to inspect side-by-side rules, sample values, and Jobs Notes 💼 interview insights.
                   </div>
                 </div>
@@ -450,7 +450,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                     <span className="text-[10px] text-red-800 dark:text-red-400 font-bold block">CARRIER BLOCK:</span>
                     <span className="font-bold text-stone-900 dark:text-stone-100">BLUE CROSS BLUE SHIELD — EDI PAYER ID: 00810</span>
                   </div>
-                  <span className="text-[10px] text-stone-600 dark:text-stone-400">P.O. BOX 98124, DALLAS, TX 75201</span>
+                  <span className="text-[10px] text-stone-800 dark:text-stone-200">P.O. BOX 98124, DALLAS, TX 75201</span>
                 </div>
 
                 {/* SECTION 1: PATIENT & INSURED DEMOGRAPHICS (Boxes 1 - 13) */}
@@ -580,7 +580,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                     <span className="text-[11px] font-mono font-bold text-red-800 dark:text-red-400 uppercase">
                       SECTION 3: PROFESSIONAL SERVICE LINES TABLE (BOX 24A – 24J)
                     </span>
-                    <span className="text-[10px] font-mono text-stone-600 dark:text-stone-400">
+                    <span className="text-[10px] font-mono text-stone-800 dark:text-stone-200">
                       Click any column header or row to inspect
                     </span>
                   </div>
@@ -606,7 +606,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">10/18/26 - 10/18/26</td>
                           <td className="p-1.5 font-bold text-stone-900 dark:text-stone-100">11</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">N</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">N</td>
                           <td className="p-1.5 font-bold text-blue-700 dark:text-blue-400">99214 - 25</td>
                           <td className="p-1.5 font-bold text-stone-900 dark:text-stone-100">A, B</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$185.00</td>
@@ -620,7 +620,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">10/18/26 - 10/18/26</td>
                           <td className="p-1.5 font-bold text-stone-900 dark:text-stone-100">11</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">N</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">N</td>
                           <td className="p-1.5 font-bold text-blue-700 dark:text-blue-400">93000</td>
                           <td className="p-1.5 font-bold text-stone-900 dark:text-stone-100">A</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$65.00</td>
@@ -634,7 +634,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">10/18/26 - 10/18/26</td>
                           <td className="p-1.5 font-bold text-stone-900 dark:text-stone-100">11</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">N</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">N</td>
                           <td className="p-1.5 font-bold text-blue-700 dark:text-blue-400">36415</td>
                           <td className="p-1.5 font-bold text-stone-900 dark:text-stone-100">B</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$25.00</td>
@@ -682,7 +682,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                     <span>UNIFORM BILL (UB-04 / FORM CMS-1450)</span>
                     <span>APPROVED BY NATIONAL UNIFORM BILLING COMMITTEE (NUBC)</span>
                   </div>
-                  <div className="text-[10px] font-sans text-stone-600 dark:text-stone-400 mt-0.5">
+                  <div className="text-[10px] font-sans text-stone-800 dark:text-stone-200 mt-0.5">
                     Click any Form Locator (FL) to inspect side-by-side institutional rules, revenue codes, and Jobs Notes 💼 interview insights.
                   </div>
                 </div>
@@ -732,7 +732,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                     <span className="text-[11px] font-mono font-bold text-blue-800 dark:text-blue-400 uppercase">
                       SECTION 3: REVENUE CODES & INSTITUTIONAL CHARGES (FL 42 – FL 49)
                     </span>
-                    <span className="text-[10px] font-mono text-stone-600 dark:text-stone-400">
+                    <span className="text-[10px] font-mono text-stone-800 dark:text-stone-200">
                       Mandatory 4-digit revenue codes
                     </span>
                   </div>
@@ -756,7 +756,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 font-bold text-blue-800 dark:text-blue-400">0110</td>
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">ROOM & BOARD - PRIVATE MEDICAL</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">N/A</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">N/A</td>
                           <td className="p-1.5 text-stone-700 dark:text-stone-300">10/10/2026</td>
                           <td className="p-1.5 text-center text-stone-900 dark:text-stone-100">4</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$5,800.00</td>
@@ -768,7 +768,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 font-bold text-blue-800 dark:text-blue-400">0250</td>
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">PHARMACY - GENERAL</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">N/A</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">N/A</td>
                           <td className="p-1.5 text-stone-700 dark:text-stone-300">10/11/2026</td>
                           <td className="p-1.5 text-center text-stone-900 dark:text-stone-100">12</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$1,450.00</td>
@@ -780,7 +780,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 font-bold text-blue-800 dark:text-blue-400">0360</td>
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">OPERATING ROOM SERVICES</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">47562</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">47562</td>
                           <td className="p-1.5 text-stone-700 dark:text-stone-300">10/11/2026</td>
                           <td className="p-1.5 text-center text-stone-900 dark:text-stone-100">1</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$8,900.00</td>
@@ -792,7 +792,7 @@ export const ModernSkeuoClaimStudio: React.FC = () => {
                         >
                           <td className="p-1.5 font-bold text-blue-800 dark:text-blue-400">0450</td>
                           <td className="p-1.5 text-stone-900 dark:text-stone-100">EMERGENCY ROOM</td>
-                          <td className="p-1.5 text-stone-600 dark:text-stone-400">99284</td>
+                          <td className="p-1.5 text-stone-800 dark:text-stone-200">99284</td>
                           <td className="p-1.5 text-stone-700 dark:text-stone-300">10/10/2026</td>
                           <td className="p-1.5 text-center text-stone-900 dark:text-stone-100">1</td>
                           <td className="p-1.5 text-right font-bold text-stone-900 dark:text-stone-100">$2,100.00</td>

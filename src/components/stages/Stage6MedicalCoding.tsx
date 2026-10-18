@@ -84,7 +84,7 @@ export const Stage6MedicalCoding: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'icd10'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🧬 ICD-10-CM Diagnosis Architecture
@@ -94,7 +94,7 @@ export const Stage6MedicalCoding: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'cpt'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             📋 CPT & HCPCS Level II Categories
@@ -104,7 +104,7 @@ export const Stage6MedicalCoding: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'modifiers'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             🏷️ Essential Modifiers Dictionary (25, 59, 26, TC)
@@ -114,7 +114,7 @@ export const Stage6MedicalCoding: React.FC = () => {
             className={`px-4 py-2 rounded-t-lg font-serif font-bold text-xs sm:text-sm border-t border-x transition-all ${
               activeTab === 'ncci'
                 ? 'bg-white dark:bg-stone-900 border-stone-400 dark:border-stone-600 text-stone-900 dark:text-stone-100 -mb-[1px] shadow-sm'
-                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-900'
+                : 'bg-stone-200/70 dark:bg-stone-800/60 border-transparent text-stone-800 dark:text-stone-200 hover:text-stone-900'
             }`}
           >
             ⚖️ NCCI Edits & Bundling Bypass Logic
@@ -184,7 +184,7 @@ export const Stage6MedicalCoding: React.FC = () => {
                       <h5 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
                         {cat.name}
                       </h5>
-                      <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-1">
+                      <p className="text-[11px] text-stone-800 dark:text-stone-200 mt-1">
                         {cat.description}
                       </p>
                     </div>
@@ -200,7 +200,7 @@ export const Stage6MedicalCoding: React.FC = () => {
                 <h5 className="font-serif font-bold text-stone-900 dark:text-stone-100 mt-1">
                   Supplies, DME, Injectable Drugs & Ambulance Services
                 </h5>
-                <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-relaxed">
+                <p className="text-xs text-stone-800 dark:text-stone-200 mt-1 leading-relaxed">
                   Single letter (A–V) followed by 4 numeric digits. Maintained by CMS:
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2 font-mono">
