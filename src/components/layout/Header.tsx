@@ -52,8 +52,12 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={() => setActiveModule('dashboard')}
           className="flex items-center gap-2.5 cursor-pointer group select-none"
         >
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 via-amber-600 to-amber-800 p-0.5 shadow-skeuo-raised border border-amber-300/40 group-hover:scale-105 transition-transform flex items-center justify-center">
-            <span className="text-xl">📋</span>
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-skeuo-raised border-2 border-amber-400/60 group-hover:scale-105 transition-transform flex items-center justify-center bg-stone-950 shrink-0">
+            <img 
+              src="/rcmclaim-logo.png" 
+              alt="RCMclaim Seal Logo" 
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex flex-col">
             <div className="flex items-baseline">

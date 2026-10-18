@@ -39,22 +39,31 @@ export const SkeuoDashboard: React.FC<SkeuoDashboardProps> = ({
       {/* Main Clipboard Hero */}
       <div className="skeuo-clipboard p-6 sm:p-8 rounded-2xl border-2 border-stone-400 dark:border-stone-600 shadow-skeuo-raised relative">
         {/* Top Header Information */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-2 border-dashed border-stone-300 dark:border-stone-700">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="skeuo-badge bg-amber-800 text-white font-mono text-xs px-2.5 py-1 rounded">
-                STUDENT DOSSIER
-              </span>
-              <span className="text-xs font-mono text-stone-700 dark:text-stone-300 font-bold">
-                SERIES: US-HEALTHCARE-REVENUE-CYCLE
-              </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-6 border-b-2 border-dashed border-stone-300 dark:border-stone-700">
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 border-amber-500/70 shadow-2xl bg-stone-950 shrink-0">
+              <img 
+                src="/rcmclaim-logo.png" 
+                alt="RCMclaim Official Seal" 
+                className="w-full h-full object-cover"
+              />
             </div>
-            <h1 className="text-2xl sm:text-4xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-2">
-              RCMclaim Executive Academy
-            </h1>
-            <p className="text-xs sm:text-sm text-stone-800 dark:text-stone-200 mt-1 max-w-2xl leading-relaxed">
-              Master the entire end-to-end US Healthcare Revenue Cycle Management lifecycle across 10 sequential gates — from patient intake to claim submission, official CMS-1500 & UB-04 forms, payment posting, and denial appeals.
-            </p>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="skeuo-badge bg-amber-800 text-white font-mono text-xs px-2.5 py-1 rounded">
+                  STUDENT DOSSIER
+                </span>
+                <span className="text-xs font-mono text-stone-700 dark:text-stone-300 font-bold">
+                  SERIES: US-HEALTHCARE-REVENUE-CYCLE
+                </span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl font-serif font-bold text-stone-900 dark:text-stone-100 mt-2">
+                RCMclaim Executive Academy
+              </h1>
+              <p className="text-xs sm:text-sm text-stone-800 dark:text-stone-200 mt-1 max-w-2xl leading-relaxed">
+                Master the entire end-to-end US Healthcare Revenue Cycle Management lifecycle across 10 sequential gates — from patient intake to claim submission, official CMS-1500 & UB-04 forms, payment posting, and denial appeals.
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2">

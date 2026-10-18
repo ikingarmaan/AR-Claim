@@ -48,12 +48,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
       >
         {/* Binder Spine Top Header */}
         <div className="p-4 border-b border-amber-950/80 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Brass Grommet */}
-            <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-br from-amber-300 to-amber-700 border border-amber-900 shadow-sm" />
-            <span className="font-serif font-bold text-sm tracking-wide text-amber-200">
-              RCMclaim BINDER
-            </span>
+          <div 
+            onClick={() => handleStageSelect('dashboard')}
+            className="flex items-center gap-2.5 cursor-pointer group select-none"
+          >
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-amber-400/60 shadow-skeuo-raised bg-stone-950 shrink-0 group-hover:scale-105 transition-transform">
+              <img 
+                src="/rcmclaim-logo.png" 
+                alt="RCMclaim Logo" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <span className="font-serif font-bold text-sm tracking-wide text-amber-200 block leading-tight">
+                RCMclaim
+              </span>
+              <span className="text-[9px] font-mono uppercase tracking-widest text-amber-400/80 block">
+                EXECUTIVE BINDER
+              </span>
+            </div>
           </div>
 
           <button

@@ -192,7 +192,10 @@ const MainLayout: React.FC = () => {
         {/* Skeuomorphic Desk Footer */}
         <footer className="mt-auto border-t border-stone-300 dark:border-stone-800 py-4 px-6 text-center text-xs font-mono text-stone-500 bg-stone-100/50 dark:bg-stone-900/50">
           <div className="flex flex-col sm:flex-row items-center justify-between max-w-7xl mx-auto gap-2">
-            <span>RCMclaim — Skeuomorphic US Healthcare Revenue Cycle Management</span>
+            <div className="flex items-center gap-2">
+              <img src="/rcmclaim-logo.png" alt="RCMclaim" className="w-5 h-5 rounded-full object-cover border border-amber-600/40" />
+              <span>RCMclaim — Skeuomorphic US Healthcare Revenue Cycle Management</span>
+            </div>
             <div className="flex items-center gap-3 text-stone-400">
               <span>CMS-1500 (02/12)</span>
               <span>•</span>
