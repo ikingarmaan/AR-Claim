@@ -5,16 +5,13 @@ import {
   Moon, 
   Menu, 
   Bookmark, 
-  Sparkles, 
   Award,
-  FileCheck2,
-  Activity,
-  Code2,
-  PhoneForwarded,
-  GraduationCap
+  GraduationCap,
+  Sparkles,
+  ClipboardList
 } from 'lucide-react';
 import { useAcademy } from '../../context/AcademyContext';
-import { ModuleId } from '../../types/rcm';
+import { RCM_STAGES, StageId } from '../../types/rcm';
 
 interface HeaderProps {
   onToggleMobileSidebar: () => void;
@@ -39,200 +36,127 @@ export const Header: React.FC<HeaderProps> = ({
 
   const totalBookmarks = progress.bookmarkedDenials.length + progress.bookmarkedModifiers.length + progress.bookmarkedTerms.length;
 
-  // Determine current active high-level category
-  const getCurrentCategory = (): 'forms' | 'pipeline' | 'coding' | 'ar-lab' | 'exam' => {
-    if (activeModule === 'claim-forms') return 'forms';
-    if (activeModule === 'dashboard' || activeModule === 'foundations') return 'pipeline';
-    if (activeModule === 'coding-modifiers') return 'coding';
-    if (activeModule === 'quiz-engine') return 'exam';
-    return 'ar-lab';
-  };
-
-  const activeCategory = getCurrentCategory();
-
-  const handleCategoryClick = (cat: 'forms' | 'pipeline' | 'coding' | 'ar-lab' | 'exam') => {
-    switch (cat) {
-      case 'forms':
-        setActiveModule('claim-forms');
-        break;
-      case 'pipeline':
-        setActiveModule('dashboard');
-        break;
-      case 'coding':
-        setActiveModule('coding-modifiers');
-        break;
-      case 'ar-lab':
-        setActiveModule('ar-playbook');
-        break;
-      case 'exam':
-        setActiveModule('quiz-engine');
-        break;
-    }
-  };
+  const currentStage = RCM_STAGES.find(s => s.id === activeModule);
 
   return (
-    <header className="sticky top-0 z-30 h-16 glass-spatial border-b border-white/60 dark:border-white/10 px-3 sm:px-5 lg:px-8 flex items-center justify-between transition-all">
+    <header className="sticky top-0 z-30 h-16 skeuo-leather text-amber-100 border-b border-amber-950/80 shadow-md px-3 sm:px-6 flex items-center justify-between transition-all">
       {/* Left: Mobile hamburger & Brand */}
       <div className="flex items-center gap-3 shrink-0">
         <button
           type="button"
           onClick={onToggleMobileSidebar}
-          className="lg:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+          className="lg:hidden p-2 rounded-lg text-amber-200 hover:bg-black/30 transition-colors"
           title="Open Menu"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        {/* Brand Logo */}
+        {/* Brand Logo with Brass Plaque styling */}
         <div 
           onClick={() => setActiveModule('dashboard')}
-          className="flex items-center gap-2 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group select-none"
         >
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-500 p-0.5 shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <span className="text-white font-black text-xs tracking-tighter">RC</span>
-            </div>
+          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 via-amber-600 to-amber-800 p-0.5 shadow-skeuo-raised border border-amber-300/40 group-hover:scale-105 transition-transform flex items-center justify-center">
+            <span className="text-xl">📋</span>
           </div>
-          <div className="flex items-baseline">
-            <span className="text-base font-black tracking-tight text-slate-900 dark:text-white">RCM</span>
-            <span className="text-base font-black tracking-tight text-emerald-500">claim</span>
-            <span className="hidden sm:inline-block ml-1.5 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              Spatial
+          <div className="flex flex-col">
+            <div className="flex items-baseline">
+              <span className="text-lg font-serif font-black tracking-tight text-amber-200 drop-shadow">RCM</span>
+              <span className="text-lg font-serif font-black tracking-tight text-amber-400 drop-shadow">claim</span>
+              <span className="ml-2 hidden sm:inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded bg-amber-950/80 text-amber-300 border border-amber-600/50">
+                Skeuomorphic Edition
+              </span>
+            </div>
+            <span className="text-[9px] font-mono tracking-wider text-amber-300/70 hidden sm:inline-block -mt-1">
+              US Healthcare Revenue Cycle Academy
             </span>
           </div>
         </div>
       </div>
 
-      {/* Center: Spatial Desktop Category Switcher Capsule */}
-      <div className="hidden xl:flex items-center bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-2xl border border-white/40 dark:border-white/10 shadow-xs backdrop-blur-md">
-        <button
-          type="button"
-          onClick={() => handleCategoryClick('forms')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-            activeCategory === 'forms'
-              ? 'bg-white dark:bg-slate-700 text-emerald-600 dark:text-emerald-400 shadow-sm border border-slate-200/60 dark:border-white/10'
-              : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <FileCheck2 className="w-3.5 h-3.5" />
-          <span>Claim Forms</span>
-          <span className="text-[10px] px-1 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono">1500/UB</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleCategoryClick('pipeline')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-            activeCategory === 'pipeline'
-              ? 'bg-white dark:bg-slate-700 text-cyan-600 dark:text-cyan-400 shadow-sm border border-slate-200/60 dark:border-white/10'
-              : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <Activity className="w-3.5 h-3.5" />
-          <span>RCM Pipeline</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleCategoryClick('coding')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-            activeCategory === 'coding'
-              ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm border border-slate-200/60 dark:border-white/10'
-              : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <Code2 className="w-3.5 h-3.5" />
-          <span>Coding & Modifiers</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleCategoryClick('ar-lab')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-            activeCategory === 'ar-lab'
-              ? 'bg-white dark:bg-slate-700 text-rose-600 dark:text-rose-400 shadow-sm border border-slate-200/60 dark:border-white/10'
-              : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <PhoneForwarded className="w-3.5 h-3.5" />
-          <span>AR Denials Lab</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => handleCategoryClick('exam')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-            activeCategory === 'exam'
-              ? 'bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-sm border border-slate-200/60 dark:border-white/10'
-              : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-          }`}
-        >
-          <GraduationCap className="w-3.5 h-3.5" />
-          <span>Exam Hub</span>
-        </button>
+      {/* Center: Active Stage Badge on larger screens */}
+      <div className="hidden xl:flex items-center gap-2">
+        {currentStage ? (
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/40 border border-amber-900/60 shadow-inner">
+            <span className="text-sm">{currentStage.icon}</span>
+            <span className="text-xs font-mono text-amber-300 font-bold">
+              GATE {currentStage.number}:
+            </span>
+            <span className="text-xs font-serif font-bold text-amber-100">
+              {currentStage.title}
+            </span>
+          </div>
+        ) : activeModule === 'quiz-engine' ? (
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/40 border border-amber-900/60 shadow-inner">
+            <span className="text-sm">🎓</span>
+            <span className="text-xs font-serif font-bold text-amber-100">
+              Certification Exam Engine
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/40 border border-amber-900/60 shadow-inner">
+            <span className="text-sm">🏛️</span>
+            <span className="text-xs font-serif font-bold text-amber-100">
+              Executive Dashboard
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Right Actions: Search trigger, Quick Tools, Bookmarks, Theme */}
-      <div className="flex items-center gap-2 sm:gap-2.5">
-        {/* Search Modal Trigger */}
+      {/* Right Controls */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Physical Search Bar Button */}
         <button
-          type="button"
           onClick={() => setIsSearchOpen(true)}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-xl bg-slate-100/80 dark:bg-slate-800/80 text-slate-500 dark:text-slate-300 border border-slate-200/60 dark:border-white/10 hover:border-emerald-500/40 transition-all shadow-xs group"
-          title="Search anything (⌘K)"
+          className="skeuo-inset flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-black/40 border border-amber-900/80 text-amber-300/80 hover:text-amber-100 text-xs font-mono transition-all group"
+          title="Search RCMclaim (Cmd+K)"
         >
-          <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-500 transition-colors" />
-          <span className="hidden md:inline text-[11px] truncate max-w-[130px]">Search boxes, codes...</span>
-          <kbd className="hidden sm:inline-flex items-center font-mono text-[9px] bg-white dark:bg-slate-900 text-slate-500 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+          <Search className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+          <span className="hidden md:inline text-amber-200/90">Search codes & boxes...</span>
+          <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] rounded bg-black/60 text-amber-400 border border-amber-800">
             ⌘K
           </kbd>
         </button>
 
-        {/* Quick Tools */}
-        <button
-          type="button"
-          onClick={onOpenQuickTools}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs border border-emerald-500/30 transition-colors shadow-xs"
+        {/* Physical Gauge Progress Indicator */}
+        <div 
+          onClick={() => setActiveModule('dashboard')}
+          className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-black/40 border border-amber-900/80 cursor-pointer hover:bg-black/60 transition-colors"
+          title={`${completionPercentage}% of pipeline completed`}
         >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Tools</span>
-        </button>
+          <div className="w-16 skeuo-gauge-track h-2 rounded-full overflow-hidden">
+            <div 
+              className="skeuo-gauge-fill h-full rounded-full transition-all duration-500"
+              style={{ width: `${Math.max(5, completionPercentage)}%` }}
+            />
+          </div>
+          <span className="text-xs font-mono font-bold text-amber-300">
+            {completionPercentage}%
+          </span>
+        </div>
 
-        {/* Bookmarks Counter */}
+        {/* Bookmarks Drawer Button */}
         <button
-          type="button"
           onClick={onOpenBookmarks}
-          className="flex items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors text-xs font-medium border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-          title="Saved Bookmarks"
+          className="relative p-2 rounded-lg bg-black/30 border border-amber-900/70 text-amber-200 hover:text-white hover:bg-black/50 transition-all"
+          title="Open Saved Notes & Bookmarks"
         >
-          <Bookmark className="w-4 h-4 text-amber-500" />
+          <Bookmark className="w-4 h-4" />
           {totalBookmarks > 0 && (
-            <span className="w-4 h-4 rounded-full bg-amber-500 text-slate-950 font-black text-[9px] flex items-center justify-center">
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 text-[9px] font-mono font-bold text-white flex items-center justify-center border border-amber-300">
               {totalBookmarks}
             </span>
           )}
         </button>
 
-        {/* Theme Toggle */}
+        {/* Theme Toggle (Day / Night Study) */}
         <button
-          type="button"
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          className="p-2 rounded-lg bg-black/30 border border-amber-900/70 text-amber-200 hover:text-white hover:bg-black/50 transition-all"
+          title={isDark ? 'Switch to Parchment Day Mode' : 'Switch to Dark Leather Night Mode'}
         >
-          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+          {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-amber-200" />}
         </button>
-
-        {/* User Progress Pill */}
-        <div className="hidden 2xl:flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
-          <div className="text-right">
-            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Progress</div>
-            <div className="text-xs font-black text-slate-800 dark:text-slate-100">{completionPercentage}%</div>
-          </div>
-          <div className="w-7 h-7 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
-            <Award className="w-3.5 h-3.5" />
-          </div>
-        </div>
       </div>
     </header>
   );

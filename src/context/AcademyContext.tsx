@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ModuleId, UserProgress, ArNoteData } from '../types/rcm';
+import { ModuleId, StageId, UserProgress, ArNoteData } from '../types/rcm';
 
 interface AcademyContextType {
   activeModule: ModuleId;
@@ -53,8 +53,18 @@ const DEFAULT_PROGRESS: UserProgress = {
 
 const AcademyContext = createContext<AcademyContextType | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY = 'rcm_ar_academy_progress_v2';
-const THEME_STORAGE_KEY = 'rcm_ar_academy_theme';
+const LOCAL_STORAGE_KEY = 'rcmclaim_progress_v3';
+const THEME_STORAGE_KEY = 'rcmclaim_theme';
+
+const LEGACY_TO_STAGE: Record<string, StageId> = {
+  'foundations': 'appointment',
+  'insurance-payers': 'eligibility',
+  'claim-forms': 'claim-submission',
+  'coding-modifiers': 'coding',
+  'ar-analytics': 'payment-posting',
+  'ar-playbook': 'ar-followup',
+  'call-scripts': 'ar-followup',
+};
 
 export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeModule, setActiveModuleState] = useState<ModuleId>('dashboard');
@@ -113,7 +123,8 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const toggleTheme = () => setIsDark(prev => !prev);
 
   const setActiveModule = (module: ModuleId, targetId?: string) => {
-    setActiveModuleState(module);
+    const target = (LEGACY_TO_STAGE[module] || module) as ModuleId;
+    setActiveModuleState(target);
     if (targetId) {
       setTargetScrollId(targetId);
       setTimeout(() => {
@@ -221,8 +232,8 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
-  // 8 modules total
-  const totalCoreModules = 8;
+  // 10 RCM pipeline stages total
+  const totalCoreModules = 10;
   const completionPercentage = Math.round((progress.completedModules.length / totalCoreModules) * 100);
 
   return (
