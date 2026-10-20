@@ -6,7 +6,9 @@ import {
   Award,
   GraduationCap,
   Sparkles,
-  ClipboardList
+  ClipboardList,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useAcademy } from '../../context/AcademyContext';
 import { RCM_STAGES, StageId } from '../../types/rcm';
@@ -23,6 +25,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenQuickTools
 }) => {
   const { 
+    isDark,
+    toggleTheme,
     setIsSearchOpen, 
     completionPercentage, 
     progress,
@@ -153,6 +157,19 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 text-[9px] font-mono font-bold text-white flex items-center justify-center border border-amber-300">
               {totalBookmarks}
             </span>
+          )}
+        </button>
+
+        {/* Theme Toggle Button: Day Mode (Parchment & Brass) vs Night Mode (Dark Leather & Gold) */}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-lg bg-black/30 border border-amber-900/70 text-amber-200 hover:text-white hover:bg-black/50 transition-all"
+          title={isDark ? 'Switch to Day Mode (Parchment & High-Visibility Ink)' : 'Switch to Dark Mode (Dark Leather & Gold)'}
+        >
+          {isDark ? (
+            <Sun className="w-4 h-4 text-amber-300 hover:rotate-45 transition-transform" />
+          ) : (
+            <Moon className="w-4 h-4 text-amber-200 hover:-rotate-12 transition-transform" />
           )}
         </button>
       </div>

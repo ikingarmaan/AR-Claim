@@ -71,8 +71,17 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [targetScrollId, setTargetScrollId] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
-  // Permanent Dark Mode: Academy runs in full dark leather study mode
-  const [isDark] = useState<boolean>(true);
+  // Theme State: Day Mode (Parchment & Brass) vs Night Mode (Dark Leather & Gold)
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      if (saved !== null) return saved === 'dark';
+      if (typeof window !== 'undefined' && window.matchMedia) {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+    } catch (e) {}
+    return true; // default to dark leather study mode, but fully toggleable
+  });
 
   const [progress, setProgress] = useState<UserProgress>(() => {
     try {
@@ -84,14 +93,21 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return DEFAULT_PROGRESS;
   });
 
-  // Ensure documentElement has dark class on load
+  // Sync theme to document element
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.add('dark');
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, 'dark');
-    } catch (e) {}
-  }, []);
+    if (isDark) {
+      root.classList.add('dark');
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, 'dark');
+      } catch (e) {}
+    } else {
+      root.classList.remove('dark');
+      try {
+        localStorage.setItem(THEME_STORAGE_KEY, 'light');
+      } catch (e) {}
+    }
+  }, [isDark]);
 
   // Sync progress to localStorage
   useEffect(() => {
@@ -114,8 +130,7 @@ export const AcademyProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Dark mode is permanent - toggleTheme is a no-op
-  const toggleTheme = () => {};
+  const toggleTheme = () => setIsDark(prev => !prev);
 
   const setActiveModule = (module: ModuleId, targetId?: string) => {
     const target = (LEGACY_TO_STAGE[module] || module) as ModuleId;
