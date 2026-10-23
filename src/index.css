@@ -513,67 +513,70 @@
 /* ============================================
    WCAG AAA STRICT CONTRAST ENFORCEMENT
    Guarantees 100% legibility on all textures
+   Defaults in @layer base so utility classes override
    ============================================ */
 
-/* Inputs & Form Controls */
-input, textarea, select {
-  color: #1c1917;
-}
-.dark input, .dark textarea, .dark select {
-  color: #f5f5f4;
-}
-input::placeholder, textarea::placeholder {
-  color: #78716c;
-}
-.dark input::placeholder, .dark textarea::placeholder {
-  color: #a8a29e;
-}
+@layer base {
+  /* Inputs & Form Controls */
+  input, textarea, select {
+    color: #1c1917;
+  }
+  .dark input, .dark textarea, .dark select {
+    color: #f5f5f4;
+  }
+  input::placeholder, textarea::placeholder {
+    color: #78716c;
+  }
+  .dark input::placeholder, .dark textarea::placeholder {
+    color: #a8a29e;
+  }
 
-/* Light mode container text enforcement */
-html:not(.dark) .skeuo-paper,
-html:not(.dark) .skeuo-manila,
-html:not(.dark) .skeuo-clipboard,
-html:not(.dark) .skeuo-linen,
-html:not(.dark) .skeuo-inset {
-  color: #1c1917;
-}
+  /* Light mode container text enforcement */
+  html:not(.dark) .skeuo-paper,
+  html:not(.dark) .skeuo-manila,
+  html:not(.dark) .skeuo-clipboard,
+  html:not(.dark) .skeuo-linen,
+  html:not(.dark) .skeuo-inset {
+    color: #1c1917;
+  }
 
-html:not(.dark) .skeuo-paper h1,
-html:not(.dark) .skeuo-paper h2,
-html:not(.dark) .skeuo-paper h3,
-html:not(.dark) .skeuo-paper h4,
-html:not(.dark) .skeuo-manila h1,
-html:not(.dark) .skeuo-manila h2,
-html:not(.dark) .skeuo-manila h3,
-html:not(.dark) .skeuo-manila h4,
-html:not(.dark) .skeuo-clipboard h1,
-html:not(.dark) .skeuo-clipboard h2,
-html:not(.dark) .skeuo-clipboard h3,
-html:not(.dark) .skeuo-clipboard h4 {
-  color: #0c0a09;
-}
+  html:not(.dark) .skeuo-paper h1,
+  html:not(.dark) .skeuo-paper h2,
+  html:not(.dark) .skeuo-paper h3,
+  html:not(.dark) .skeuo-paper h4,
+  html:not(.dark) .skeuo-manila h1,
+  html:not(.dark) .skeuo-manila h2,
+  html:not(.dark) .skeuo-manila h3,
+  html:not(.dark) .skeuo-manila h4,
+  html:not(.dark) .skeuo-clipboard h1,
+  html:not(.dark) .skeuo-clipboard h2,
+  html:not(.dark) .skeuo-clipboard h3,
+  html:not(.dark) .skeuo-clipboard h4 {
+    color: #0c0a09;
+  }
 
-/* Dark mode container text enforcement */
-html.dark .skeuo-paper,
-html.dark .skeuo-manila,
-html.dark .skeuo-clipboard,
-html.dark .skeuo-linen,
-html.dark .skeuo-inset {
-  color: #f5f5f4;
-}
+  /* Dark mode container text enforcement */
+  html.dark .skeuo-paper,
+  html.dark .skeuo-manila,
+  html.dark .skeuo-clipboard,
+  html.dark .skeuo-linen,
+  html.dark .skeuo-inset {
+    color: #f5f5f4;
+  }
 
-html.dark .skeuo-paper h1,
-html.dark .skeuo-paper h2,
-html.dark .skeuo-paper h3,
-html.dark .skeuo-paper h4,
-html.dark .skeuo-manila h1,
-html.dark .skeuo-manila h2,
-html.dark .skeuo-manila h3,
-html.dark .skeuo-manila h4,
-html.dark .skeuo-clipboard h1,
-html.dark .skeuo-clipboard h2,
-html.dark .skeuo-clipboard h3,
-html.dark .skeuo-clipboard h4 {
-  color: #fafaf9;
+  html.dark .skeuo-paper h1,
+  html.dark .skeuo-paper h2,
+  html.dark .skeuo-paper h3,
+  html.dark .skeuo-paper h4,
+  html.dark .skeuo-manila h1,
+  html.dark .skeuo-manila h2,
+  html.dark .skeuo-manila h3,
+  html.dark .skeuo-manila h4,
+  html.dark .skeuo-clipboard h1,
+  html.dark .skeuo-clipboard h2,
+  html.dark .skeuo-clipboard h3,
+  html.dark .skeuo-clipboard h4 {
+    color: #fafaf9;
+  }
 }
 

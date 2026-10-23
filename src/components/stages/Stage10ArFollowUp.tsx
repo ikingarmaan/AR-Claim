@@ -239,7 +239,7 @@ export const Stage10ArFollowUp: React.FC = () => {
                             className={`p-1.5 rounded transition-colors ${
                               isBookmarked
                                 ? 'text-amber-600 bg-amber-50 dark:bg-amber-950/50'
-                                : 'text-stone-400 hover:text-stone-600'
+                                : 'text-stone-400 hover:text-stone-600 dark:hover:text-stone-200'
                             }`}
                             title="Bookmark Denial Scenario"
                           >

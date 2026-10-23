@@ -51,6 +51,13 @@ export default {
           darkSubtle: '#2a231c',
           electric: '#3b82f6',
         },
+        stone: {
+          750: '#38322b',
+          850: '#231f1c',
+        },
+        emerald: {
+          850: '#045c38',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],

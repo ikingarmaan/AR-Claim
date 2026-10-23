@@ -182,7 +182,7 @@ export const Module8QuizEngine: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
-            <span className="text-xs font-bold px-3.5 py-2 rounded-xl bg-white dark:bg-stone-950 text-emerald-850 dark:text-emerald-300 border-2 border-emerald-500 dark:border-emerald-500/40 font-mono shadow-xs flex items-center gap-1.5">
+            <span className="text-xs font-bold px-3.5 py-2 rounded-xl bg-white dark:bg-stone-950 text-emerald-800 dark:text-emerald-300 border-2 border-emerald-500 dark:border-emerald-500/40 font-mono shadow-xs flex items-center gap-1.5">
               <Award className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               Best Exam: {progress.quizBestScore}%
             </span>
@@ -200,7 +200,7 @@ export const Module8QuizEngine: React.FC = () => {
             className={`px-4 py-2.5 rounded-xl text-xs font-serif font-bold transition-all flex items-center gap-2 ${
               mode === 'practice'
                 ? 'bg-amber-800 text-white shadow-md ring-2 ring-amber-500/60'
-                : 'bg-white hover:bg-stone-100 text-stone-800 border-2 border-stone-300 dark:bg-stone-900 dark:hover:bg-stone-850 dark:text-stone-300 dark:border-stone-700 dark:hover:text-white'
+                : 'bg-white hover:bg-stone-100 text-stone-800 border-2 border-stone-300 dark:bg-stone-900 dark:hover:bg-stone-800 dark:text-stone-300 dark:border-stone-700 dark:hover:text-white'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -213,7 +213,7 @@ export const Module8QuizEngine: React.FC = () => {
             className={`px-4 py-2.5 rounded-xl text-xs font-serif font-bold transition-all flex items-center gap-2 ${
               mode === 'exam'
                 ? 'bg-amber-800 text-white shadow-md ring-2 ring-amber-500/60'
-                : 'bg-white hover:bg-stone-100 text-stone-800 border-2 border-stone-300 dark:bg-stone-900 dark:hover:bg-stone-850 dark:text-stone-300 dark:border-stone-700 dark:hover:text-white'
+                : 'bg-white hover:bg-stone-100 text-stone-800 border-2 border-stone-300 dark:bg-stone-900 dark:hover:bg-stone-800 dark:text-stone-300 dark:border-stone-700 dark:hover:text-white'
             }`}
           >
             <GraduationCap className="w-4 h-4" />
@@ -249,7 +249,7 @@ export const Module8QuizEngine: React.FC = () => {
                 className={`px-3 py-1.5 rounded-xl text-xs font-serif transition-all ${
                   practiceCategory === cat.id
                     ? 'bg-emerald-700 text-white font-bold ring-2 ring-emerald-500/50 shadow-sm'
-                    : 'bg-white hover:bg-stone-100 text-stone-800 border-2 border-stone-300 dark:bg-stone-900 dark:hover:bg-stone-850 dark:text-stone-300 dark:border-stone-700 dark:hover:text-white font-medium'
+                    : 'bg-white hover:bg-stone-100 text-stone-800 border-2 border-stone-300 dark:bg-stone-900 dark:hover:bg-stone-800 dark:text-stone-300 dark:border-stone-700 dark:hover:text-white font-medium'
                 }`}
               >
                 {cat.label}
@@ -287,7 +287,7 @@ export const Module8QuizEngine: React.FC = () => {
                 const isSelected = userChoice === optIdx;
                 const isCorrect = optIdx === activePracticeQuestion.correctIndex;
 
-                let optionStyle = 'bg-stone-50 hover:bg-amber-50/50 border-2 border-stone-300 text-stone-900 hover:border-amber-600 dark:bg-stone-850 dark:hover:bg-stone-800 dark:border-stone-700 dark:text-stone-100 dark:hover:border-amber-500/70';
+                let optionStyle = 'bg-stone-50 hover:bg-amber-50/50 border-2 border-stone-300 text-stone-900 hover:border-amber-600 dark:bg-stone-800 dark:hover:bg-stone-750 dark:border-stone-700 dark:text-stone-100 dark:hover:border-amber-500/70';
                 let letterStyle = 'bg-white border-2 border-stone-300 text-stone-800 dark:bg-stone-800 dark:border-2 dark:border-stone-600 dark:text-stone-200';
 
                 if (isRevealed) {
@@ -357,7 +357,7 @@ export const Module8QuizEngine: React.FC = () => {
                 type="button"
                 disabled={currentPracticeIdx === 0}
                 onClick={() => setCurrentPracticeIdx(prev => Math.max(0, prev - 1))}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border-2 border-stone-300 dark:bg-stone-800 dark:hover:bg-stone-750 text-xs font-serif font-bold dark:text-stone-200 dark:border-stone-700 disabled:opacity-40 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border-2 border-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-xs font-serif font-bold dark:text-stone-200 dark:border-stone-700 disabled:opacity-40 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" /> Previous
               </button>
@@ -489,7 +489,7 @@ export const Module8QuizEngine: React.FC = () => {
                         className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3.5 ${
                           isSelected
                             ? 'bg-amber-100 border-amber-600 text-amber-950 font-bold ring-2 ring-amber-500/50 shadow-sm dark:bg-amber-950/70 dark:border-amber-500 dark:text-amber-100'
-                            : 'bg-stone-50 hover:bg-stone-100 border-stone-300 text-stone-900 dark:bg-stone-850 dark:hover:bg-stone-800 dark:border-stone-700 dark:text-stone-100 hover:border-amber-500'
+                            : 'bg-stone-50 hover:bg-stone-100 border-stone-300 text-stone-900 dark:bg-stone-800 dark:hover:bg-stone-700 dark:border-stone-700 dark:text-stone-100 hover:border-amber-500'
                         }`}
                       >
                         <span className={`w-7 h-7 rounded-xl flex items-center justify-center font-mono text-xs font-bold shrink-0 mt-0.5 ${
@@ -513,7 +513,7 @@ export const Module8QuizEngine: React.FC = () => {
                     type="button"
                     disabled={currentExamIdx === 0}
                     onClick={() => setCurrentExamIdx(prev => Math.max(0, prev - 1))}
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border-2 border-stone-300 dark:bg-stone-800 dark:hover:bg-stone-750 text-xs font-serif font-bold dark:text-stone-200 dark:border-stone-700 disabled:opacity-40 transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border-2 border-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-xs font-serif font-bold dark:text-stone-200 dark:border-stone-700 disabled:opacity-40 transition-colors"
                   >
                     <ArrowLeft className="w-4 h-4" /> Previous
                   </button>
@@ -567,7 +567,7 @@ export const Module8QuizEngine: React.FC = () => {
                             ? 'ring-2 ring-amber-500 border-amber-500 text-amber-900 bg-amber-100 dark:ring-amber-400 dark:border-amber-400 dark:text-amber-300 dark:bg-amber-950/60'
                             : isAnswered
                             ? 'bg-emerald-600 text-white border-emerald-700 dark:bg-emerald-800 dark:border-emerald-600 shadow-xs'
-                            : 'bg-stone-100 text-stone-700 border-stone-300 hover:border-stone-400 dark:bg-stone-850 dark:text-stone-300 dark:border-stone-700 dark:hover:border-stone-500'
+                            : 'bg-stone-100 text-stone-700 border-stone-300 hover:border-stone-400 dark:bg-stone-800 dark:text-stone-300 dark:border-stone-700 dark:hover:border-stone-500'
                         }`}
                       >
                         {idx + 1}
@@ -634,7 +634,7 @@ export const Module8QuizEngine: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleStartExam}
-                    className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border-2 border-stone-300 dark:bg-stone-800 dark:hover:bg-stone-750 text-xs font-serif font-bold dark:text-stone-200 dark:border-stone-700 transition-colors flex items-center gap-1.5"
+                    className="px-4 py-2.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 border-2 border-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-xs font-serif font-bold dark:text-stone-200 dark:border-stone-700 transition-colors flex items-center gap-1.5"
                   >
                     <RotateCcw className="w-4 h-4" /> Retake Exam
                   </button>

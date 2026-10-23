@@ -241,7 +241,7 @@ export const ModifiersMasteryDesk: React.FC = () => {
                   {/* Card Header (Clickable) */}
                   <div
                     onClick={() => setExpandedModifier(isExpanded ? null : guide.modifier)}
-                    className="p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-stone-50 to-amber-50/30 dark:from-stone-900 dark:to-stone-850 hover:bg-amber-100/40 dark:hover:bg-stone-800/60 flex items-start justify-between gap-3 border-b border-stone-200 dark:border-stone-800"
+                    className="p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-stone-50 to-amber-50/30 dark:from-stone-900 dark:to-stone-950 hover:bg-amber-100/40 dark:hover:bg-stone-800/60 flex items-start justify-between gap-3 border-b border-stone-200 dark:border-stone-800"
                   >
                     <div className="flex items-start gap-3">
                       <span className="font-mono font-bold text-sm sm:text-base px-3 py-1 rounded-lg bg-rose-800 text-white shadow-xs shrink-0 mt-0.5">
@@ -276,7 +276,7 @@ export const ModifiersMasteryDesk: React.FC = () => {
                   {isExpanded && (
                     <div className="p-5 sm:p-7 space-y-6 bg-white dark:bg-stone-900 text-xs sm:text-sm text-stone-800 dark:text-stone-200">
                       {/* Primary Use Box */}
-                      <div className="p-4 bg-stone-50 dark:bg-stone-850 rounded-xl border border-stone-300 dark:border-stone-700 space-y-1.5">
+                      <div className="p-4 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-300 dark:border-stone-700 space-y-1.5">
                         <span className="font-mono font-bold text-xs uppercase text-amber-900 dark:text-amber-300 block">
                           Primary Clinical & Billing Intent:
                         </span>
@@ -595,7 +595,7 @@ export const ModifiersMasteryDesk: React.FC = () => {
                 >
                   <div
                     onClick={() => setExpandedFaq(isOpen ? null : idx)}
-                    className="p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-stone-50 to-amber-50/20 dark:from-stone-900 dark:to-stone-850 hover:bg-amber-100/30 flex items-center justify-between gap-3"
+                    className="p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-stone-50 to-amber-50/20 dark:from-stone-900 dark:to-stone-950 hover:bg-amber-100/30 flex items-center justify-between gap-3"
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-6 h-6 rounded-full bg-amber-700 text-white font-mono text-xs flex items-center justify-center font-bold shrink-0">

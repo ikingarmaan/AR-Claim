@@ -261,7 +261,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
                   {/* Card Header (Clickable Accordion) */}
                   <div
                     onClick={() => setExpandedCoCode(isExpanded ? null : co.code)}
-                    className="p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-stone-50 to-amber-50/30 dark:from-stone-900 dark:to-stone-850 hover:bg-amber-100/40 dark:hover:bg-stone-800/60 flex items-start justify-between gap-3 border-b border-stone-200 dark:border-stone-800"
+                    className="p-4 sm:p-5 cursor-pointer bg-gradient-to-r from-stone-50 to-amber-50/30 dark:from-stone-900 dark:to-stone-950 hover:bg-amber-100/40 dark:hover:bg-stone-800/60 flex items-start justify-between gap-3 border-b border-stone-200 dark:border-stone-800"
                   >
                     <div className="flex items-start gap-3">
                       <span className="font-mono font-bold text-sm px-3 py-1 rounded-lg bg-rose-800 text-white shadow-xs shrink-0 mt-0.5">
@@ -332,7 +332,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
 
                       {/* SPECIAL CALLOUT: CO-18 DUPLICATE SCENARIOS */}
                       {co.scenarios && (
-                        <div className="p-4 bg-stone-100 dark:bg-stone-850 rounded-xl border-2 border-stone-300 dark:border-stone-700 space-y-3">
+                        <div className="p-4 bg-stone-100 dark:bg-stone-900 rounded-xl border-2 border-stone-300 dark:border-stone-700 space-y-3">
                           <h4 className="font-serif font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
                             <span>🔄 The 2 Scenarios in Duplicate Denials (Critical Rule):</span>
                           </h4>
@@ -547,7 +547,7 @@ export const CarcRarcDictionaryDesk: React.FC<CarcRarcDictionaryDeskProps> = ({ 
       {activeTab === 'rarc' && (
         <div className="space-y-5">
           {/* Conceptual Anchor Callout */}
-          <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50/50 dark:from-stone-900 dark:to-stone-850 rounded-xl border-2 border-amber-300 dark:border-amber-700 space-y-2">
+          <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50/50 dark:from-stone-900 dark:to-stone-950 rounded-xl border-2 border-amber-300 dark:border-amber-700 space-y-2">
             <span className="font-mono font-bold text-xs uppercase text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-700" />
               <span>The Golden Rule of Medical Remittance Codes:</span>
